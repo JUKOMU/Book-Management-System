@@ -3,7 +3,7 @@ CREATE TABLE admin (
   admin_id VARCHAR(6) NOT NULL,
   admin_name VARCHAR(32),
   password VARCHAR(24),
-  right VARCHAR(32),
+  right_col VARCHAR(32),
   PRIMARY KEY (admin_id)
 );
 
