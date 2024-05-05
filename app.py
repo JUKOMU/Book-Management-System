@@ -1,18 +1,14 @@
 from flask import Flask, render_template, session, redirect, url_for, flash, request, jsonify
-import os
 from flask_sqlalchemy import SQLAlchemy
 from forms import Login, SearchBookForm, ChangePasswordForm, EditInfoForm, SearchStudentForm, NewStoreForm, StoreForm, \
     BorrowForm
 from flask_login import UserMixin, LoginManager, login_required, login_user, logout_user, current_user
 import time, datetime
+from config import DevelopmentConfig
 
-basedir = os.path.abspath(os.path.dirname(__file__))
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'hard to guess string'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:123@localhost:3306/database_name'
-app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
+app.config.from_object(DevelopmentConfig)
 db = SQLAlchemy(app)
-
 
 @app.shell_context_processor
 def make_shell_context():
