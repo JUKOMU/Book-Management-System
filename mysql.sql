@@ -7,6 +7,7 @@ CREATE TABLE admin (
   PRIMARY KEY (admin_id)
 );
 
+
 -- 创建 book 表
 CREATE TABLE book (
   isbn VARCHAR(13) NOT NULL,
