@@ -38,7 +38,7 @@ class Admin(UserMixin, db.Model):
         self.admin_id = admin_id
         self.admin_name = admin_name
         self.password = password
-        self.right = right_col
+        self.right_col= right_col
 
     def get_id(self):
         return self.admin_id
@@ -198,12 +198,16 @@ def change_info():
     if form.validate_on_submit():
         current_user.admin_name = form.name.data
         db.session.add(current_user)
+        #提交修改
+        db.session.commit()
         flash(u'已成功修改个人信息！')
+        #base页面刷新信息
+        session['name'] = current_user.admin_name
         return redirect(url_for('user_info', id=current_user.admin_id))
     form.name.data = current_user.admin_name
     id = current_user.admin_id
-    right = current_user.right
-    return render_template('change-info.html', form=form, id=id, right=right)
+    right = current_user.right_col
+    return render_template('change-info.html', form=form, id=id,right=right)
 
 
 @app.route('/search_book', methods=['GET', 'POST'])
