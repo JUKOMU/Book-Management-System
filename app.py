@@ -32,13 +32,13 @@ class Admin(UserMixin, db.Model):
     admin_id = db.Column(db.String(6), primary_key=True)
     admin_name = db.Column(db.String(32))
     password = db.Column(db.String(24))
-    right = db.Column(db.String(32))
+    right_col = db.Column(db.String(32))
 
-    def __init__(self, admin_id, admin_name, password, right):
+    def __init__(self, admin_id, admin_name, password, right_col):
         self.admin_id = admin_id
         self.admin_name = admin_name
         self.password = password
-        self.right = right
+        self.right = right_col
 
     def get_id(self):
         return self.admin_id
