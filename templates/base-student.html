@@ -58,16 +58,19 @@
         <li class="layui-nav-item">
           <a class="" href="javascript:;">图书管理</a>
           <dl class="layui-nav-child">
-             <dd><a href="{{ url_for('borrow') }}">学生借书</a></dd>
-             <dd><a href="{{ url_for('return_book') }}">学生还书</a></dd>
+             <dd><a href="{{ url_for('borrow') }}">图书借阅</a></dd>
+             <dd><a href="{{ url_for('return_book') }}">图书归还</a></dd>
              <dd><a href="javascript:;">违规处理</a></dd>
            </dl>
         </li>
         <li class="layui-nav-item">
-          <a href="{{ url_for('change_info') }}">信息设置</a>
+            <a href="{{ url_for('change_info') }}">信息设置</a>    <!--重写学生change_info-->
         </li>
         <li class="layui-nav-item">
-          <a href="{{ url_for('search_student') }}">问题反馈</a>
+          <a href="{{ url_for('change_info') }}">查看公告</a>
+        </li>
+        <li class="layui-nav-item">
+          <a href="{{ url_for('search_student') }}">读者留言</a>
         </li>
       </ul>
     </div>
