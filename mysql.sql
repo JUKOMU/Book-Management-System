@@ -8,6 +8,8 @@ CREATE TABLE admin (
 );
 
 
+
+
 -- 创建 book 表
 CREATE TABLE book (
   isbn VARCHAR(13) NOT NULL,
@@ -93,10 +95,13 @@ INSERT INTO inventory (barcode, isbn, storage_date, location, withdraw, status, 
 ('102346', '9787115373991', '1547222400000', '1楼,02书架,3层,4排', 0, 0, '201801'),
 ('102347', '9787115373991', '1547222400000', '1楼,02书架,3层,4排', 0, 0, '201801'),
 ('102348', '9787115373991', '1547222400000', '1楼,02书架,3层,4排', 0, 1, '201801');
+
+
 -- 创建 student 表
 CREATE TABLE student (
   card_id VARCHAR(8) NOT NULL,
   student_id VARCHAR(9),
+  password VARCHAR(24),
   student_name VARCHAR(32),
   sex VARCHAR(2),
   telephone VARCHAR(11),
@@ -108,10 +113,10 @@ CREATE TABLE student (
 );
 
 -- 插入 student 数据
-INSERT INTO student (card_id, student_id, student_name, sex, telephone, enroll_date, valid_date, loss, debt) VALUES 
-('16000001', '161001222', '许致立', '女', '18921902722', '1472659200000', '1593446400000', 0, 0),
-('16000002', '161001228', '丹清', '女', '18367890001', '1472659200000', '1593446400000', 0, 0),
-('16000003', '161001227', '任雯', '女', '18890209433', '1472659200000', '1593446400000', 0, 0);
+INSERT INTO student (card_id, student_id, password,student_name, sex, telephone, enroll_date, valid_date, loss, debt) VALUES
+('16000001', '161001222','123' ,'许致立', '女', '18921902722', '1472659200000', '1593446400000', 0, 0),
+('16000002', '161001228', '123','丹清', '女', '18367890001', '1472659200000', '1593446400000', 0, 0),
+('16000003', '161001227','123', '任雯', '女', '18890209433', '1472659200000', '1593446400000', 0, 0);
 
 -- 创建 readbook 表
 CREATE TABLE readbook (
