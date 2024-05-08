@@ -16,6 +16,7 @@ def make_shell_context():
         'app': app,
         'db': db,
         'admin': admin,
+        'student': student,
         'Book': Book  # 你需要替换为你的 Book 模型类
     }
 
@@ -52,6 +53,23 @@ class Admin(UserMixin, db.Model):
     def __repr__(self):
         return '<Admin %r>' % self.admin_name
 
+class Student(db.Model):
+    __tablename__ = 'student'
+    card_id = db.Column(db.String(8), primary_key=True)
+    student_id = db.Column(db.String(9))
+    password = db.Column(db.String(24))
+    student_name = db.Column(db.String(32))
+    sex = db.Column(db.String(2))
+    telephone = db.Column(db.String(11), nullable=True)
+    enroll_date = db.Column(db.String(13))
+    valid_date = db.Column(db.String(13))
+    loss = db.Column(db.Boolean, default=False)  # 是否挂失
+    debt = db.Column(db.Boolean, default=False)  # 是否欠费
+
+
+    def __repr__(self):
+            return '<Student %r>' % self.student_name
+
 
 class Book(db.Model):
     __tablename__ = 'book'
@@ -63,22 +81,6 @@ class Book(db.Model):
 
     def __repr__(self):
         return '<Book %r>' % self.book_name
-
-
-class Student(db.Model):
-    __tablename__ = 'student'
-    card_id = db.Column(db.String(8), primary_key=True)
-    student_id = db.Column(db.String(9))
-    student_name = db.Column(db.String(32))
-    sex = db.Column(db.String(2))
-    telephone = db.Column(db.String(11), nullable=True)
-    enroll_date = db.Column(db.String(13))
-    valid_date = db.Column(db.String(13))
-    loss = db.Column(db.Boolean, default=False)  # 是否挂失
-    debt = db.Column(db.Boolean, default=False)  # 是否欠费
-
-    def __repr__(self):
-        return '<Student %r>' % self.student_name
 
 
 class Inventory(db.Model):
@@ -111,8 +113,11 @@ class ReadBook(db.Model):
 
 
 @login_manager.user_loader
-def load_user(admin_id):
+def load_user_admin(admin_id):
     return Admin.query.get(int(admin_id))
+
+def load_user_student(card_id):
+    return Student.query.get(int(card_id))
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -127,7 +132,7 @@ def login():
             login_user(user)
             session['admin_id'] = user.admin_id
             session['name'] = user.admin_name
-            return redirect(url_for('index'))
+            return redirect(url_for('index_admin'))
     return render_template('login.html', form=form)
 
 
@@ -139,11 +144,15 @@ def logout():
     return redirect(url_for('login'))
 
 
-@app.route('/index')
+@app.route('/index_admin')
 @login_required
-def index():
-    return render_template('index.html', name=session.get('name'))
+def index_admin():
+    return render_template('admin/index-admin.html', name=session.get('name'))
 
+@app.route('/index_student')
+@login_required
+def index_student():
+    return render_template('student/index-student.html',name=session.get('name'))
 
 @app.route('/echarts')
 @login_required
@@ -170,7 +179,7 @@ def echarts():
 @login_required
 def user_info(id):
     user = Admin.query.filter_by(admin_id=id).first()
-    return render_template('user-info.html', user=user, name=session.get('name'))
+    return render_template('admin/user-info_admin.html', user=user, name=session.get('name'))
 
 
 @app.route('/change_password', methods=['GET', 'POST'])
@@ -185,15 +194,15 @@ def change_password():
             db.session.add(current_user)
             db.session.commit()
             flash(u'已成功修改密码！')
-            return redirect(url_for('index'))
+            return redirect(url_for('index_admin'))
         else:
             flash(u'原密码输入错误，修改失败！')
     return render_template("change-password.html", form=form)
 
 
-@app.route('/change_info', methods=['GET', 'POST'])
+@app.route('/change_info_admin', methods=['GET', 'POST'])
 @login_required
-def change_info():
+def change_info_admin():
     form = EditInfoForm()
     if form.validate_on_submit():
         current_user.admin_name = form.name.data
@@ -207,14 +216,27 @@ def change_info():
     form.name.data = current_user.admin_name
     id = current_user.admin_id
     right = current_user.right_col
-    return render_template('change-info.html', form=form, id=id,right=right)
+    return render_template('admin/change-info_admin.html', form=form, id=id, right=right)
 
 
-@app.route('/search_book', methods=['GET', 'POST'])
+#写学生change-info功能
+@app.route('/change_info_student', methods=['GET', 'POST'])
+def change_info_student():
+    render_template('',)
+
+
+
+@app.route('/search_book_admin', methods=['GET', 'POST'])
 @login_required
-def search_book():  # 这个函数里不再处理提交按钮，使用Ajax局部刷新
+def search_book_admin():  # 这个函数里不再处理提交按钮，使用Ajax局部刷新
     form = SearchBookForm()
-    return render_template('search-book.html', name=session.get('name'), form=form)
+    return render_template('admin/search-book_admin.html', name=session.get('name'), form=form)
+
+@app.route('/search_book_student', methods=['GET', 'POST'])
+@login_required
+def search_book_student():  # 这个函数里不再处理提交按钮，使用Ajax局部刷新
+    form = SearchBookForm()
+    return render_template('student/search-book_student.html', name=session.get('name'), form=form)
 
 
 @app.route('/books', methods=['POST'])
@@ -258,7 +280,7 @@ def user_book():
 @login_required
 def search_student():
     form = SearchStudentForm()
-    return render_template('search-student.html', name=session.get('name'), form=form)
+    return render_template('admin/search-student.html', name=session.get('name'), form=form)
 
 
 def timeStamp(timeNum):
@@ -336,7 +358,7 @@ def storage():
                     db.session.commit()
                     flash(u'入库成功！')
         return redirect(url_for('storage'))
-    return render_template('storage.html', name=session.get('name'), form=form)
+    return render_template('admin/storage.html', name=session.get('name'), form=form)
 
 
 @app.route('/new_store', methods=['GET', 'POST'])
@@ -361,14 +383,20 @@ def new_store():
                 db.session.commit()
                 flash(u'图书信息添加成功！')
         return redirect(url_for('new_store'))
-    return render_template('new-store.html', name=session.get('name'), form=form)
+    return render_template('admin/new-store.html', name=session.get('name'), form=form)
 
 
-@app.route('/borrow', methods=['GET', 'POST'])
+@app.route('/borrow_admin', methods=['GET', 'POST'])
 @login_required
-def borrow():
+def borrow_admin():
     form = BorrowForm()
-    return render_template('borrow.html', name=session.get('name'), form=form)
+    return render_template('admin/borrow-admin.html', name=session.get('name'), form=form)
+
+@app.route('/borrow_student', methods=['GET', 'POST'])
+@login_required
+def borrow_student():
+    form = BorrowForm()
+    return render_template('student/borrow-student.html', name=session.get('name'), form=form)
 
 
 @app.route('/find_stu_book', methods=['GET', 'POST'])
@@ -430,11 +458,17 @@ def out():
     return jsonify(data)
 
 
-@app.route('/return', methods=['GET', 'POST'])
+@app.route('/return_admin', methods=['GET', 'POST'])
 @login_required
-def return_book():
+def return_book_admin():
     form = SearchStudentForm()
-    return render_template('return.html', name=session.get('name'), form=form)
+    return render_template('admin/return-admin.html', name=session.get('name'), form=form)
+
+@app.route('/return_student', methods=['GET', 'POST'])
+@login_required
+def return_book_student():
+    form = SearchStudentForm()
+    return render_template('student/return-student.html', name=session.get('name'), form=form)
 
 
 @app.route('/find_not_return_book', methods=['GET', 'POST'])
