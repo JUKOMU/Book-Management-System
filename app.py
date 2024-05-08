@@ -182,9 +182,9 @@ def user_info(id):
     return render_template('admin/user-info_admin.html', user=user, name=session.get('name'))
 
 
-@app.route('/change_password', methods=['GET', 'POST'])
+@app.route('/change_password_admin', methods=['GET', 'POST'])
 @login_required
-def change_password():
+def change_password_admin():
     form = ChangePasswordForm()
     if form.password2.data != form.password.data:
         flash(u'两次密码不一致！')
@@ -197,7 +197,26 @@ def change_password():
             return redirect(url_for('index_admin'))
         else:
             flash(u'原密码输入错误，修改失败！')
-    return render_template("change-password.html", form=form)
+    return render_template("admin/change-password_admin.html", form=form)
+
+
+
+@app.route('/change_password_student', methods=['GET', 'POST'])
+@login_required
+def change_password_student():
+    form = ChangePasswordForm()
+    if form.password2.data != form.password.data:
+        flash(u'两次密码不一致！')
+    if form.validate_on_submit():
+        if current_user.verify_password(form.old_password.data):
+            current_user.password = form.password.data
+            db.session.add(current_user)
+            db.session.commit()
+            flash(u'已成功修改密码！')
+            return redirect(url_for('index_admin'))
+        else:
+            flash(u'原密码输入错误，修改失败！')
+    return render_template("student/change-password_student.html", form=form)
 
 
 @app.route('/change_info_admin', methods=['GET', 'POST'])
