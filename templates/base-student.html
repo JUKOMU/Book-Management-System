@@ -25,7 +25,7 @@
 <body class="layui-layout-body">
 <div class="layui-layout layui-layout-admin">
   <div class="layui-header">
-    <a href="{{ url_for('index') }}"><div class="layui-logo">书海图书管理系统</div></a>
+    <a href="{{ url_for('index_student') }}"><div class="layui-logo">书海图书管理系统</div></a>
     <!-- 头部区域（可配合layui已有的水平导航） -->
     <ul class="layui-nav layui-layout-right">
       <li class="layui-nav-item">
@@ -53,18 +53,18 @@
           <a class="" href="javascript:;">智能推荐</a>
         </li>
               <li class="layui-nav-item">
-          <a href="{{ url_for('search_book') }}">图书查询</a>
+          <a href="{{ url_for('search_book_student') }}">图书查询</a>
         </li>
         <li class="layui-nav-item">
           <a class="" href="javascript:;">图书管理</a>
           <dl class="layui-nav-child">
-             <dd><a href="{{ url_for('borrow') }}">图书借阅</a></dd>
-             <dd><a href="{{ url_for('return_book') }}">图书归还</a></dd>
+             <dd><a href="{{ url_for('borrow_student') }}">图书借阅</a></dd>
+             <dd><a href="{{ url_for('return_book_student') }}">图书归还</a></dd>
              <dd><a href="javascript:;">违规处理</a></dd>
            </dl>
         </li>
         <li class="layui-nav-item">
-            <a href="{{ url_for('change_info') }}">信息设置</a>    <!--重写学生change_info-->
+            <a href="{{ url_for('change_info_student') }}">信息设置</a>    <!--重写学生change_info-->
         </li>
         <li class="layui-nav-item">
           <a href="javascript:;">查看公告</a>
