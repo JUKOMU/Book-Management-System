@@ -112,14 +112,12 @@ def logout():
 @app.route('/index_admin')
 @login_required
 def index_admin():
-    print(12)
     return render_template('admin/index-admin.html', name=session.get('name'))
 
 
 @app.route('/index_student')
 @login_required
 def index_student():
-    print(123)
     return render_template('student/index-student.html', name=session.get('name'))
 
 
