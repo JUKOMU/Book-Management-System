@@ -7,8 +7,8 @@ class BaseConfig:
     HOSTNAME = "127.0.0.1"
     PORT = "3306"
     USERNAME = "root"
-    PASSWORD = "123"
-    DATABASE = "book_management_system"
+    PASSWORD = "123456"
+    DATABASE = "bms"
     SQLALCHEMY_DATABASE_URI = "mysql+pymysql://"+USERNAME+":"+PASSWORD+"@"+HOSTNAME+":"+PORT+"/"+DATABASE+"?charset=utf8mb4"
 
 class DevelopmentConfig(BaseConfig):
