@@ -1,4 +1,4 @@
-from flask import Flask, render_template, session, redirect, url_for, flash, request, jsonify
+from flask import Flask, render_template, session, redirect, url_for, flash, request, jsonify, make_response
 from flask_sqlalchemy import SQLAlchemy
 from forms import Login, SearchBookForm, ChangePasswordForm, EditInfoForm, SearchStudentForm, NewStoreForm, StoreForm, \
     BorrowForm
@@ -9,6 +9,7 @@ from config import DevelopmentConfig
 app = Flask(__name__)
 app.config.from_object(DevelopmentConfig)
 db = SQLAlchemy(app)
+
 
 @app.shell_context_processor
 def make_shell_context():
@@ -39,7 +40,7 @@ class Admin(UserMixin, db.Model):
         self.admin_id = admin_id
         self.admin_name = admin_name
         self.password = password
-        self.right_col= right_col
+        self.right_col = right_col
 
     def get_id(self):
         return self.admin_id
@@ -53,7 +54,8 @@ class Admin(UserMixin, db.Model):
     def __repr__(self):
         return '<Admin %r>' % self.admin_name
 
-class Student(db.Model):
+
+class Student(UserMixin, db.Model):
     __tablename__ = 'student'
     card_id = db.Column(db.String(8), primary_key=True)
     student_id = db.Column(db.String(9))
@@ -66,9 +68,30 @@ class Student(db.Model):
     loss = db.Column(db.Boolean, default=False)  # 是否挂失
     debt = db.Column(db.Boolean, default=False)  # 是否欠费
 
+    def __init__(self, card_id, student_id, password, student_name, sex, telephone, enroll_date, valid_date, loss=False,
+                 debt=False):
+        self.card_id = card_id
+        self.student_id = student_id
+        self.password = password
+        self.student_name = student_name
+        self.sex = sex
+        self.telephone = telephone
+        self.enroll_date = enroll_date
+        self.valid_date = valid_date
+        self.loss = loss
+        self.debt = debt
+
+    def get_id(self):
+        return self.card_id
+
+    def verify_password(self, password):
+        if password == self.password:
+            return True
+        else:
+            return False
 
     def __repr__(self):
-            return '<Student %r>' % self.student_name
+        return '<Student %r>' % self.student_name
 
 
 class Book(db.Model):
@@ -116,24 +139,76 @@ class ReadBook(db.Model):
 def load_user_admin(admin_id):
     return Admin.query.get(int(admin_id))
 
+@login_manager.user_loader
 def load_user_student(card_id):
     return Student.query.get(int(card_id))
 
 
 @app.route('/', methods=['GET', 'POST'])
 def login():
+
+    isUser = False
     form = Login()
     if form.validate_on_submit():
-        user = Admin.query.filter_by(admin_id=form.account.data, password=form.password.data).first()
+        account_id = form.account.data
+        password = form.password.data
+
+        # 根据账号长度判断是管理员还是学生
+        if len(account_id) == 6:
+            user = Admin.query.filter_by(admin_id=account_id, password=password).first()
+            # 创建响应对象
+            response = make_response(redirect(url_for('index_admin')))
+        elif len(account_id) == 8:
+            isUser = True
+            user = Student.query.filter_by(card_id=account_id, password=password).first()
+            response = make_response(redirect(url_for('index_student')))
+        else:
+            user = None
+
         if user is None:
             flash('账号或密码错误！')
             return redirect(url_for('login'))
         else:
-            login_user(user)
-            session['admin_id'] = user.admin_id
-            session['name'] = user.admin_name
-            return redirect(url_for('index_admin'))
+            if isUser:
+                login_user(user)
+                session['card_id'] = user.card_id
+                session['name'] = user.student_name
+            else:
+                login_user(user)
+                session['admin_id'] = user.admin_id
+                session['name'] = user.admin_name
+
+            # 根据用户类型存储 admin_id 或 card_id 到 cookie
+            if isinstance(user, Admin):
+                response.set_cookie('admin_id', str(user.admin_id))
+            elif isinstance(user, Student):
+                response.set_cookie('card_id', str(user.card_id))
+
+            # 返回响应对象，包含设置的 cookie
+            return response
     return render_template('login.html', form=form)
+
+
+# def login():
+#     form = Login()
+#     if form.validate_on_submit():
+#         user = Admin.query.filter_by(admin_id=form.account.data, password=form.password.data).first()
+#         if user is None:
+#             flash('账号或密码错误！')
+#             return redirect(url_for('login'))
+#         else:
+#             # 登录用户
+#             login_user(user)
+#
+#             # 创建响应对象
+#             response = make_response(redirect(url_for('index_admin')))
+#
+#             # 将 admin_id 存入 cookie
+#             response.set_cookie('admin_id', str(user.admin_id))
+#
+#             # 返回响应对象，包含设置的 cookie
+#             return response
+#     return render_template('login.html', form=form)
 
 
 @app.route('/logout')
@@ -147,12 +222,16 @@ def logout():
 @app.route('/index_admin')
 @login_required
 def index_admin():
+    print(12)
     return render_template('admin/index-admin.html', name=session.get('name'))
+
 
 @app.route('/index_student')
 @login_required
 def index_student():
-    return render_template('student/index-student.html',name=session.get('name'))
+    print(123)
+    return render_template('student/index-student.html', name=session.get('name'))
+
 
 @app.route('/echarts')
 @login_required
@@ -200,7 +279,6 @@ def change_password_admin():
     return render_template("admin/change-password_admin.html", form=form)
 
 
-
 @app.route('/change_password_student', methods=['GET', 'POST'])
 @login_required
 def change_password_student():
@@ -241,8 +319,7 @@ def change_info_admin():
 #写学生change-info功能
 @app.route('/change_info_student', methods=['GET', 'POST'])
 def change_info_student():
-    render_template('',)
-
+    render_template('', )
 
 
 @app.route('/search_book_admin', methods=['GET', 'POST'])
@@ -250,6 +327,7 @@ def change_info_student():
 def search_book_admin():  # 这个函数里不再处理提交按钮，使用Ajax局部刷新
     form = SearchBookForm()
     return render_template('admin/search-book_admin.html', name=session.get('name'), form=form)
+
 
 @app.route('/search_book_student', methods=['GET', 'POST'])
 @login_required
@@ -427,6 +505,7 @@ def borrow_admin():
     form = BorrowForm()
     return render_template('admin/borrow-admin.html', name=session.get('name'), form=form)
 
+
 @app.route('/borrow_student', methods=['GET', 'POST'])
 @login_required
 def borrow_student():
@@ -498,6 +577,7 @@ def out():
 def return_book_admin():
     form = SearchStudentForm()
     return render_template('admin/return-admin.html', name=session.get('name'), form=form)
+
 
 @app.route('/return_student', methods=['GET', 'POST'])
 @login_required
