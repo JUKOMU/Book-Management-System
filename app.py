@@ -261,16 +261,32 @@ def search_book_student():  # 这个函数里不再处理提交按钮，使用Aj
 @app.route('/books', methods=['POST'])
 def find_book():
     def find_name():
-        return Book.query.filter(Book.book_name.like('%' + request.form.get('content') + '%')).all()
+        content = request.form.get('content', '').strip()
+        if not content:
+            return Book.query.all()
+        else:
+            return Book.query.filter(Book.book_name.like('%' + content + '%')).all()
 
     def find_author():
-        return Book.query.filter(Book.author.contains(request.form.get('content'))).all()
+        content = request.form.get('content', '').strip()
+        if not content:
+            return Book.query.all()
+        else:
+            return Book.query.filter(Book.author.contains(content)).all()
 
     def find_class():
-        return Book.query.filter(Book.class_name.contains(request.form.get('content'))).all()
+        content = request.form.get('content', '').strip()
+        if not content:
+            return Book.query.all()
+        else:
+            return Book.query.filter(Book.class_name.contains(content)).all()
 
     def find_isbn():
-        return Book.query.filter(Book.isbn.contains(request.form.get('content'))).all()
+        content = request.form.get('content', '').strip()
+        if not content:
+            return Book.query.all()
+        else:
+            return Book.query.filter(Book.isbn.contains(content)).all()
 
     methods = {
         'book_name': find_name,
