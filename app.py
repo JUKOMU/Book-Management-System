@@ -1,11 +1,14 @@
-from flask import Flask, render_template, session, redirect, url_for, flash, request, jsonify, make_response
-from flask_sqlalchemy import SQLAlchemy
+import datetime
+import json
+import time
+
+import requests
+from fastapi.responses import StreamingResponse
+from flask import render_template, session, redirect, url_for, flash, request, jsonify, make_response
+from flask_login import LoginManager, login_required, login_user, logout_user, current_user
+
 from forms import Login, SearchBookForm, ChangePasswordForm, EditInfoForm, SearchStudentForm, NewStoreForm, StoreForm, \
     BorrowForm
-from flask_login import UserMixin, LoginManager, login_required, login_user, logout_user, current_user
-import time, datetime
-from config import DevelopmentConfig
-from models import app
 from models import *
 
 
@@ -228,6 +231,7 @@ def search_book_student():  # 这个函数里不再处理提交按钮，使用Aj
 @login_required
 def recommend():
     return render_template('student/recommend.html', name=session.get('name'))
+
 
 @app.route('/books', methods=['POST'])
 def find_book():
@@ -532,6 +536,54 @@ def bookin():
                 'start_date': start_date, 'due_date': due_date}
         data.append(item)
     return jsonify(data)
+
+
+# 流式请求千帆大模型
+def get_access_token(ak, sk):
+    auth_url = "https://aip.baidubce.com/oauth/2.0/token"
+    resp = requests.get(auth_url, params={"grant_type": "client_credentials", "client_id": ak, 'client_secret': sk})
+    return resp.json().get("access_token")
+
+
+def get_stream_response(msg):
+    ak = "q9m5F3giOQoz3PB9qAqWsnTx"
+    sk = "24t2R0cqGiDpisCBzxzwkL9XxZS8hi8u"
+    source = "&sourceVer=0.0.1&source=app_center&appName=streamDemo"
+    # 大模型接口URL
+    base_url = "https://aip.baidubce.com/rpc/2.0/ai_custom/v1/wenxinworkshop/chat/eb-instant"
+    url = base_url + "?access_token=" + get_access_token(ak, sk) + source
+    data = {
+        "messages": msg,
+        "stream": True
+    }
+    payload = json.dumps(data)
+    headers = {'Content-Type': 'application/json'}
+    return requests.post(url, headers=headers, data=payload, stream=True)
+
+
+def gen_stream(msg):
+    response = get_stream_response(msg)
+    for chunk in response.iter_lines():
+        chunk = chunk.decode("utf8")
+        if chunk[:5] == "data:":
+            chunk = chunk[5:]
+        yield chunk
+        time.sleep(0.01)
+
+
+@app.route("/eb_stream", methods=['GET', 'POST'])  # 前端调用的path
+def eb_stream():
+    msg = []
+    body = request.get_json()
+    prompt = body.get("prompt")
+    lastanswer = body.get("lastanswer")
+    if lastanswer != "":
+        msg.push({"role": "assistant", "content": lastanswer})
+        msg.push({"role": "user", "content": prompt})
+    else:
+        msg = [{"role": "user", "content": prompt}]
+
+    return StreamingResponse(gen_stream(msg))
 
 
 if __name__ == '__main__':
