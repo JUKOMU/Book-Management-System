@@ -15,7 +15,7 @@ Flask+layui前端UI框架+Mysql
 2.  按照requirements文件进入终端pip install 相关软件包
 3.  安装MySQL数据库以及pymysql相关包  
 4.  打开终端cd到项目所在文件夹，使用 `python app.py runserver` 启动服务
-5.  打开浏览器地址栏输入(http://127.0.0.1/5000)进入查看
+5.  打开浏览器地址栏输入(http://127.0.0.1/5000) 进入查看
 
 #### 使用说明
 
