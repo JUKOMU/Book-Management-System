@@ -69,6 +69,8 @@
         });
 
         $(document).ready(function(){
+            $("#li_4").addClass("layui-nav-itemed");
+            $("#li_4_2").addClass("height-light");
             $('#search').on('click',function () {
                 var form = new FormData(document.getElementById("searchForm"));
                 if($('#card').val() === "" || $('#book_name').val() === ""){
@@ -185,7 +187,6 @@
                 }
                 return false;
             });
-            $("#li_4_2").addClass("height-light");
         });
     });
     </script>
