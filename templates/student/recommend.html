@@ -12,6 +12,7 @@
         body {
             background-color: #f1f1f1;
         }
+
         .alert {
             position: relative;
             padding: .75rem 1.25rem;
@@ -89,10 +90,11 @@
             bottom: 110px;
             left: 300px;
             width: calc(100% - 420px);
-            height: 300px;
+            height: 10px;
             margin: 0;
             padding: 10px;
             background-color: #FFFFFF;
+            border-radius: 5px;
         }
 
         .container > * {
@@ -125,11 +127,13 @@
         .input #summit {
             height: 40px;
             width: 40px;
-            border: 1px solid;
-            border-color: rgba(0, 0, 0, 0.5);
-            border-radius: 8px;
+            border-radius: 50%;
             font-size: 14px;
-            background-color: deepskyblue;
+            cursor: pointer;
+        }
+
+        .input #summit:hover {
+            opacity: 0.8;
         }
 
         .img {
@@ -196,15 +200,15 @@
     </div>
 
     <div class="title">
-        <h2>ERNIE-4.0-8K</h2>
+        <h2>智能推荐</h2>
     </div>
 
     <div class="container" id="container">
-        <p id="answer">111111111111111111111111111111111111111111111111111111111111111111111111111111111111111</p>
+        <p id="answer"></p>
     </div>
     <div class="input">
         <input type="textarea" id="textInput" placeholder="您有什么问题">
-        <button onclick="run_prompt()" id="summit">summit</button>
+        <img onclick="run_prompt()" id="summit" src="../../static/summit.png"/>
     </div>
 
     <div class="layui-footer">
@@ -220,6 +224,17 @@
 
     $(document).ready(function () {
         $("#li_2").addClass("height-light");
+        $("#container").css({
+            'position': 'fixed',
+            'bottom': '110px',
+            'left': '300px',
+            'width': 'calc(100% - 420px)',
+            'height': ($(window).height()-250).toString()+"px",
+            'margin': '0',
+            'padding': '10px',
+            'background-color': '#FFFFFF',
+            'border-radius': '10px',
+        });
     });
 
     current_text = document.getElementById('answer');
@@ -232,7 +247,7 @@
         addNewAnswerParagraph();
         document.getElementById('answer').value = "";
         // 调用服务端的流式接口, 修改为自己的服务器地址和端口号
-        fetch('http://localhost:8000/eb_stream', {
+        fetch('http://localhost:5000/eb_stream', {
             method: 'post',
             headers: {'Content-Type': 'text/plain'},
             body: JSON.stringify({'prompt': inputValue, 'lastanswer': text})
