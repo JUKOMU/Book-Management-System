@@ -8,6 +8,7 @@
     <script src="https://cdn.staticfile.org/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://cdn.staticfile.org/popper.js/1.12.5/umd/popper.min.js"></script>
     <script src="https://cdn.staticfile.org/twitter-bootstrap/4.1.0/js/bootstrap.min.js"></script>
+    {% block style %}
     <style>
         .alert {
             position: relative;
@@ -75,20 +76,8 @@
             background-color: #009688;
         }
     </style>
+    {% endblock %}
     {% block head %}{% endblock %}
-    <style>
-        {
-        %
-        block
-        style
-        %
-        }
-        {
-        %
-        endblock
-        %
-        }
-    </style>
 </head>
 <body class="layui-layout-body">
 <div class="layui-layout layui-layout-admin">
@@ -120,7 +109,7 @@
                     <a href="{{url_for('index_student')}}">首页</a>
                 </li>
                 <li id="li_2" class="layui-nav-item">
-                    <a href="{{ url_for('search_book_student') }}">智能推荐</a>
+                    <a href="{{ url_for('recommend') }}">智能推荐</a>
                 </li>
                 <li id="li_3" class="layui-nav-item">
                     <a href="{{ url_for('search_book_student') }}">图书查询</a>

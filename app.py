@@ -192,10 +192,10 @@ def change_info_admin():
     if form.validate_on_submit():
         current_user.admin_name = form.name.data
         db.session.add(current_user)
-        #提交修改
+        # 提交修改
         db.session.commit()
         flash(u'已成功修改个人信息！')
-        #base页面刷新信息
+        # base页面刷新信息
         session['name'] = current_user.admin_name
         return redirect(url_for('user_info', id=current_user.admin_id))
     form.name.data = current_user.admin_name
@@ -204,7 +204,7 @@ def change_info_admin():
     return render_template('admin/change-info_admin.html', form=form, id=id, right=right)
 
 
-#写学生change-info功能
+# 写学生change-info功能
 @app.route('/change_info_student', methods=['GET', 'POST'])
 def change_info_student():
     render_template('', )
@@ -223,6 +223,11 @@ def search_book_student():  # 这个函数里不再处理提交按钮，使用Aj
     form = SearchBookForm()
     return render_template('student/search-book_student.html', name=session.get('name'), form=form)
 
+
+@app.route('/recommend', methods=['GET', 'POST'])
+@login_required
+def recommend():
+    return render_template('student/recommend.html', name=session.get('name'))
 
 @app.route('/books', methods=['POST'])
 def find_book():
@@ -415,12 +420,9 @@ def find_stu_book():
         return jsonify([{'stu': 2}])  # 到期
     if stu.loss is True:
         return jsonify([{'stu': 3}])  # 已经挂失
-    books = db.session.query(Book).join(Inventory).filter(Book.book_name.contains(request.form.get('book_name')),
-                                                          Inventory.status == 1).with_entities(Inventory.barcode,
-                                                                                               Book.isbn,
-                                                                                               Book.book_name,
-                                                                                               Book.author, Book.press). \
-        all()
+    books = (db.session.query(Book).join(Inventory).
+             filter(Book.book_name.contains(request.form.get('book_name')), Inventory.status == 1).
+             with_entities(Inventory.barcode, Book.isbn, Book.book_name, Book.author, Book.press).all())
     data = []
     for book in books:
         item = {'barcode': book.barcode, 'isbn': book.isbn, 'book_name': book.book_name,
@@ -488,10 +490,9 @@ def find_not_return_book():
         return jsonify([{'stu': 2}])  # 到期
     if stu.loss is True:
         return jsonify([{'stu': 3}])  # 已经挂失
-    books = db.session.query(ReadBook).join(Inventory).join(Book).filter(ReadBook.card_id == request.form.get('card'),
-                                                                         ReadBook.end_date.is_(None)).with_entities(
-        ReadBook.barcode, Book.isbn, Book.book_name, ReadBook.start_date,
-        ReadBook.due_date).all()
+    books = (db.session.query(ReadBook).join(Inventory).join(Book).
+             filter(ReadBook.card_id == request.form.get('card'), ReadBook.end_date.is_(None)).
+             with_entities(ReadBook.barcode, Book.isbn, Book.book_name, ReadBook.start_date, ReadBook.due_date).all())
     data = []
     for book in books:
         start_date = timeStamp(book.start_date)
@@ -520,10 +521,9 @@ def bookin():
     book.status = True
     db.session.add(book)
     db.session.commit()
-    bks = db.session.query(ReadBook).join(Inventory).join(Book).filter(ReadBook.card_id == card,
-                                                                       ReadBook.end_date.is_(None)).with_entities(
-        ReadBook.barcode, Book.isbn, Book.book_name, ReadBook.start_date,
-        ReadBook.due_date).all()
+    bks = (db.session.query(ReadBook).join(Inventory).join(Book).
+           filter(ReadBook.card_id == card, ReadBook.end_date.is_(None)).
+           with_entities(ReadBook.barcode, Book.isbn, Book.book_name, ReadBook.start_date, ReadBook.due_date).all())
     data = []
     for bk in bks:
         start_date = timeStamp(bk.start_date)
