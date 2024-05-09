@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="dataSourceStorageLocal" created-in="PY-241.15989.155">
+    <data-source name="data" uuid="9202f5f7-34d0-4efa-84eb-369434baa4b6">
+      <database-info product="" version="" jdbc-version="" driver-name="" driver-version="" dbms="SQLITE" />
+      <schema-mapping />
+    </data-source>
+    <data-source name="@localhost" uuid="d2f93e3d-227f-4622-9ba6-f366f5675a18">
+      <database-info product="" version="" jdbc-version="" driver-name="" driver-version="" dbms="MYSQL_AURORA" />
+      <schema-mapping />
+    </data-source>
+    <data-source name="BMS@localhost " uuid="bd5badb7-9b8a-4414-a493-aa903a9d2cc4">
+      <database-info product="" version="" jdbc-version="" driver-name="" driver-version="" dbms="MYSQL" />
+      <schema-mapping />
+    </data-source>
+  </component>
+</project>
