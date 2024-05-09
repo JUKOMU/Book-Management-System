@@ -3,13 +3,21 @@ import json
 import time
 
 import requests
-from fastapi.responses import StreamingResponse
-from flask import render_template, session, redirect, url_for, flash, request, jsonify, make_response
+from flask import Flask, request, jsonify, Response
+from flask import render_template, session, redirect, url_for, flash, make_response
 from flask_login import LoginManager, login_required, login_user, logout_user, current_user
 
 from forms import Login, SearchBookForm, ChangePasswordForm, EditInfoForm, SearchStudentForm, NewStoreForm, StoreForm, \
     BorrowForm
 from models import *
+
+# 配置 CORS，允许所有域名跨域
+@app.after_request
+def after_request(response):
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
+    response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE')
+    return response
 
 
 @app.shell_context_processor
@@ -548,10 +556,9 @@ def get_access_token(ak, sk):
 def get_stream_response(msg):
     ak = "q9m5F3giOQoz3PB9qAqWsnTx"
     sk = "24t2R0cqGiDpisCBzxzwkL9XxZS8hi8u"
-    source = "&sourceVer=0.0.1&source=app_center&appName=streamDemo"
     # 大模型接口URL
-    base_url = "https://aip.baidubce.com/rpc/2.0/ai_custom/v1/wenxinworkshop/chat/eb-instant"
-    url = base_url + "?access_token=" + get_access_token(ak, sk) + source
+    base_url = "https://aip.baidubce.com/rpc/2.0/ai_custom/v1/wenxinworkshop/chat/completions_pro"
+    url = base_url + "?access_token=" + get_access_token(ak, sk)
     data = {
         "messages": msg,
         "stream": True
@@ -571,10 +578,11 @@ def gen_stream(msg):
         time.sleep(0.01)
 
 
-@app.route("/eb_stream", methods=['GET', 'POST'])  # 前端调用的path
+@app.route("/eb_stream", methods=['POST'])  # 前端调用的path
 def eb_stream():
     msg = []
-    body = request.get_json()
+    body = json.loads(request.data.decode("utf8"))
+    print(body)
     prompt = body.get("prompt")
     lastanswer = body.get("lastanswer")
     if lastanswer != "":
@@ -582,8 +590,7 @@ def eb_stream():
         msg.push({"role": "user", "content": prompt})
     else:
         msg = [{"role": "user", "content": prompt}]
-
-    return StreamingResponse(gen_stream(msg))
+    return Response(gen_stream(msg), content_type='text/event-stream')
 
 
 if __name__ == '__main__':
