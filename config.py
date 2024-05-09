@@ -4,11 +4,11 @@ class BaseConfig:
     SECRET_KEY = 'hard to guess string'
     # 数据库设置
     SQLALCHEMY_COMMIT_ON_TEARDOWN = True
-    HOSTNAME = "127.0.0.1"
+    HOSTNAME = "13.78.119.4"
     PORT = "3306"
     USERNAME = "root"
-    PASSWORD = "123456"
-    DATABASE = "bms"
+    PASSWORD = "&+s=rp)K*5,*1"
+    DATABASE = "book_management_system"
     SQLALCHEMY_DATABASE_URI = "mysql+pymysql://"+USERNAME+":"+PASSWORD+"@"+HOSTNAME+":"+PORT+"/"+DATABASE+"?charset=utf8mb4"
 
 class DevelopmentConfig(BaseConfig):
