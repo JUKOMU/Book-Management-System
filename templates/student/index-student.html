@@ -1,14 +1,18 @@
 {% extends "base-student.html" %}
 {% block title %}书海图书管理系统首页{% endblock %}\
 {% block head %}
-    <script type="text/javascript" src="static/echart/echarts.js"></script>
+<script type="text/javascript" src="static/echart/echarts.js"></script>
 {% endblock %}
 
 {% block body %}
 <div id="main" style="width: 900px;height:470px;"></div>
 
 {% endblock %}
+
 {% block script %}
-
-
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#li_1").addClass("height-light");
+    });
+</script>
 {% endblock %}
