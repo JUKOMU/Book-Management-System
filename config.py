@@ -4,6 +4,7 @@ class BaseConfig:
     SECRET_KEY = 'hard to guess string'
     # 数据库设置
     SQLALCHEMY_COMMIT_ON_TEARDOWN = True
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
     HOSTNAME = "13.78.119.4"
     PORT = "3306"
     USERNAME = "root"

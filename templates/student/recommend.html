@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>智能推荐</title>
+    <link rel="stylesheet" href="../../static/layui/css/layui.css">
+    <script src="https://cdn.staticfile.org/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/popper.js/1.12.5/umd/popper.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/4.1.0/js/bootstrap.min.js"></script>
+    <style>
+        body {
+            background-color: #f1f1f1;
+        }
+
+        .alert {
+            position: relative;
+            padding: .75rem 1.25rem;
+            margin-bottom: 1rem;
+            border: 1px solid transparent;
+            border-radius: .25rem
+        }
+
+        .close {
+            position: absolute;
+            top: 0;
+            right: 0;
+            padding: .75rem 1.25rem;
+            color: inherit
+        }
+
+        .alert-warning {
+            color: #856404;
+            background-color: #fff3cd;
+            border-color: #ffeeba
+        }
+
+        .close {
+            float: right;
+            font-size: 1.5rem;
+            font-weight: 700;
+            line-height: 1;
+            color: #000;
+            text-shadow: 0 1px 0 #fff;
+            opacity: .5
+        }
+
+        .close:focus, .close:hover {
+            color: #000;
+            text-decoration: none;
+            opacity: .75
+        }
+
+        .close:not(:disabled):not(.disabled) {
+            cursor: pointer
+        }
+
+        button.close {
+            padding: 0;
+            background-color: transparent;
+            border: 0;
+            -webkit-appearance: none
+        }
+
+        .close {
+            padding: 1rem;
+            margin: -1rem -1rem -1rem auto
+        }
+
+        .alert-dismissible .close {
+            position: absolute;
+            top: 0;
+            right: 0;
+            padding: .75rem 1.25rem;
+            color: inherit
+        }
+
+        .height-light {
+            background-color: #009688;
+        }
+
+        .title {
+            position: fixed;
+            top: 80px;
+            left: 230px;
+        }
+
+        .container {
+            position: fixed;
+            bottom: 110px;
+            left: 300px;
+            width: calc(100% - 420px);
+            height: 10px;
+            margin: 0;
+            padding: 10px;
+            background-color: #FFFFFF;
+            border-radius: 5px;
+        }
+
+        .container > * {
+            margin-bottom: 10px; /* 设置元素之间的外边距 */
+            font-size: 16px;
+        }
+
+        /* 最后一个元素不设置右侧外边距 */
+        .container > *:last-child {
+            margin-bottom: 0;
+        }
+
+        .input {
+            position: fixed;
+            bottom: 44px;
+            right: 0;
+            width: calc(100% - 220px);
+            padding: 10px;
+            text-align: center;
+        }
+
+        .input #textInput {
+            height: 40px;
+            width: calc(100% - 220px);
+            border-radius: 10px;
+            font-size: 16px;
+            text-indent: 1ch;
+        }
+
+        .input #summit {
+            height: 40px;
+            width: 40px;
+            border-radius: 50%;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .input #summit:hover {
+            opacity: 0.8;
+        }
+
+        .img {
+            height: 20px;
+            width: 20px;
+            margin-right: 5px;
+        }
+    </style>
+</head>
+<body class="layui-layout-body">
+<div class="layui-layout layui-layout-admin">
+    <div class="layui-header">
+        <a href="{{ url_for('index_student') }}">
+            <div class="layui-logo">书海图书管理系统</div>
+        </a>
+        <!-- 头部区域（可配合layui已有的水平导航） -->
+        <ul class="layui-nav layui-layout-right">
+            <li class="layui-nav-item">
+                <a href="javascript:;">
+                    <img src="../static/icon.jpg" class="layui-nav-img">
+                    {{ name }}
+                </a>
+                <dl class="layui-nav-child">
+                    <dd><a href="{{ url_for('user_info', id=current_user.admin_id) }}">个人信息</a></dd>
+                    <dd><a href="{{ url_for('change_password_student') }}">修改密码</a></dd>
+                </dl>
+            </li>
+            <li class="layui-nav-item"><a href="{{ url_for('logout') }}">退出登录</a></li>
+        </ul>
+    </div>
+
+    <div class="layui-side layui-bg-black">
+        <div class="layui-side-scroll">
+            <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+            <ul class="layui-nav layui-nav-tree" lay-filter="test">
+                <li id="li_1" class="layui-nav-item">
+                    <a href="{{url_for('index_student')}}">首页</a>
+                </li>
+                <li id="li_2" class="layui-nav-item">
+                    <a href="{{ url_for('recommend') }}">智能推荐</a>
+                </li>
+                <li id="li_3" class="layui-nav-item">
+                    <a href="{{ url_for('search_book_student') }}">图书查询</a>
+                </li>
+                <li id="li_4" class="layui-nav-item">
+                    <a href="javascript:;">图书管理</a>
+                    <dl class="layui-nav-child">
+                        <dd id="li_4_1"><a href="{{ url_for('borrow_student') }}">图书借阅</a></dd>
+                        <dd id="li_4_2"><a href="{{ url_for('return_book_student') }}">图书归还</a></dd>
+                        <dd id="li_4_3"><a href="javascript:;">违规处理</a></dd>
+                    </dl>
+                </li>
+                <li id="li_5" class="layui-nav-item">
+                    <a href="{{ url_for('change_info_student') }}">信息设置</a>    <!--重写学生change_info-->
+                </li>
+                <li id="li_6" class="layui-nav-item">
+                    <a href="javascript:;">查看公告</a>
+                </li>
+                <li id="li_7" class="layui-nav-item">
+                    <a href="javascript:;">读者留言</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="title">
+        <h2>智能推荐</h2>
+    </div>
+
+    <div class="container" id="container">
+        <p id="answer"></p>
+    </div>
+    <div class="input">
+        <input type="textarea" id="textInput" placeholder="您有什么问题">
+        <img onclick="run_prompt()" id="summit" src="../../static/summit.png"/>
+    </div>
+
+    <div class="layui-footer">
+        Copyright 2024 Construct
+    </div>
+</div>
+<script src="../../static/layui/layui.js"></script>
+<script>
+    layui.use('element', function () {
+        var element = layui.element;
+        element.init();
+    });
+
+    $(document).ready(function () {
+        $("#li_2").addClass("height-light");
+        $("#container").css({
+            'position': 'fixed',
+            'bottom': '110px',
+            'left': '300px',
+            'width': 'calc(100% - 420px)',
+            'height': ($(window).height()-250).toString()+"px",
+            'margin': '0',
+            'padding': '10px',
+            'background-color': '#FFFFFF',
+            'border-radius': '10px',
+        });
+    });
+
+    current_text = document.getElementById('answer');
+    var text = "";
+    char_index = 0;
+    let counter = 0;
+
+    function run_prompt() {
+        var inputValue = document.getElementById('textInput').value;
+        addNewAnswerParagraph();
+        document.getElementById('answer').value = "";
+        // 调用服务端的流式接口, 修改为自己的服务器地址和端口号
+        fetch('http://localhost:5000/eb_stream', {
+            method: 'post',
+            headers: {'Content-Type': 'text/plain'},
+            body: JSON.stringify({'prompt': inputValue, 'lastanswer': text})
+        })
+            .then(response => {
+                text = "";
+                char_index = 0;
+                return response.body;
+            })
+            .then(body => {
+                const reader = body.getReader();
+                const decoder = new TextDecoder();
+
+                function read() {
+                    return reader.read().then(({done, value}) => {
+                        if (done) { // 读取完成
+                            return;
+                        }
+                        data = decoder.decode(value, {stream: true});
+                        console.log(data);
+                        data = data.replace(/�/g, '');
+                        console.log(data);
+                        text += JSON.parse(data).result;
+                        type();  // 打字机效果输出
+                        return read();
+                    });
+                }
+
+                return read();
+            })
+            .catch(error => {
+                console.error('发生错误:', error);
+            });
+    }
+
+    function type() {
+        /**
+         let enableCursor = true;  // 启用光标效果
+         if (char_index < text.length) {
+         let txt = document.getElementById('answer').value;
+         let cursor = enableCursor ? "|" : "";
+         if (enableCursor && txt.endsWith("|")) {
+         txt = txt.slice(0, -1);
+         }
+         document.getElementById('answer').value = txt + text.charAt(char_index) + cursor;
+         char_index++;
+         setTimeout(type, 1000/10);  // 打字机速度控制, 每秒5个字
+         } **/
+
+        let enableCursor = true;  // 启用光标效果
+        if (char_index < text.length) {
+            let pElement = document.getElementById('answer');
+            let txt = pElement.textContent
+            let cursor = enableCursor ? document.createTextNode("|") : document.createTextNode("");
+            if (enableCursor && pElement.lastChild.nodeValue == "|") {
+                pElement.removeChild(pElement.lastChild);
+            }
+            pElement.appendChild(document.createTextNode(text.charAt(char_index)));
+            pElement.appendChild(cursor);
+            char_index++;
+            setTimeout(type, 1000 / 10);  // 打字机速度控制, 每秒10个字
+        }
+    }
+
+    function addNewAnswerParagraph() {
+        var inputValue = document.getElementById('textInput').value;
+        // 改原来的id
+        let paragraph = document.getElementById("answer");
+        try {
+            paragraph.removeChild(paragraph.lastChild);
+        } catch (e) {
+        }
+        paragraph.id = "answer" + counter;
+        // 创建一个新的图片元素
+        let img = document.createElement('img');
+        // 设置图片的 URL
+        img.src = "D:\\osu\\osu!\\osu!\\__kurioshi_fio_original_drawn_by_satou_3366_s__e8.png"; // 这里替换为您的图片 URL
+        img.className = "img";
+        let container = document.getElementById("container");
+        // 创建一个新的 <p> 元素
+        let promptParagraph = document.createElement("p");
+        promptParagraph.appendChild(img.cloneNode(true));
+        // 设置新元素的 id
+        promptParagraph.id = "prompt" + counter;
+        // 创建包含文本的文本节点
+        let textNode1 = document.createTextNode(inputValue);
+        // 将文本节点添加到段落中
+        promptParagraph.appendChild(textNode1);
+        // 将新的 <p> 元素添加到容器中
+        container.appendChild(promptParagraph);
+
+        // 创建一个新的 <p> 元素
+        let newParagraph = document.createElement("p");
+        // 设置新元素的 id
+        newParagraph.id = "answer";
+        // 将新的 <p> 元素添加到容器中
+        container.appendChild(newParagraph);
+        addImg();
+        // 更新计数器
+        counter++;
+    }
+
+    function addImg() {
+        let img = document.createElement('img');
+        // 设置图片的 URL
+        img.src = "D:\\osu\\osu!\\osu!\\__kurioshi_fio_original_drawn_by_satou_3366_s__e8.png"; // 这里替换为您的图片 URL
+        img.className = "img";
+        let paragraph = document.getElementById("answer");
+        // 获取段落的第一个子节点（文本节点）
+        let textNode = paragraph.firstChild;
+        // 在文本节点前面插入图片
+        paragraph.insertBefore(img.cloneNode(true), textNode);
+    }
+</script>
+</body>
+</html>

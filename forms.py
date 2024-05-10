@@ -9,7 +9,6 @@ class Login(FlaskForm):
     submit = SubmitField(u'登录')
 
 
-
 class ChangePasswordForm(FlaskForm):
     old_password = PasswordField(u'原密码', validators=[DataRequired()])
     password = PasswordField(u'新密码', validators=[DataRequired(), EqualTo('password2', message=u'两次密码必须一致！')])
@@ -38,6 +37,7 @@ class StoreForm(FlaskForm):
     barcode = StringField(validators=[DataRequired(), Length(6)])
     isbn = StringField(validators=[DataRequired(), Length(13)])
     location = StringField(validators=[DataRequired(), Length(1, 32)])
+    num= StringField(validators=[DataRequired(),Length(1,3)])
     submit = SubmitField(u'提交')
 
 

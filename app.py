@@ -1,12 +1,24 @@
-from flask import Flask, render_template, session, redirect, url_for, flash, request, jsonify, make_response
-from flask_sqlalchemy import SQLAlchemy
+import datetime
+import json
+import time
+import random
+
+import requests
+from flask import Flask, request, jsonify, Response
+from flask import render_template, session, redirect, url_for, flash, make_response
+from flask_login import LoginManager, login_required, login_user, logout_user, current_user
+
 from forms import Login, SearchBookForm, ChangePasswordForm, EditInfoForm, SearchStudentForm, NewStoreForm, StoreForm, \
     BorrowForm
-from flask_login import UserMixin, LoginManager, login_required, login_user, logout_user, current_user
-import time, datetime
-from config import DevelopmentConfig
-from models import app
 from models import *
+
+# 配置 CORS，允许所有域名跨域
+@app.after_request
+def after_request(response):
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
+    response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE')
+    return response
 
 
 @app.shell_context_processor
@@ -192,10 +204,10 @@ def change_info_admin():
     if form.validate_on_submit():
         current_user.admin_name = form.name.data
         db.session.add(current_user)
-        #提交修改
+        # 提交修改
         db.session.commit()
         flash(u'已成功修改个人信息！')
-        #base页面刷新信息
+        # base页面刷新信息
         session['name'] = current_user.admin_name
         return redirect(url_for('user_info', id=current_user.admin_id))
     form.name.data = current_user.admin_name
@@ -204,7 +216,7 @@ def change_info_admin():
     return render_template('admin/change-info_admin.html', form=form, id=id, right=right)
 
 
-#写学生change-info功能
+# 写学生change-info功能
 @app.route('/change_info_student', methods=['GET', 'POST'])
 def change_info_student():
     render_template('', )
@@ -222,6 +234,12 @@ def search_book_admin():  # 这个函数里不再处理提交按钮，使用Ajax
 def search_book_student():  # 这个函数里不再处理提交按钮，使用Ajax局部刷新
     form = SearchBookForm()
     return render_template('student/search-book_student.html', name=session.get('name'), form=form)
+
+
+@app.route('/recommend', methods=['GET', 'POST'])
+@login_required
+def recommend():
+    return render_template('student/recommend.html', name=session.get('name'))
 
 
 @app.route('/books', methods=['POST'])
@@ -344,19 +362,23 @@ def storage():
                 if exist is not None:
                     flash(u'该编号已经存在！')
                 else:
-                    item = Inventory()
-                    item.barcode = request.form.get('barcode')
-                    item.isbn = request.form.get('isbn')
-                    item.admin = current_user.admin_id
-                    item.location = request.form.get('location')
-                    item.status = True
-                    item.withdraw = False
-                    today_date = datetime.date.today()
-                    today_str = today_date.strftime("%Y-%m-%d")
-                    today_stamp = time.mktime(time.strptime(today_str + ' 00:00:00', '%Y-%m-%d %H:%M:%S'))
-                    item.storage_date = int(today_stamp) * 1000
-                    db.session.add(item)
-                    db.session.commit()
+                    num=request.form.get('num')
+                    num=int(num)
+                    while(num>0):
+                        item = Inventory()
+                        item.barcode =str(random.randint(100000,999999))
+                        item.isbn = request.form.get('isbn')
+                        item.admin = current_user.admin_id
+                        item.location = request.form.get('location')
+                        item.status = True
+                        item.withdraw = False
+                        today_date = datetime.date.today()
+                        today_str = today_date.strftime("%Y-%m-%d")
+                        today_stamp = time.mktime(time.strptime(today_str + ' 00:00:00', '%Y-%m-%d %H:%M:%S'))
+                        item.storage_date = int(today_stamp) * 1000 
+                        db.session.add(item)
+                        db.session.commit()
+                        num-=1
                     flash(u'入库成功！')
         return redirect(url_for('storage'))
     return render_template('admin/storage.html', name=session.get('name'), form=form)
@@ -415,12 +437,9 @@ def find_stu_book():
         return jsonify([{'stu': 2}])  # 到期
     if stu.loss is True:
         return jsonify([{'stu': 3}])  # 已经挂失
-    books = db.session.query(Book).join(Inventory).filter(Book.book_name.contains(request.form.get('book_name')),
-                                                          Inventory.status == 1).with_entities(Inventory.barcode,
-                                                                                               Book.isbn,
-                                                                                               Book.book_name,
-                                                                                               Book.author, Book.press). \
-        all()
+    books = (db.session.query(Book).join(Inventory).
+             filter(Book.book_name.contains(request.form.get('book_name')), Inventory.status == 1).
+             with_entities(Inventory.barcode, Book.isbn, Book.book_name, Book.author, Book.press).all())
     data = []
     for book in books:
         item = {'barcode': book.barcode, 'isbn': book.isbn, 'book_name': book.book_name,
@@ -488,10 +507,9 @@ def find_not_return_book():
         return jsonify([{'stu': 2}])  # 到期
     if stu.loss is True:
         return jsonify([{'stu': 3}])  # 已经挂失
-    books = db.session.query(ReadBook).join(Inventory).join(Book).filter(ReadBook.card_id == request.form.get('card'),
-                                                                         ReadBook.end_date.is_(None)).with_entities(
-        ReadBook.barcode, Book.isbn, Book.book_name, ReadBook.start_date,
-        ReadBook.due_date).all()
+    books = (db.session.query(ReadBook).join(Inventory).join(Book).
+             filter(ReadBook.card_id == request.form.get('card'), ReadBook.end_date.is_(None)).
+             with_entities(ReadBook.barcode, Book.isbn, Book.book_name, ReadBook.start_date, ReadBook.due_date).all())
     data = []
     for book in books:
         start_date = timeStamp(book.start_date)
@@ -520,10 +538,9 @@ def bookin():
     book.status = True
     db.session.add(book)
     db.session.commit()
-    bks = db.session.query(ReadBook).join(Inventory).join(Book).filter(ReadBook.card_id == card,
-                                                                       ReadBook.end_date.is_(None)).with_entities(
-        ReadBook.barcode, Book.isbn, Book.book_name, ReadBook.start_date,
-        ReadBook.due_date).all()
+    bks = (db.session.query(ReadBook).join(Inventory).join(Book).
+           filter(ReadBook.card_id == card, ReadBook.end_date.is_(None)).
+           with_entities(ReadBook.barcode, Book.isbn, Book.book_name, ReadBook.start_date, ReadBook.due_date).all())
     data = []
     for bk in bks:
         start_date = timeStamp(bk.start_date)
@@ -532,6 +549,53 @@ def bookin():
                 'start_date': start_date, 'due_date': due_date}
         data.append(item)
     return jsonify(data)
+
+
+# 流式请求千帆大模型
+def get_access_token(ak, sk):
+    auth_url = "https://aip.baidubce.com/oauth/2.0/token"
+    resp = requests.get(auth_url, params={"grant_type": "client_credentials", "client_id": ak, 'client_secret': sk})
+    return resp.json().get("access_token")
+
+
+def get_stream_response(msg):
+    ak = "q9m5F3giOQoz3PB9qAqWsnTx"
+    sk = "24t2R0cqGiDpisCBzxzwkL9XxZS8hi8u"
+    # 大模型接口URL
+    base_url = "https://aip.baidubce.com/rpc/2.0/ai_custom/v1/wenxinworkshop/chat/completions_pro"
+    url = base_url + "?access_token=" + get_access_token(ak, sk)
+    data = {
+        "messages": msg,
+        "stream": True
+    }
+    payload = json.dumps(data)
+    headers = {'Content-Type': 'application/json'}
+    return requests.post(url, headers=headers, data=payload, stream=True)
+
+
+def gen_stream(msg):
+    response = get_stream_response(msg)
+    for chunk in response.iter_lines():
+        chunk = chunk.decode("utf8")
+        if chunk[:5] == "data:":
+            chunk = chunk[5:]
+        yield chunk
+        time.sleep(0.01)
+
+
+@app.route("/eb_stream", methods=['POST'])  # 前端调用的path
+def eb_stream():
+    msg = []
+    body = json.loads(request.data.decode("utf8"))
+    print(body)
+    prompt = body.get("prompt")
+    lastanswer = body.get("lastanswer")
+    if lastanswer != "":
+        msg.push({"role": "assistant", "content": lastanswer})
+        msg.push({"role": "user", "content": prompt})
+    else:
+        msg = [{"role": "user", "content": prompt}]
+    return Response(gen_stream(msg), content_type='text/event-stream')
 
 
 if __name__ == '__main__':
