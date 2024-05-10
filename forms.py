@@ -37,7 +37,7 @@ class StoreForm(FlaskForm):
     barcode = StringField(validators=[DataRequired(), Length(6)])
     isbn = StringField(validators=[DataRequired(), Length(13)])
     location = StringField(validators=[DataRequired(), Length(1, 32)])
-    status= StringField(validators=[DataRequired(),Length(1)])
+    num= StringField(validators=[DataRequired(),Length(1,3)])
     submit = SubmitField(u'提交')
 
 

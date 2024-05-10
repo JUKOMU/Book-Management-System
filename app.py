@@ -1,6 +1,7 @@
 import datetime
 import json
 import time
+import random
 
 import requests
 from flask import Flask, request, jsonify, Response
@@ -361,19 +362,23 @@ def storage():
                 if exist is not None:
                     flash(u'该编号已经存在！')
                 else:
-                    item = Inventory()
-                    item.barcode = request.form.get('barcode')
-                    item.isbn = request.form.get('isbn')
-                    item.admin = current_user.admin_id
-                    item.location = request.form.get('location')
-                    item.status = True
-                    item.withdraw = False
-                    today_date = datetime.date.today()
-                    today_str = today_date.strftime("%Y-%m-%d")
-                    today_stamp = time.mktime(time.strptime(today_str + ' 00:00:00', '%Y-%m-%d %H:%M:%S'))
-                    item.storage_date = int(today_stamp) * 1000
-                    db.session.add(item)
-                    db.session.commit()
+                    num=request.form.get('num')
+                    num=int(num)
+                    while(num>0):
+                        item = Inventory()
+                        item.barcode =str(random.randint(100000,999999))
+                        item.isbn = request.form.get('isbn')
+                        item.admin = current_user.admin_id
+                        item.location = request.form.get('location')
+                        item.status = True
+                        item.withdraw = False
+                        today_date = datetime.date.today()
+                        today_str = today_date.strftime("%Y-%m-%d")
+                        today_stamp = time.mktime(time.strptime(today_str + ' 00:00:00', '%Y-%m-%d %H:%M:%S'))
+                        item.storage_date = int(today_stamp) * 1000 
+                        db.session.add(item)
+                        db.session.commit()
+                        num-=1
                     flash(u'入库成功！')
         return redirect(url_for('storage'))
     return render_template('admin/storage.html', name=session.get('name'), form=form)
