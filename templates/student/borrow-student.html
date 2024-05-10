@@ -20,7 +20,23 @@
         </div>
     </form>
     <div id="remove">
-    <table lay-even id="result" lay-filter="re">
+<!--    <table lay-even id="result" lay-filter="re">-->
+<!--      <thead>-->
+<!--        <tr>-->
+<!--          <th lay-data="{field:'barcode', width:160}">图书编号</th>-->
+<!--          <th lay-data="{field:'isbn', width:180}">ISBN</th>-->
+<!--          <th lay-data="{field:'book_name', width:240}">书名</th>-->
+<!--          <th lay-data="{field:'author', width:160}">作者</th>-->
+<!--          <th lay-data="{field:'start_date', width:200}">出版社</th>-->
+<!--          <th lay-data="{field:'end_date'}">操作</th>-->
+<!--        </tr>-->
+<!--      </thead>-->
+<!--      <tbody>-->
+
+<!--      </tbody>-->
+<!--    </table>-->
+
+        <table lay-even id="result" lay-filter="re">
       <thead>
         <tr>
           <th lay-data="{field:'barcode', width:160}">图书编号</th>
@@ -32,9 +48,23 @@
         </tr>
       </thead>
       <tbody>
+      {% for book in books %}
+    {% for inventory in inventorys|selectattr('isbn', 'equalto', book.isbn) %}
+        <tr>
+            <td>{{ inventory.barcode }}</td>
+            <td>{{ book.isbn }}</td>
+            <td>{{ book.book_name }}</td>
+            <td>{{ book.author }}</td>
+            <td>{{ book.press }}</td>
+            <td><a class="layui-btn layui-btn-sm" lay-event="borr">借出</a></td>
+        </tr>
+    {% endfor %}
+{% endfor %}
+
 
       </tbody>
     </table>
+
     </div>
     <table id="test" lay-filter="test"></table>
 
