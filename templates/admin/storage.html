@@ -31,6 +31,12 @@
             </div>
         </div>
         <div class="layui-form-item" style="height: 50px;">
+            <label class="layui-form-label" style="font-size: medium">入库数量：</label>
+            <div class="layui-input-block">
+                {{ form.num(class="layui-input", style="width:40%") }}
+            </div>
+        </div>
+        <div class="layui-form-item" style="height: 50px;">
             <div class="layui-input-block">
                 {{ form.submit(class="layui-btn", style="width:100px;font-size:medium") }}
             </div>
@@ -48,6 +54,8 @@
         $("#newbook").on('click',function () {
             window.location.href="{{ url_for('new_store') }}";
         })
+        $("#li_1").addClass("layui-nav-itemed");
+        $("#li_1_1").addClass("height-light");
     });
     
 </script>
