@@ -448,7 +448,8 @@ def borrow_student():
     form = BorrowForm()
     books = Book.query.all()
     inventorys=Inventory.query.all()
-    return render_template('student/borrow-student.html', name=session.get('name'), form=form,books=books,inventorys=inventorys)
+    id=current_user.card_id
+    return render_template('student/borrow-student.html', name=session.get('name'), form=form,id=id,books=books,inventorys=inventorys)
 
 
 @app.route('/find_stu_book', methods=['GET', 'POST'])

@@ -9,7 +9,7 @@
             <div class="layui-inline">
                 <label style="font-size: medium;width: 150px;" class="layui-form-label">学生借阅卡号码：</label>
                 <div class="layui-input-inline">
-                    {{ form.card(class="layui-input", id="card") }}
+                <input type="text" value="{{ id }}" readonly="readonly" class="layui-input" style="width:40%" id="card_id">
                 </div>
                 <label style="font-size: medium;width: 80px;" class="layui-form-label">书名：</label>
                 <div class="layui-input-inline">
@@ -95,7 +95,7 @@
                   url: '{{ url_for('out') }}',
                   where: {
                       'barcode': data.barcode,
-                      'card': $('#card').val(),
+                      'card_id': $('#card_id').val(),
                       'book_name': $('#book_name').val()
                   }
                 });
@@ -108,8 +108,12 @@
             $("#li_4").addClass("layui-nav-itemed");
             $("#li_4_1").addClass("height-light");
             $('#search').on('click',function () {
+                // 固定学生卡信息
                 var form = new FormData(document.getElementById("searchForm"));
-                if($('#card').val() === "" || $('#book_name').val() === ""){
+                 var form = new FormData(document.getElementById("searchForm"));
+                 form.append('card_id', $('#card_id').val());
+
+                if($('#card_id').val() === "" || $('#book_name').val() === ""){
                     layui.use('layer', function(){
                         var layer = layui.layer;
 
