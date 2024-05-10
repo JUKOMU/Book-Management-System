@@ -147,6 +147,7 @@
 
         code {
             border-radius: 10px;
+            margin: 5px 15px;
         }
 
         .div-answer {
@@ -267,32 +268,14 @@
             var scrollHeight = scrollContainer.scrollHeight;
             var clientHeight = scrollContainer.clientHeight;
 
-            // 检测用户是否向上滚动
-            if (scrollTop < lastScrollTop) {
-                isUserScrolling = true;
-            } else {
-                isUserScrolling = false;
-            }
-
-            // 用户将滚动条拉到底部时，触发保持滚动条滚动到最底部
-            if (!isUserScrolling && (scrollTop + clientHeight >= scrollHeight)) {
+            console.log(scrollTop);
+            if ((scrollTop + clientHeight) >= (scrollHeight - 300)) {
                 scrollToBottom();
             }
-
-            lastScrollTop = scrollTop;
         }
 
-        // 使用requestAnimationFrame实时监听滚动条位置
-        function loop() {
-            handleScroll();
-            requestAnimationFrame(loop);
-        }
-
-        // 开始实时监听
-        requestAnimationFrame(loop);
-
-        // 初始化时滚动到底部
-        scrollToBottom();
+        // 使用setInterval设置调用间隔时间
+        setInterval(handleScroll, 200);
     });
 
     current_text = document.getElementById('answer');
