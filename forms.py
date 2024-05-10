@@ -16,8 +16,16 @@ class ChangePasswordForm(FlaskForm):
     submit = SubmitField(u'确认修改')
 
 
-class EditInfoForm(FlaskForm):
+class EditInfoFormAdmin(FlaskForm):
     name = StringField(u'用户名', validators=[Length(1, 32)])
+    submit = SubmitField(u'提交')
+
+
+class EditInfoFormStudent(FlaskForm):
+    name = StringField(u'用户名', validators=[Length(1,32)])
+    sex = StringField(u'性别',validators=[DataRequired(2)])
+    telephone = StringField(u'电话号码', validators=[DataRequired(11)])
+    valid_date=StringField(u'有效期至', validators=[DataRequired(13)])
     submit = SubmitField(u'提交')
 
 

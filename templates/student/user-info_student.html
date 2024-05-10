@@ -1,0 +1,28 @@
+{% extends 'base-student.html' %}
+{% block title %}个人信息{% endblock %}
+
+{% block body %}
+<fieldset class="layui-elem-field layui-field-title">
+  <legend>个人信息</legend>
+  <div class="layui-field-box" style="font-size: large;line-height: 40px;">
+      <div class="layui-row">
+          &nbsp;&nbsp;<i class="layui-icon">&#xe857;</i>&nbsp;&nbsp;&nbsp;账&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;号：&nbsp;&nbsp;&nbsp;{{ user.card_id }}
+      </div>
+      <div class="layui-row">
+          &nbsp;&nbsp;<i class="layui-icon">&#xe66f;</i>&nbsp;&nbsp;&nbsp;用&nbsp;户&nbsp;&nbsp;名：&nbsp;&nbsp;{{ user.student_name }}
+      </div>
+      <div class="layui-row">
+          &nbsp;<i class="layui-icon">&#xe612;&nbsp;</i>&nbsp;&nbsp;&nbsp;性&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;别：&nbsp;&nbsp;{{ user.sex }}
+      </div>
+       <div class="layui-row">
+          &nbsp;<i class="layui-icon">&#xe63b;&nbsp;</i>&nbsp;&nbsp;&nbsp;电话号码：&nbsp;&nbsp;{{ user.telephone }}
+      </div>
+      <div class="layui-row">
+          &nbsp;<i class="layui-icon">&#xe63c;&nbsp;</i>&nbsp;&nbsp;&nbsp;注册日期：&nbsp;&nbsp;{{ enroll_date }}
+      </div>
+       <div class="layui-row">
+          &nbsp;<i class="layui-icon">&#xe63c;&nbsp;</i>&nbsp;&nbsp;&nbsp;失效日期：&nbsp;&nbsp;{{ valid_date }}
+      </div>
+  </div>
+</fieldset>
+{% endblock %}
