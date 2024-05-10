@@ -585,16 +585,10 @@ def gen_stream(msg):
 
 @app.route("/eb_stream", methods=['POST'])  # 前端调用的path
 def eb_stream():
-    msg = []
     body = json.loads(request.data.decode("utf8"))
     print(body)
-    prompt = body.get("prompt")
-    lastanswer = body.get("lastanswer")
-    if lastanswer != "":
-        msg.push({"role": "assistant", "content": lastanswer})
-        msg.push({"role": "user", "content": prompt})
-    else:
-        msg = [{"role": "user", "content": prompt}]
+    msg = body.get("msg")
+    print(msg)
     return Response(gen_stream(msg), content_type='text/event-stream')
 
 
