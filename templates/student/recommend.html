@@ -7,7 +7,9 @@
     <link rel="stylesheet" href="../../static/layui/css/layui.css">
     <script src="https://cdn.staticfile.org/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://cdn.staticfile.org/popper.js/1.12.5/umd/popper.min.js"></script>
-    <script src="https://cdn.staticfile.org/twitter-bootstrap/4.1.0/js/bootstrap.min.js"></script>
+    <script type="text/javascript"
+            src="https://cdn.staticfile.org/twitter-bootstrap/4.1.0/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../../static/markdown/marked.min.js"></script>
     <style>
         body {
             background-color: #f1f1f1;
@@ -93,8 +95,9 @@
             height: 10px;
             margin: 0;
             padding: 10px;
-            background-color: #FFFFFF;
+            background-color: #f1f1f1;
             border-radius: 5px;
+            overflow-y: scroll;
         }
 
         .container > * {
@@ -140,6 +143,16 @@
             height: 20px;
             width: 20px;
             margin-right: 5px;
+        }
+
+        code {
+            border-radius: 10px;
+        }
+
+        .div-answer {
+            display: flex;
+            flex-direction: column;
+            gap: 10px; /* 上下间隔 */
         }
     </style>
 </head>
@@ -204,7 +217,9 @@
     </div>
 
     <div class="container" id="container">
-        <p id="answer"></p>
+        <div id="div-answer" class="div-answer">
+            <div id="answer"></div>
+        </div>
     </div>
     <div class="input">
         <input type="textarea" id="textInput" placeholder="您有什么问题">
@@ -215,7 +230,10 @@
         Copyright 2024 Construct
     </div>
 </div>
-<script src="../../static/layui/layui.js"></script>
+<link rel="stylesheet" href="../../static/highlight/styles/atom-one-dark.css">
+<script src="../../static/highlight/highlight.js"></script>
+<script>hljs.highlightAll();</script>
+<script type="text/javascript" src="../../static/layui/layui.js"></script>
 <script>
     layui.use('element', function () {
         var element = layui.element;
@@ -229,31 +247,81 @@
             'bottom': '110px',
             'left': '300px',
             'width': 'calc(100% - 420px)',
-            'height': ($(window).height()-250).toString()+"px",
+            'height': ($(window).height() - 250).toString() + "px",
             'margin': '0',
             'padding': '10px',
-            'background-color': '#FFFFFF',
+            'background-color': '#f1f1f1f1',
             'border-radius': '10px',
         });
+
+        var scrollContainer = document.getElementById('container');
+        var isUserScrolling = false;
+        var lastScrollTop = 0;
+
+        function scrollToBottom() {
+            scrollContainer.scrollTop = scrollContainer.scrollHeight;
+        }
+
+        function handleScroll() {
+            var scrollTop = scrollContainer.scrollTop;
+            var scrollHeight = scrollContainer.scrollHeight;
+            var clientHeight = scrollContainer.clientHeight;
+
+            // 检测用户是否向上滚动
+            if (scrollTop < lastScrollTop) {
+                isUserScrolling = true;
+            } else {
+                isUserScrolling = false;
+            }
+
+            // 用户将滚动条拉到底部时，触发保持滚动条滚动到最底部
+            if (!isUserScrolling && (scrollTop + clientHeight >= scrollHeight)) {
+                scrollToBottom();
+            }
+
+            lastScrollTop = scrollTop;
+        }
+
+        // 使用requestAnimationFrame实时监听滚动条位置
+        function loop() {
+            handleScroll();
+            requestAnimationFrame(loop);
+        }
+
+        // 开始实时监听
+        requestAnimationFrame(loop);
+
+        // 初始化时滚动到底部
+        scrollToBottom();
     });
 
     current_text = document.getElementById('answer');
     var text = "";
-    char_index = 0;
-    let counter = 0;
+    var markdown = "";
+    var char_index = 0;
+    var counter = 0;
+    var msg = [];
+
 
     function run_prompt() {
         var inputValue = document.getElementById('textInput').value;
+        if (text === "") {
+            msg.push({"role": "user", "content": inputValue});
+        } else {
+            msg.push({"role": "assistant", "content": text});
+            msg.push({"role": "user", "content": inputValue});
+        }
         addNewAnswerParagraph();
         document.getElementById('answer').value = "";
         // 调用服务端的流式接口, 修改为自己的服务器地址和端口号
         fetch('http://localhost:5000/eb_stream', {
             method: 'post',
             headers: {'Content-Type': 'text/plain'},
-            body: JSON.stringify({'prompt': inputValue, 'lastanswer': text})
+            body: JSON.stringify({"msg": msg})
         })
             .then(response => {
                 text = "";
+                markdown = "";
                 char_index = 0;
                 return response.body;
             })
@@ -267,8 +335,8 @@
                             return;
                         }
                         data = decoder.decode(value, {stream: true});
-                        console.log(data);
-                        data = data.replace(/�/g, '');
+                        // console.log(data);
+                        // data = data.replace(/�/g, '');
                         console.log(data);
                         text += JSON.parse(data).result;
                         type();  // 打字机效果输出
@@ -276,6 +344,7 @@
                     });
                 }
 
+                hljs.highlightAll();
                 return read();
             })
             .catch(error => {
@@ -298,28 +367,31 @@
          } **/
 
         let enableCursor = true;  // 启用光标效果
+        let cursor = "";
         if (char_index < text.length) {
+            markdown = markdown + text.charAt(char_index);
+            let html = marked.parse(markdown);
             let pElement = document.getElementById('answer');
-            let txt = pElement.textContent
-            let cursor = enableCursor ? document.createTextNode("|") : document.createTextNode("");
-            if (enableCursor && pElement.lastChild.nodeValue == "|") {
-                pElement.removeChild(pElement.lastChild);
-            }
-            pElement.appendChild(document.createTextNode(text.charAt(char_index)));
-            pElement.appendChild(cursor);
+            pElement.innerHTML = html;
             char_index++;
-            setTimeout(type, 1000 / 10);  // 打字机速度控制, 每秒10个字
+            setTimeout(type, 1000 / 20);  // 打字机速度控制
         }
+        if (cursor === "|") {
+            // 最后删除光标
+        }
+        hljs.highlightAll();
     }
 
     function addNewAnswerParagraph() {
-        var inputValue = document.getElementById('textInput').value;
+        let inputValue = document.getElementById('textInput').value;
         // 改原来的id
+        let paragraphDiv = document.getElementById("div-answer");
         let paragraph = document.getElementById("answer");
         try {
             paragraph.removeChild(paragraph.lastChild);
         } catch (e) {
         }
+        paragraphDiv.id = "div-answer" + counter;
         paragraph.id = "answer" + counter;
         // 创建一个新的图片元素
         let img = document.createElement('img');
@@ -327,24 +399,38 @@
         img.src = "D:\\osu\\osu!\\osu!\\__kurioshi_fio_original_drawn_by_satou_3366_s__e8.png"; // 这里替换为您的图片 URL
         img.className = "img";
         let container = document.getElementById("container");
-        // 创建一个新的 <p> 元素
-        let promptParagraph = document.createElement("p");
-        promptParagraph.appendChild(img.cloneNode(true));
+        // 创建一个新的 <div> 元素
+        let promptParagraphDiv = document.createElement("div");
+        let promptParagraph = document.createElement("div");
+        promptParagraph.style.backgroundColor = "#f1f1f1";
+        promptParagraph.style.borderRadius = "10px";
+        promptParagraph.style.padding = "10px 30px";
+        promptParagraphDiv.appendChild(img.cloneNode(true));
+        promptParagraphDiv.appendChild(promptParagraph);
+        // promptParagraph.appendChild(img.cloneNode(true));
         // 设置新元素的 id
+        promptParagraphDiv.id = "div-prompt" + counter;
         promptParagraph.id = "prompt" + counter;
         // 创建包含文本的文本节点
         let textNode1 = document.createTextNode(inputValue);
         // 将文本节点添加到段落中
         promptParagraph.appendChild(textNode1);
         // 将新的 <p> 元素添加到容器中
-        container.appendChild(promptParagraph);
+        container.appendChild(promptParagraphDiv);
 
-        // 创建一个新的 <p> 元素
-        let newParagraph = document.createElement("p");
+        // 创建一个新的 <div> 元素
+        let newParagraphDiv = document.createElement("div");
+        let newParagraph = document.createElement("div");
         // 设置新元素的 id
+        newParagraphDiv.id = "div-answer";
         newParagraph.id = "answer";
+        newParagraph.className = "div-answer";
+        newParagraph.style.backgroundColor = "#FFFFFF";
+        newParagraph.style.borderRadius = "10px";
+        newParagraph.style.padding = "20px";
         // 将新的 <p> 元素添加到容器中
-        container.appendChild(newParagraph);
+        newParagraphDiv.appendChild(newParagraph);
+        container.appendChild(newParagraphDiv);
         addImg();
         // 更新计数器
         counter++;
@@ -355,7 +441,7 @@
         // 设置图片的 URL
         img.src = "D:\\osu\\osu!\\osu!\\__kurioshi_fio_original_drawn_by_satou_3366_s__e8.png"; // 这里替换为您的图片 URL
         img.className = "img";
-        let paragraph = document.getElementById("answer");
+        let paragraph = document.getElementById("div-answer");
         // 获取段落的第一个子节点（文本节点）
         let textNode = paragraph.firstChild;
         // 在文本节点前面插入图片
