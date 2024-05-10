@@ -60,7 +60,7 @@ def login():
             user = Admin.query.filter_by(admin_id=account_id, password=password).first()
             # 创建响应对象
             response = make_response(redirect(url_for('index_admin')))
-        elif len(account_id) == 8:
+        elif len(account_id) == 8 or len(account_id) == 4:
             isUser = True
             user = Student.query.filter_by(card_id=account_id, password=password).first()
             response = make_response(redirect(url_for('index_student')))
