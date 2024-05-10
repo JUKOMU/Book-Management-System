@@ -23,9 +23,8 @@ class EditInfoFormAdmin(FlaskForm):
 
 class EditInfoFormStudent(FlaskForm):
     name = StringField(u'用户名', validators=[Length(1,32)])
-    sex = StringField(u'性别',validators=[DataRequired(2)])
-    telephone = StringField(u'电话号码', validators=[DataRequired(11)])
-    valid_date=StringField(u'有效期至', validators=[DataRequired(13)])
+    sex = StringField(u'性别',validators=[Length(2)])
+    telephone = StringField(u'电话号码', validators=[Length(11)])
     submit = SubmitField(u'提交')
 
 

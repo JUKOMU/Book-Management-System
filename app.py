@@ -207,7 +207,7 @@ def change_password_student():
 @login_required
 def change_info_admin():
     form = EditInfoFormAdmin()
-    if form.validate_on_submit():
+    if form.is_submitted():
         current_user.admin_name = form.name.data
         db.session.add(current_user)
         # 提交修改
@@ -224,10 +224,12 @@ def change_info_admin():
 
 # 写学生change-info功能
 @app.route('/change_info_student', methods=['GET', 'POST'])
+@login_required
 def change_info_student():
     form = EditInfoFormStudent()
-    if form.validate_on_submit():
-        current_user.student_name = form.name.data
+    if form.is_submitted():
+        print(current_user.student_name)
+        current_user.student_name =form.name.data
         current_user.sex=form.sex.data
         current_user.telephone=form.telephone.data
         db.session.add(current_user)
