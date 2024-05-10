@@ -8,7 +8,7 @@ from flask import Flask, request, jsonify, Response
 from flask import render_template, session, redirect, url_for, flash, make_response
 from flask_login import LoginManager, login_required, login_user, logout_user, current_user
 
-from forms import Login, SearchBookForm, ChangePasswordForm, EditInfoForm, SearchStudentForm, NewStoreForm, StoreForm, \
+from forms import Login, SearchBookForm, ChangePasswordForm, EditInfoFormAdmin,EditInfoFormStudent, SearchStudentForm, NewStoreForm, StoreForm, \
     BorrowForm
 from models import *
 
@@ -156,9 +156,15 @@ def echarts():
 
 @app.route('/user/<id>')
 @login_required
-def user_info(id):
+def user_info_admin(id):
     user = Admin.query.filter_by(admin_id=id).first()
     return render_template('admin/user-info_admin.html', user=user, name=session.get('name'))
+@app.route('/user1/<id>')
+def user_info_student(id):
+    user = Student.query.filter_by(card_id=id).first()
+    valid_date=timeStamp(current_user.valid_date)
+    enroll_date=timeStamp(current_user.enroll_date)
+    return render_template('student/user-info_student.html', user=user, name=session.get('name'),valid_date=valid_date,enroll_date=enroll_date)
 
 
 @app.route('/change_password_admin', methods=['GET', 'POST'])
@@ -200,7 +206,7 @@ def change_password_student():
 @app.route('/change_info_admin', methods=['GET', 'POST'])
 @login_required
 def change_info_admin():
-    form = EditInfoForm()
+    form = EditInfoFormAdmin()
     if form.validate_on_submit():
         current_user.admin_name = form.name.data
         db.session.add(current_user)
@@ -209,7 +215,7 @@ def change_info_admin():
         flash(u'已成功修改个人信息！')
         # base页面刷新信息
         session['name'] = current_user.admin_name
-        return redirect(url_for('user_info', id=current_user.admin_id))
+        return redirect(url_for('user_info_admin', id=current_user.admin_id))
     form.name.data = current_user.admin_name
     id = current_user.admin_id
     right = current_user.right_col
@@ -219,7 +225,24 @@ def change_info_admin():
 # 写学生change-info功能
 @app.route('/change_info_student', methods=['GET', 'POST'])
 def change_info_student():
-    render_template('', )
+    form = EditInfoFormStudent()
+    if form.validate_on_submit():
+        current_user.student_name = form.name.data
+        current_user.sex=form.sex.data
+        current_user.telephone=form.telephone.data
+        db.session.add(current_user)
+        # 提交修改
+        db.session.commit()
+        flash(u'已成功修改个人信息！')
+        # base页面刷新信息
+        session['name'] = current_user.student_name
+        return redirect(url_for('user_info_student', id=current_user.card_id))
+    form.name.data = current_user.student_name
+    form.sex.data = current_user.sex
+    form.telephone.data = current_user.telephone
+    id = current_user.card_id
+    valid_date =timeStamp(current_user.valid_date)
+    return render_template('student/change-info-student.html', form=form, id=id,valid_date=valid_date)
 
 
 @app.route('/search_book_admin', methods=['GET', 'POST'])
@@ -326,7 +349,8 @@ def find_student():
 def find_record():
     records = db.session.query(ReadBook).join(Inventory).join(Book).filter(ReadBook.card_id == request.form.get('card')) \
         .with_entities(ReadBook.barcode, Inventory.isbn, Book.book_name, Book.author, ReadBook.start_date,
-                       ReadBook.end_date, ReadBook.due_date).all()  # with_entities啊啊啊啊卡了好久啊
+                       ReadBook.end_date, ReadBook.due_date).all()
+
     data = []
     for record in records:
         start_date = timeStamp(record.start_date)
