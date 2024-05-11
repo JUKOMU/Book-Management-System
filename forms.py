@@ -31,7 +31,7 @@ class EditInfoFormStudent(FlaskForm):
 class SearchBookForm(FlaskForm):
     methods = [('book_name', '书名'), ('author', '作者'), ('class_name', '类别'), ('isbn', 'ISBN')]
     method = SelectField(choices=methods, validators=[DataRequired()], coerce=str)
-    content = StringField(validators=[DataRequired()])
+    content = StringField()
     submit = SubmitField('搜索')
 
 
@@ -59,5 +59,5 @@ class NewStoreForm(FlaskForm):
 
 class BorrowForm(FlaskForm):
     card = StringField(validators=[DataRequired()])
-    book_name = StringField(validators=[DataRequired()])
+    book_name = StringField()
     submit = SubmitField(u'搜索')
