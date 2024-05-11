@@ -375,26 +375,23 @@ def user_student():
 @app.route('/writeOff', methods=['GET', 'POST'])
 @login_required
 def write_off():
-    form = WriteOffForm()
-    if form.validate_on_submit():
-        book = Book.query.filter_by(isbn=request.form.get('isbn')).first()
-        exist = Inventory.query.filter_by(barcode=request.form.get('barcode')).first()
-        if book is None:
-            flash(u'注销失败，请检查本书信息是否已录入')
+    if request.method == 'POST':
+        # 处理注销书籍的请求
+        data = request.json
+        barcode = data.get('barcode')
+        inventory = Inventory.query.filter_by(barcode=barcode).first()
+        if inventory:
+            db.session.delete(inventory)
+            db.session.commit()
+            return jsonify({'status': 'success', 'message': '注销成功！'})
         else:
-            if len(request.form.get('barcode')) != 6:
-                flash(u'图书编码长度错误')
-            else:
-                if exist is None:
-                    flash(u'该图书编号不存在！')
-                else:
-                    item = book
-                    db.session.delete(item)
-                    db.session.commit()
-                    flash(u'注销成功！')
-        return redirect(url_for('write_off'))
-    return render_template('admin/write_off.html', name=session.get('name'), form=form)
+            return jsonify({'status': 'failure', 'message': '注销失败，未找到对应的图书信息。'}), 404
 
+    # 获取所有书籍的信息
+    books = Book.query.all()
+    inventorys = Inventory.query.all()
+
+    return render_template('admin/write_off.html', books=books, inventorys=inventorys, name=session.get('name'))
 
 
 @app.route('/storage', methods=['GET', 'POST'])

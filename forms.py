@@ -51,7 +51,6 @@ class StoreForm(FlaskForm):
 class WriteOffForm(FlaskForm):
     barcode = StringField(validators=[DataRequired(), Length(6)])
     isbn = StringField(validators=[DataRequired(), Length(13)])
-    num= StringField(validators=[DataRequired(),Length(1,3)])
     submit = SubmitField(u'确认')    
 
 
