@@ -9,7 +9,7 @@ from flask import render_template, session, redirect, url_for, flash, make_respo
 from flask_login import LoginManager, login_required, login_user, logout_user, current_user
 
 from forms import Login, SearchBookForm, ChangePasswordForm, EditInfoFormAdmin,EditInfoFormStudent, SearchStudentForm, NewStoreForm, StoreForm, \
-    BorrowForm
+    BorrowForm, WriteOffForm
 from models import *
 
 # 配置 CORS，允许所有域名跨域
@@ -370,6 +370,31 @@ def find_record():
 def user_student():
     form = SearchStudentForm()
     return render_template('user-student.html', form=form)
+
+
+@app.route('/writeOff', methods=['GET', 'POST'])
+@login_required
+def write_off():
+    form = WriteOffForm()
+    if form.validate_on_submit():
+        book = Book.query.filter_by(isbn=request.form.get('isbn')).first()
+        exist = Inventory.query.filter_by(barcode=request.form.get('barcode')).first()
+        if book is None:
+            flash(u'注销失败，请检查本书信息是否已录入')
+        else:
+            if len(request.form.get('barcode')) != 6:
+                flash(u'图书编码长度错误')
+            else:
+                if exist is None:
+                    flash(u'该图书编号不存在！')
+                else:
+                    item = book
+                    db.session.delete(item)
+                    db.session.commit()
+                    flash(u'注销成功！')
+        return redirect(url_for('write_off'))
+    return render_template('admin/write_off.html', name=session.get('name'), form=form)
+
 
 
 @app.route('/storage', methods=['GET', 'POST'])
