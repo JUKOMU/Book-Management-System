@@ -48,6 +48,12 @@ class StoreForm(FlaskForm):
     submit = SubmitField(u'提交')
 
 
+class WriteOffForm(FlaskForm):
+    barcode = StringField(validators=[DataRequired(), Length(6)])
+    isbn = StringField(validators=[DataRequired(), Length(13)])
+    submit = SubmitField(u'确认')    
+
+
 class NewStoreForm(FlaskForm):
     isbn = StringField(validators=[DataRequired(), Length(13)])
     book_name = StringField(validators=[DataRequired(), Length(1, 64)])

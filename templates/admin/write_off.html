@@ -1,25 +1,9 @@
 {% extends "base-admin.html" %}
-{% block title %}学生借书{% endblock %}
+{% block title %}图书注销{% endblock %}
 
 {% block card %}
-<div class="layui-card-header"><h2>学生借书</h2></div>{% endblock %}
+<div class="layui-card-header"><h2>图书注销</h2></div>{% endblock %}
 {% block body %}
-<form class="layui-form" method="post" id="searchForm">
-    <!--{{ form.csrf_token }}-->
-    <div class="layui-form-item">
-        <div class="layui-inline">
-            <label style="font-size: medium;width: 150px;" class="layui-form-label">学生借阅卡号码：</label>
-            <div class="layui-input-inline">
-                {{ form.card(class="layui-input", id="card") }}
-            </div>
-            <label style="font-size: medium;width: 80px;" class="layui-form-label">书名：</label>
-            <div class="layui-input-inline">
-                {{ form.book_name(class="layui-input", id="book_name") }}
-            </div>
-            <div class="layui-input-inline">{{ form.submit(class="layui-btn", id="search") }}</div>
-        </div>
-    </div>
-</form>
 <div id="remove">
     <table lay-even id="result" lay-filter="re">
         <thead>
@@ -41,7 +25,7 @@
             <td>{{ book.book_name }}</td>
             <td>{{ book.author }}</td>
             <td>{{ book.press }}</td>
-            <td><a class="layui-btn layui-btn-sm" lay-event="borr">借出</a></td>
+            <td><a class="layui-btn layui-btn-sm" lay-event="borr" onclick="confirmRemove('{{ inventory.barcode }}')">注销</a></td>
         </tr>
         {% endfor %}
         {% endfor %}
@@ -53,6 +37,35 @@
 {% endblock %}
 
 {% block script %}
+<script>
+function confirmRemove(barcode) {
+    if (confirm("您确定要注销这本书吗？")) {
+        fetch('/writeOff', {
+            method: 'POST',
+            body: JSON.stringify({ barcode: barcode }),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }).then(response => {
+            if (response.ok) {
+                return response.json();
+            } else {
+                throw new Error('Network response was not ok.');
+            }
+        }).then(data => {
+            alert(data.message);
+            location.reload(); // 重新加载页面以更新书籍列表
+        }).catch(error => {
+            console.error('Error:', error);
+            alert('注销过程中出现错误！');
+        });
+    }
+}
+</script>
+
+
+
+
 <script>
     layui.use(['form', 'table', 'jquery'], function () {
         var form = layui.form;
@@ -88,7 +101,7 @@
 
         $(document).ready(function () {
             $("#li_1").addClass("layui-nav-itemed");
-            $("#li_1_2").addClass("height-light");
+            $("#li_1_4").addClass("height-light");
             $('#search').on('click', function () {
                 var form = new FormData(document.getElementById("searchForm"));
                 if ($('#card').val() === "" || $('#book_name').val() === "") {
@@ -175,8 +188,9 @@
         });
     });
 </script>
+
 <script type="text/html" id="barDemo">
-    <a class="layui-btn layui-btn-sm" lay-event="borr">借出</a>
+    <a class="layui-btn layui-btn-sm" lay-event="borr">注销</a>
 </script>
 {% endblock %}
 

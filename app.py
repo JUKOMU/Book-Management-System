@@ -9,7 +9,7 @@ from flask import render_template, session, redirect, url_for, flash, make_respo
 from flask_login import LoginManager, login_required, login_user, logout_user, current_user
 
 from forms import Login, SearchBookForm, ChangePasswordForm, EditInfoFormAdmin,EditInfoFormStudent, SearchStudentForm, NewStoreForm, StoreForm, \
-    BorrowForm
+    BorrowForm, WriteOffForm
 from models import *
 
 # 配置 CORS，允许所有域名跨域
@@ -372,6 +372,28 @@ def user_student():
     return render_template('user-student.html', form=form)
 
 
+@app.route('/writeOff', methods=['GET', 'POST'])
+@login_required
+def write_off():
+    if request.method == 'POST':
+        # 处理注销书籍的请求
+        data = request.json
+        barcode = data.get('barcode')
+        inventory = Inventory.query.filter_by(barcode=barcode).first()
+        if inventory:
+            db.session.delete(inventory)
+            db.session.commit()
+            return jsonify({'status': 'success', 'message': '注销成功！'})
+        else:
+            return jsonify({'status': 'failure', 'message': '注销失败，未找到对应的图书信息。'}), 404
+
+    # 获取所有书籍的信息
+    books = Book.query.all()
+    inventorys = Inventory.query.all()
+
+    return render_template('admin/write_off.html', books=books, inventorys=inventorys, name=session.get('name'))
+
+
 @app.route('/storage', methods=['GET', 'POST'])
 @login_required
 def storage():
@@ -439,7 +461,9 @@ def new_store():
 @login_required
 def borrow_admin():
     form = BorrowForm()
-    return render_template('admin/borrow-admin.html', name=session.get('name'), form=form)
+    books = Book.query.all()
+    inventorys=Inventory.query.all()
+    return render_template('admin/borrow-admin.html', name=session.get('name'), form=form,books=books, inventorys=inventorys)
 
 
 @app.route('/borrow_student', methods=['GET', 'POST'])
