@@ -4,9 +4,57 @@
 <script type="text/javascript" src="static/echart/echarts.js"></script>
 {% endblock %}
 
-{% block body %}
-<div id="main" style="width: 900px;height:470px;"></div>
+    <style>
+        .carousel-container {
+            width: 1000px; /* 根据需要调整宽度 */
+            height: 600px; /* 根据需要调整高度 */
+            overflow: hidden;
+            position: relative;
+        }
+        .carousel-slide {
+            display: flex;
+            width: 100%;
+            height: 80%;
+            transition: transform 0.5s ease-in-out;
+            position: absolute;
+        }
+        .carousel-image {
+            width: auto; /* 图片宽度自适应 */
+            height: 100%; /* 图片高度与容器相同 */
+            object-fit: cover;
+            display: block;
+        }
+    </style>
 
+{% block body %}
+<div id="main" style="width: 900px;height:470px;">
+
+<div class="carousel-container">
+        <div class="carousel-slide">
+            <img src="../static/in001.jpeg" class="carousel-image" alt="Image 1">
+            <img src="../static/in002.jpg" class="carousel-image" alt="Image 2">
+            <img src="../static/in003.jpeg" class="carousel-image" alt="Image 3">
+            <img src="../static/in004.jpeg" class="carousel-image" alt="Image 4">
+        </div>
+    </div>
+
+
+</div>
+
+    <script>
+        let currentIndex = 0;
+        const slides = document.querySelectorAll('.carousel-image');
+        const slideHeight = slides[0].clientHeight;
+        const slideLength = slides.length;
+        const slideContainer = document.querySelector('.carousel-slide');
+
+        function carousel() {
+            currentIndex = (currentIndex + 1) % slideLength;
+            slideContainer.style.transform = `translateY(-${currentIndex * slideHeight}px)`;
+        }
+
+        setInterval(carousel, 3000); // 每3秒切换一次图片
+    </script>
 {% endblock %}
 
 {% block script %}
