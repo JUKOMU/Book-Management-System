@@ -464,7 +464,9 @@ def new_store():
 @login_required
 def borrow_admin():
     form = BorrowForm()
-    return render_template('admin/borrow-admin.html', name=session.get('name'), form=form)
+    books = Book.query.all()
+    inventorys=Inventory.query.all()
+    return render_template('admin/borrow-admin.html', name=session.get('name'), form=form,books=books, inventorys=inventorys)
 
 
 @app.route('/borrow_student', methods=['GET', 'POST'])

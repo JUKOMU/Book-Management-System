@@ -33,7 +33,18 @@
         </tr>
         </thead>
         <tbody>
-
+        {% for book in books %}
+        {% for inventory in inventorys|selectattr('isbn', 'equalto', book.isbn) %}
+        <tr>
+            <td>{{ inventory.barcode }}</td>
+            <td>{{ book.isbn }}</td>
+            <td>{{ book.book_name }}</td>
+            <td>{{ book.author }}</td>
+            <td>{{ book.press }}</td>
+            <td><a class="layui-btn layui-btn-sm" lay-event="borr">借出</a></td>
+        </tr>
+        {% endfor %}
+        {% endfor %}
         </tbody>
     </table>
 </div>
