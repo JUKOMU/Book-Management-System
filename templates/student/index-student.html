@@ -1,66 +1,425 @@
-{% extends "base-student.html" %}
-{% block title %}书海图书管理系统首页{% endblock %}\
-{% block head %}
-<script type="text/javascript" src="static/echart/echarts.js"></script>
-{% endblock %}
-
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>书海图书管理系统首页</title>
+    <link rel="stylesheet" href="../../static/layui/css/layui.css">
+    <script src="https://cdn.staticfile.org/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/popper.js/1.12.5/umd/popper.min.js"></script>
+    <script type="text/javascript"
+            src="https://cdn.staticfile.org/twitter-bootstrap/4.1.0/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../../static/markdown/marked.min.js"></script>
     <style>
-        .carousel-container {
-            width: 1000px; /* 根据需要调整宽度 */
-            height: 600px; /* 根据需要调整高度 */
-            overflow: hidden;
+        body {
+            background-color: #f1f1f1;
+        }
+
+        .alert {
             position: relative;
+            padding: .75rem 1.25rem;
+            margin-bottom: 1rem;
+            border: 1px solid transparent;
+            border-radius: .25rem
         }
-        .carousel-slide {
-            display: flex;
-            width: 100%;
-            height: 80%;
-            transition: transform 0.5s ease-in-out;
+
+        .close {
             position: absolute;
+            top: 0;
+            right: 0;
+            padding: .75rem 1.25rem;
+            color: inherit
         }
-        .carousel-image {
-            width: auto; /* 图片宽度自适应 */
-            height: 100%; /* 图片高度与容器相同 */
-            object-fit: cover;
+
+        .alert-warning {
+            color: #856404;
+            background-color: #fff3cd;
+            border-color: #ffeeba
+        }
+
+        .close {
+            float: right;
+            font-size: 1.5rem;
+            font-weight: 700;
+            line-height: 1;
+            color: #000;
+            text-shadow: 0 1px 0 #fff;
+            opacity: .5
+        }
+
+        .close:focus, .close:hover {
+            color: #000;
+            text-decoration: none;
+            opacity: .75
+        }
+
+        .close:not(:disabled):not(.disabled) {
+            cursor: pointer
+        }
+
+        button.close {
+            padding: 0;
+            background-color: transparent;
+            border: 0;
+            -webkit-appearance: none
+        }
+
+        .close {
+            padding: 1rem;
+            margin: -1rem -1rem -1rem auto
+        }
+
+        .alert-dismissible .close {
+            position: absolute;
+            top: 0;
+            right: 0;
+            padding: .75rem 1.25rem;
+            color: inherit
+        }
+
+        .height-light {
+            span {
+                background-color: #009688;
+            }
+        }
+
+        .layui-layout-admin .layui-logo {
+            font-size: 24px;
+            transition: all 0.5s;
+        }
+
+        .layui-layout-admin .layui-logo:hover {
+            font-size: 40px;
+
+            img {
+                width: 30px;
+            }
+        }
+
+        .layui-layout-admin .layui-logo img {
+            width: 15px;
+            margin-left: 5px;
+            margin-top: 10px;
+            transition: all 0.5s;
+        }
+
+        .layui-layout-admin .layui-body {
+            top: 120px;
+            right: 200px;
+        }
+
+        .layui-layout-admin .layui-footer {
+            left: 0;
+            right: 0;
+            text-align: center;
+        }
+
+        .tab-bar {
+            margin: 0 auto;
+            width: calc(100% - 520px);
+            height: 40px;
+            background-color: rgb(35, 38, 46);
+            display: flex;
+            justify-content: space-around;
+            border-radius: 0 0 40px 40px;
+        }
+
+        .tab-bar .tab-bar-item {
+            a {
+                color: #ffffff;
+                display: block;
+            }
+
+            span {
+                height: 5px;
+                display: block;
+            }
+
+            align-self: center;
+            height: 40px;
+        }
+
+        .tab-bar .tab-bar-item:hover {
+            span {
+                background-color: #009688;
+            }
+        }
+
+        #li_4:hover {
+            .tab-bar-item-item-parent {
+                display: block;
+            }
+
+            .tab-bar-item-item {
+                display: block;
+            }
+        }
+
+        .tab-bar-item-item-parent {
+            display: none;
+            background-color: rgb(35, 38, 46);
+            position: absolute;
+            top: 60px;
+            padding: 0 10px 5px 10px;
+            border-radius: 5px;
+        }
+
+        .tab-bar-item-item-parent:hover {
             display: block;
+
+            .tab-bar-item-item {
+                display: block;
+            }
+        }
+
+        .tab-bar-item-item {
+            display: none;
+            margin-top: 5px;
+        }
+
+        .tab-bar-item-item:hover {
+            display: block;
+
+            a {
+                color: #25bba4;
+            }
+        }
+
+        .banner-imgBox {
+            width: calc(100% - 510px);
+            height: 0;
+            /*background-color: #009dda;*/
+            margin: 15px auto 0 auto;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .banner-imgBox2 {
+            width: calc(100% - 510px);
+            height: 0;
+            display: flex;
+            /*background-color: chartreuse;*/
+            margin: 0;
+            transition: all 0.5s;
+        }
+
+        .banner-imgBox2 img {
+            width: 1600px;
+            height: 900px;
+        }
+
+        .on {
+            width: 10px;
+            height: 10px;
+            border-radius: 100%;
+            background-color: gainsboro;
+            margin-left: 20px;
+        }
+
+        .banner-imgBox-div {
+            width: 200px;
+            position: absolute;
+            bottom: 20px;
+            left: calc(50% - 100px);
+            display: flex;
+            justify-content: space-around;
+        }
+
+        .on2 {
+            background-color: red;
+        }
+
+        .banner-imgBox-left {
+            cursor: pointer;
+            position: absolute;
+            left: 20px;
+            top: 48%;
+            width: 48px;
+            height: 48px;
+        }
+
+        .banner-imgBox-right {
+            cursor: pointer;
+            position: absolute;
+            right: 20px;
+            top: 48%;
+            width: 48px;
+            height: 48px;
+            margin-right: 0;
+        }
+
+        .banner-imgBox-left:hover {
+            filter: brightness(0.7);
+        }
+
+        .banner-imgBox-right:hover {
+            filter: brightness(0.7);
+        }
+
+        #left-cover {
+            position: fixed;
+            height: 100%;
+            width: 150px;
+            top: -50px;
+            left: 0px;
+            background-color: #f1f1f1;
+        }
+
+        #right-cover {
+            position: fixed;
+            height: 100%;
+            width: 150px;
+            top: -50px;
+            right: 0px;
+            background-color: #f1f1f1;
         }
     </style>
-
-{% block body %}
-<div id="main" style="width: 900px;height:470px;">
-
-<div class="carousel-container">
-        <div class="carousel-slide">
-            <img src="../static/in001.jpeg" class="carousel-image" alt="Image 1">
-            <img src="../static/in002.jpg" class="carousel-image" alt="Image 2">
-            <img src="../static/in003.jpeg" class="carousel-image" alt="Image 3">
-            <img src="../static/in004.jpeg" class="carousel-image" alt="Image 4">
+</head>
+<body class="layui-layout-body">
+<div class="layui-layout layui-layout-admin">
+    <div class="layui-header">
+        <a href="{{ url_for('index_student') }}">
+            <div class="layui-logo">书海<img src="../static/logo.png"></div>
+        </a>
+        <!-- 头部区域（可配合layui已有的水平导航） -->
+        <ul class="layui-nav layui-layout-right">
+            <li class="layui-nav-item">
+                <a href="javascript:;">
+                    <img src="../static/icon.jpg" class="layui-nav-img">
+                    {{ name }}
+                </a>
+                <dl class="layui-nav-child">
+                    <dd><a href="{{ url_for('user_info_student', id=current_user.card_id) }}">个人信息</a></dd>
+                    <dd><a href="{{ url_for('change_password_student') }}">修改密码</a></dd>
+                </dl>
+            </li>
+            <li class="layui-nav-item"><a href="{{ url_for('logout') }}">退出登录</a></li>
+        </ul>
+    </div>
+    <div class="tab-bar">
+        <div id="li_1" class="tab-bar-item">
+            <a href="{{url_for('index_student')}}">首页</a>
+            <span></span>
+        </div>
+        <div id="li_2" class="tab-bar-item">
+            <a href="{{ url_for('recommend') }}">智能推荐</a>
+            <span></span>
+        </div>
+        <div id="li_3" class="tab-bar-item">
+            <a href="{{ url_for('search_book_student') }}">图书查询</a>
+            <span></span>
+        </div>
+        <div id="li_4" class="tab-bar-item">
+            <a href="javascript:;">图书管理▼</a>
+            <div class="tab-bar-item-item-parent">
+                <div class="tab-bar-item-item" id="li_4_1"><a href="{{ url_for('borrow_student') }}">图书借阅</a>
+                </div>
+                <div class="tab-bar-item-item" id="li_4_2"><a href="{{ url_for('return_book_student') }}">图书归还</a>
+                </div>
+                <div class="tab-bar-item-item" id="li_4_3"><a href="javascript:;">违规处理</a>
+                </div>
+            </div>
+            <span></span>
+        </div>
+        <div id="li_5" class="tab-bar-item">
+            <a href="{{ url_for('change_info_student') }}">信息设置</a>
+            <span></span>
+        </div>
+        <div id="li_6" class="tab-bar-item">
+            <a href="javascript:;">查看公告</a>
+            <span></span>
+        </div>
+        <div id="li_7" class="tab-bar-item">
+            <a href="javascript:;">读者留言</a>
+            <span></span>
         </div>
     </div>
 
+    <div class="banner-imgBox" id="banner-imgBox">
+        <div class="banner-imgBox2" id="banner-imgBox2">
+            <img src="../../static/in001.jpeg" alt="">
+            <img src="../../static/in002.jpg" alt="">
+            <img src="../../static/in003.jpeg" alt="">
+            <img src="../../static/in004.jpeg" alt="">
+        </div>
+        <div class="banner-imgBox-div" id="banner-imgBox-div">
+            <div class="on"></div>
+            <div class="on"></div>
+            <div class="on"></div>
+            <div class="on"></div>
+        </div>
+        <img class="banner-imgBox-left" src="../../static/icon_left.png" onclick="turnLeft()">
+        <img class="banner-imgBox-right" src="../../static/icon_right.png" onclick="turnRight()">
+    </div>
 
+    <div class="layui-footer">
+        Copyright 2024 Construct
+    </div>
+
+    <!--<div id="left-cover"></div>
+    <div id="right-cover"></div>-->
 </div>
-
-    <script>
-        let currentIndex = 0;
-        const slides = document.querySelectorAll('.carousel-image');
-        const slideHeight = slides[0].clientHeight;
-        const slideLength = slides.length;
-        const slideContainer = document.querySelector('.carousel-slide');
-
-        function carousel() {
-            currentIndex = (currentIndex + 1) % slideLength;
-            slideContainer.style.transform = `translateY(-${currentIndex * slideHeight}px)`;
-        }
-
-        setInterval(carousel, 3000); // 每3秒切换一次图片
-    </script>
-{% endblock %}
-
-{% block script %}
-<script type="text/javascript">
+<script type="text/javascript" src="../../static/layui/layui.js"></script>
+<script>
+    layui.use('element', function () {
+        var element = layui.element;
+        element.init();
+    });
     $(document).ready(function () {
         $("#li_1").addClass("height-light");
+        // 适应屏幕高度
+        document.getElementById("banner-imgBox").style.height = ($(window).height() - 170).toString() + "px";
+        document.getElementById("banner-imgBox2").style.height = ($(window).height() - 170).toString() + "px";
+        // 图片根据屏幕大小调整
+        let content = document.querySelector(".banner-imgBox2").children;
+        for (let i = 0; i < content.length; i++) {
+            console.log(content[i]);
+            content[i].style.height = (($(window).width() - 500) * 0.5625).toString() + "px";
+            content[i].style.width = ($(window).width() - 500).toString() + "px";
+        }
+        // 轮播定时
+        setInterval(function () {
+            // 每2秒向右轮播
+            turnRight();
+        }, 2000);
     });
+
+    /* 轮播图js */
+    var content = document.querySelector('.banner-imgBox2');
+    var switchBtn = document.querySelector('.banner-imgBox-div');
+    var index = 0;
+
+    // 向左轮播
+    function turnLeft() {
+        if (switchBtn.children[index].classList.contains('on2')) {
+            switchBtn.children[index].classList.remove('on2');
+        }
+        if (index === 0) {
+            index = 3;
+        } else {
+            index -= 1;
+        }
+        // 效果为向左划
+        content.style.marginLeft = index * -($(window).width() - 500) + "px"
+        // 显示轮播图的顺序
+        switchBtn.children[index].classList.add('on2');
+    }
+
+    // 向右轮播
+    function turnRight() {
+        if (switchBtn.children[index].classList.contains('on2')) {
+            switchBtn.children[index].classList.remove('on2');
+        }
+        if (index === 3) {
+            index = 0;
+        } else {
+            index += 1;
+        }
+        // 效果为向右划
+        content.style.marginLeft = index * -($(window).width() - 500) + "px"
+        // 显示轮播图的顺序
+        switchBtn.children[index].classList.add('on2');
+    }
 </script>
-{% endblock %}
+</body>
+</html>
