@@ -1,52 +1,65 @@
 {% extends "base-student.html" %}
 {% block title %}学生信息设置{% endblock %}
-
+<style>
+    .height-light {
+        span {
+            background-color: #009688;
+        }
+    }
+</style>
 {% block body %}
 <fieldset class="layui-elem-field layui-field-title">
-  <legend>修改个人信息</legend>
-  <div class="layui-field-box" style="font-size: medium;line-height: 30px;">
-      <br />
-      <form class="layui-form" method="post">
-        {{ form.csrf_token }}
-        <div class="layui-form-item">
-            <label class="layui-form-label" style="width:150px">借阅卡号：</label>
-            <div class="layui-input-block">
-                <input type="text" value="{{ id }}" readonly="readonly" class="layui-input" style="width:40%">
-            </div>
-        </div>
-        <div class="layui-form-item">
-            <label class="layui-form-label" style="width:150px">{{ form.name.label }}：</label>
-            <div class="layui-input-block">
-                {{ form.name(class="layui-input", style="width:40%") }}
-            </div>
-        </div>
-        <div class="layui-form-item">
-            <label class="layui-form-label" style="width:150px">{{ form.sex.label }}：</label>
-            <div class="layui-input-block">
-                {{ form.sex(class="layui-input", style="width:40%") }}
-            </div>
-        </div>
-        <div class="layui-form-item">
-            <label class="layui-form-label" style="width:150px">{{ form.telephone.label }}：</label>
-            <div class="layui-input-block">
-                {{ form.telephone(class="layui-input", style="width:40%") }}
-            </div>
-        </div>
-        <div class="layui-form-item">
-            <label class="layui-form-label" style="width:150px">有效期至：</label>
-            <div class="layui-input-block">
-                <input type="text" value="{{ valid_date }}" readonly="readonly" class="layui-input" style="width:40%">
-                <span style="font-size:16px;font-style: italic;color:#BFBFBF">账号、失效日期无法修改，若要修改请联系系统管理员</span>
-            </div>
-        </div>
-        <div class="layui-form-item">
-            <div class="layui-input-block" style="margin-left:180px">
-                <div class="layui-input-inline login-btn">
-                    {{ form.submit(class="layui-btn") }}
+    <legend>修改个人信息</legend>
+    <div class="layui-field-box" style="font-size: medium;line-height: 30px;">
+        <br/>
+        <form class="layui-form" method="post">
+            {{ form.csrf_token }}
+            <div class="layui-form-item">
+                <label class="layui-form-label" style="width:150px">借阅卡号：</label>
+                <div class="layui-input-block">
+                    <input type="text" value="{{ id }}" readonly="readonly" class="layui-input" style="width:40%">
                 </div>
             </div>
-        </div>
-      </form>
-  </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label" style="width:150px">{{ form.name.label }}：</label>
+                <div class="layui-input-block">
+                    {{ form.name(class="layui-input", style="width:40%") }}
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label" style="width:150px">{{ form.sex.label }}：</label>
+                <div class="layui-input-block">
+                    {{ form.sex(class="layui-input", style="width:40%") }}
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label" style="width:150px">{{ form.telephone.label }}：</label>
+                <div class="layui-input-block">
+                    {{ form.telephone(class="layui-input", style="width:40%") }}
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label" style="width:150px">有效期至：</label>
+                <div class="layui-input-block">
+                    <input type="text" value="{{ valid_date }}" readonly="readonly" class="layui-input"
+                           style="width:40%">
+                    <span style="font-size:16px;font-style: italic;color:#BFBFBF">账号、失效日期无法修改，若要修改请联系系统管理员</span>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-input-block" style="margin-left:180px">
+                    <div class="layui-input-inline login-btn">
+                        {{ form.submit(class="layui-btn") }}
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
 </fieldset>
+<script>
+    $(document).ready(function () {
+        $("#li_5").addClass("height-light");
+        console.log("1333")
+    });
+</script>
 {% endblock %}

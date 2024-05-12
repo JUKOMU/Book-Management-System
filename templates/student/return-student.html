@@ -57,7 +57,7 @@
             layer.confirm('确认归还吗？', function(index){
 
                 table.reload('test', {
-                  url: '{{ url_for('bookin') }}',
+                  url: "{{ url_for('bookin') }}",
                   where: {
                       'barcode': data.barcode,
                       'card': $('#card').val(),

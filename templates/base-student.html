@@ -72,7 +72,9 @@
         }
 
         .height-light {
-            background-color: #009688;
+            span {
+                background-color: #009688;
+            }
         }
 
         .layui-layout-admin .layui-logo {
@@ -95,7 +97,8 @@
             transition: all 0.5s;
         }
 
-        .layui-body {
+        .layui-layout-admin .layui-body {
+            top: 120px;
             right: 200px;
         }
 
@@ -103,6 +106,69 @@
             left: 0;
             right: 0;
             text-align: center;
+        }
+
+        .tab-bar {
+            margin: 0 auto;
+            width: calc(100% - 520px);
+            height: 40px;
+            background-color: rgb(35, 38, 46);
+            display: flex;
+            justify-content: space-around;
+            border-radius: 0 0 40px 40px;
+        }
+
+        .tab-bar .tab-bar-item {
+            a {
+                color: #ffffff;
+                display: block;
+            }
+            span {
+                height: 5px;
+                display: block;
+            }
+            align-self: center;
+            height: 40px;
+        }
+
+        .tab-bar .tab-bar-item:hover {
+            span {
+                background-color: #009688;
+            }
+        }
+
+        #li_4:hover {
+            .tab-bar-item-item-parent {
+                display: block;
+            }
+            .tab-bar-item-item {
+                display: block;
+            }
+        }
+
+        .tab-bar-item-item-parent {
+            display: none;
+            background-color: rgb(35, 38, 46);
+            position: absolute;
+            top: 60px;
+            padding: 0 10px 5px 10px;
+            border-radius: 5px;
+        }
+        .tab-bar-item-item-parent:hover {
+            display: block;
+            .tab-bar-item-item {
+                display: block;
+            }
+        }
+        .tab-bar-item-item {
+            display: none;
+            margin-top: 5px;
+        }
+        .tab-bar-item-item:hover {
+            display: block;
+            a {
+                color: #25bba4;
+            }
         }
     </style>
     {% block style %}{% endblock %}
@@ -163,7 +229,45 @@
             </ul>
         </div>
     </div>-->
-
+    <!-- 横向导航栏 -->
+    <div class="tab-bar">
+        <div id="li_1" class="tab-bar-item">
+            <a href="{{url_for('index_student')}}">首页</a>
+            <span></span>
+        </div>
+        <div id="li_2" class="tab-bar-item">
+            <a href="{{ url_for('recommend') }}">智能推荐</a>
+            <span></span>
+        </div>
+        <div id="li_3" class="tab-bar-item">
+            <a href="{{ url_for('search_book_student') }}">图书查询</a>
+            <span></span>
+        </div>
+        <div id="li_4" class="tab-bar-item">
+            <a href="javascript:;">图书管理▼</a>
+            <div class="tab-bar-item-item-parent">
+                <div class="tab-bar-item-item" id="li_4_1"><a href="{{ url_for('borrow_student') }}">图书借阅</a>
+                </div>
+                <div class="tab-bar-item-item" id="li_4_2"><a href="{{ url_for('return_book_student') }}">图书归还</a>
+                </div>
+                <div class="tab-bar-item-item" id="li_4_3"><a href="javascript:;">违规处理</a>
+                </div>
+            </div>
+            <span></span>
+        </div>
+        <div id="li_5" class="tab-bar-item">
+            <a href="{{ url_for('change_info_student') }}">信息设置</a>
+            <span></span>
+        </div>
+        <div id="li_6" class="tab-bar-item">
+            <a href="javascript:;">查看公告</a>
+            <span></span>
+        </div>
+        <div id="li_7" class="tab-bar-item">
+            <a href="javascript:;">读者留言</a>
+            <span></span>
+        </div>
+    </div>
 
     <div class="layui-body">
         <!-- 内容主体区域 -->

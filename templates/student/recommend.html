@@ -14,7 +14,6 @@
         body {
             background-color: #f1f1f1;
         }
-
         .alert {
             position: relative;
             padding: .75rem 1.25rem;
@@ -78,20 +77,117 @@
         }
 
         .height-light {
-            background-color: #009688;
+            span {
+                background-color: #009688;
+            }
+        }
+
+        .layui-layout-admin .layui-logo {
+            font-size: 24px;
+            transition: all 0.5s;
+        }
+
+        .layui-layout-admin .layui-logo:hover {
+            font-size: 40px;
+
+            img {
+                width: 30px;
+            }
+        }
+
+        .layui-layout-admin .layui-logo img {
+            width: 15px;
+            margin-left: 5px;
+            margin-top: 10px;
+            transition: all 0.5s;
+        }
+
+        .layui-layout-admin .layui-body {
+            top: 120px;
+            right: 200px;
+        }
+
+        .layui-layout-admin .layui-footer {
+            left: 0;
+            right: 0;
+            text-align: center;
+        }
+
+        .tab-bar {
+            margin: 0 auto;
+            width: calc(100% - 520px);
+            height: 40px;
+            background-color: rgb(35, 38, 46);
+            display: flex;
+            justify-content: space-around;
+            border-radius: 0 0 40px 40px;
+        }
+
+        .tab-bar .tab-bar-item {
+            a {
+                color: #ffffff;
+                display: block;
+            }
+            span {
+                height: 5px;
+                display: block;
+            }
+            align-self: center;
+            height: 40px;
+        }
+
+        .tab-bar .tab-bar-item:hover {
+            span {
+                background-color: #009688;
+            }
+        }
+
+        #li_4:hover {
+            .tab-bar-item-item-parent {
+                display: block;
+            }
+            .tab-bar-item-item {
+                display: block;
+            }
+        }
+
+        .tab-bar-item-item-parent {
+            display: none;
+            background-color: rgb(35, 38, 46);
+            position: absolute;
+            top: 60px;
+            padding: 0 10px 5px 10px;
+            border-radius: 5px;
+        }
+        .tab-bar-item-item-parent:hover {
+            display: block;
+            .tab-bar-item-item {
+                display: block;
+            }
+        }
+        .tab-bar-item-item {
+            display: none;
+            margin-top: 5px;
+        }
+        .tab-bar-item-item:hover {
+            display: block;
+            a {
+                color: #25bba4;
+            }
         }
 
         .title {
             position: fixed;
-            top: 80px;
+            top: 130px;
             left: 230px;
         }
 
         .container {
             position: fixed;
             bottom: 110px;
-            left: 300px;
-            width: calc(100% - 420px);
+            left: 280px;
+            right: 400px;
+            width: calc(100% - 620px);
             height: 10px;
             margin: 0;
             padding: 10px;
@@ -113,7 +209,7 @@
         .input {
             position: fixed;
             bottom: 44px;
-            right: 0;
+            right: 120px;
             width: calc(100% - 220px);
             padding: 10px;
             text-align: center;
@@ -121,7 +217,7 @@
 
         .input #textInput {
             height: 40px;
-            width: calc(100% - 220px);
+            width: calc(100% - 420px);
             border-radius: 10px;
             font-size: 16px;
             text-indent: 1ch;
@@ -159,13 +255,33 @@
             flex-direction: column;
             gap: 10px; /* 上下间隔 */
         }
+
+        #left-cover {
+            position: fixed;
+            height: 100%;
+            width: 250px;
+            top: -50px;
+            left: -30px;
+            background-color: #ffffff;
+            border-radius: 30px;
+        }
+
+        #right-cover {
+            position: fixed;
+            height: 100%;
+            width: 250px;
+            top: -50px;
+            right: -30px;
+            background-color: #ffffff;
+            border-radius:30px
+        }
     </style>
 </head>
 <body class="layui-layout-body">
 <div class="layui-layout layui-layout-admin">
     <div class="layui-header">
         <a href="{{ url_for('index_student') }}">
-            <div class="layui-logo">书海图书管理系统</div>
+            <div class="layui-logo">书海<img src="../static/logo.png"></div>
         </a>
         <!-- 头部区域（可配合layui已有的水平导航） -->
         <ul class="layui-nav layui-layout-right">
@@ -175,7 +291,7 @@
                     {{ name }}
                 </a>
                 <dl class="layui-nav-child">
-                    <dd><a href="{{ url_for('user_info_student', id=current_user.admin_id) }}">个人信息</a></dd>
+                    <dd><a href="{{ url_for('user_info_student', id=current_user.card_id) }}">个人信息</a></dd>
                     <dd><a href="{{ url_for('change_password_student') }}">修改密码</a></dd>
                 </dl>
             </li>
@@ -183,37 +299,42 @@
         </ul>
     </div>
 
-    <div class="layui-side layui-bg-black">
-        <div class="layui-side-scroll">
-            <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
-            <ul class="layui-nav layui-nav-tree" lay-filter="test">
-                <li id="li_1" class="layui-nav-item">
-                    <a href="{{url_for('index_student')}}">首页</a>
-                </li>
-                <li id="li_2" class="layui-nav-item">
-                    <a href="{{ url_for('recommend') }}">智能推荐</a>
-                </li>
-                <li id="li_3" class="layui-nav-item">
-                    <a href="{{ url_for('search_book_student') }}">图书查询</a>
-                </li>
-                <li id="li_4" class="layui-nav-item">
-                    <a href="javascript:;">图书管理</a>
-                    <dl class="layui-nav-child">
-                        <dd id="li_4_1"><a href="{{ url_for('borrow_student') }}">图书借阅</a></dd>
-                        <dd id="li_4_2"><a href="{{ url_for('return_book_student') }}">图书归还</a></dd>
-                        <dd id="li_4_3"><a href="javascript:;">违规处理</a></dd>
-                    </dl>
-                </li>
-                <li id="li_5" class="layui-nav-item">
-                    <a href="{{ url_for('change_info_student') }}">信息设置</a>    <!--重写学生change_info-->
-                </li>
-                <li id="li_6" class="layui-nav-item">
-                    <a href="javascript:;">查看公告</a>
-                </li>
-                <li id="li_7" class="layui-nav-item">
-                    <a href="javascript:;">读者留言</a>
-                </li>
-            </ul>
+    <div class="tab-bar">
+        <div id="li_1" class="tab-bar-item">
+            <a href="{{url_for('index_student')}}">首页</a>
+            <span></span>
+        </div>
+        <div id="li_2" class="tab-bar-item">
+            <a href="{{ url_for('recommend') }}">智能推荐</a>
+            <span></span>
+        </div>
+        <div id="li_3" class="tab-bar-item">
+            <a href="{{ url_for('search_book_student') }}">图书查询</a>
+            <span></span>
+        </div>
+        <div id="li_4" class="tab-bar-item">
+            <a href="javascript:;">图书管理▼</a>
+            <div class="tab-bar-item-item-parent">
+                <div class="tab-bar-item-item" id="li_4_1"><a href="{{ url_for('borrow_student') }}">图书借阅</a>
+                </div>
+                <div class="tab-bar-item-item" id="li_4_2"><a href="{{ url_for('return_book_student') }}">图书归还</a>
+                </div>
+                <div class="tab-bar-item-item" id="li_4_3"><a href="javascript:;">违规处理</a>
+                </div>
+            </div>
+            <span></span>
+        </div>
+        <div id="li_5" class="tab-bar-item">
+            <a href="{{ url_for('change_info_student') }}">信息设置</a>
+            <span></span>
+        </div>
+        <div id="li_6" class="tab-bar-item">
+            <a href="javascript:;">查看公告</a>
+            <span></span>
+        </div>
+        <div id="li_7" class="tab-bar-item">
+            <a href="javascript:;">读者留言</a>
+            <span></span>
         </div>
     </div>
 
@@ -234,6 +355,9 @@
     <div class="layui-footer">
         Copyright 2024 Construct
     </div>
+
+    <div id="left-cover"></div>
+    <div id="right-cover"></div>
 </div>
 <link rel="stylesheet" href="../../static/highlight/styles/atom-one-dark.css">
 <script src="../../static/highlight/highlight.js"></script>
@@ -250,9 +374,9 @@
         $("#container").css({
             'position': 'fixed',
             'bottom': '110px',
-            'left': '300px',
-            'width': 'calc(100% - 420px)',
-            'height': ($(window).height() - 250).toString() + "px",
+            'left': '280px',
+            'width': 'calc(100% -500px)',
+            'height': ($(window).height() - 350).toString() + "px",
             'margin': '0',
             'padding': '10px',
             'background-color': '#f1f1f1f1',
