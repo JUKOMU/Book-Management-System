@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <title>智能推荐</title>
+    <title>读者留言</title>
     <link rel="stylesheet" href="../../static/layui/css/layui.css">
     <script src="https://cdn.staticfile.org/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://cdn.staticfile.org/popper.js/1.12.5/umd/popper.min.js"></script>
@@ -333,7 +333,7 @@
             <span></span>
         </div>
         <div id="li_7" class="tab-bar-item">
-            <a href="{{ url_for('comments_student') }}">读者留言</a>
+            <a href="javascript:;">读者留言</a>
             <span></span>
         </div>
     </div>
@@ -348,7 +348,7 @@
         </div>
     </div>
     <div class="input">
-        <input type="textarea" id="textInput" placeholder="您有什么问题">
+        <textarea type="textarea" id="textInput" placeholder="在这里评论"></textarea>
         <img onclick="run_prompt()" id="summit" src="../../static/summit.png"/>
     </div>
 
@@ -359,9 +359,6 @@
     <div id="left-cover"></div>
     <div id="right-cover"></div>
 </div>
-<link rel="stylesheet" href="../../static/highlight/styles/atom-one-dark.css">
-<script src="../../static/highlight/highlight.js"></script>
-<script>hljs.highlightAll();</script>
 <script type="text/javascript" src="../../static/layui/layui.js"></script>
 <script>
     layui.use('element', function () {
@@ -370,215 +367,8 @@
     });
 
     $(document).ready(function () {
-        $("#li_2").addClass("height-light");
-        $("#container").css({
-            'position': 'fixed',
-            'bottom': '110px',
-            'left': '280px',
-            'width': 'calc(100% -500px)',
-            'height': ($(window).height() - 350).toString() + "px",
-            'margin': '0',
-            'padding': '10px',
-            'background-color': '#f1f1f1f1',
-            'border-radius': '10px',
-        });
-        var inputElement = document.getElementById('textInput');
-
-        inputElement.addEventListener('keydown', function (event) {
-            if (event.key === "Enter" && inputElement.value !== "" && inputElement.value !== null) {
-                run_prompt();
-            }
-        });
-
-        var scrollContainer = document.getElementById('container');
-        var isUserScrolling = false;
-        var lastScrollTop = 0;
-
-        function scrollToBottom() {
-            scrollContainer.scrollTop = scrollContainer.scrollHeight;
-        }
-
-        function handleScroll() {
-            var scrollTop = scrollContainer.scrollTop;
-            var scrollHeight = scrollContainer.scrollHeight;
-            var clientHeight = scrollContainer.clientHeight;
-
-            if ((scrollTop + clientHeight) >= (scrollHeight - 300)) {
-                scrollToBottom();
-            }
-        }
-
-        // 使用setInterval设置调用间隔时间
-        setInterval(handleScroll, 200);
+        $("#li_7").addClass("height-light");
     });
-
-    current_text = document.getElementById('answer');
-    var text = "";
-    var markdown = "";
-    var char_index = 0;
-    var counter = 0;
-    var msg = [];
-
-
-    async function run_prompt() {
-        var input = document.getElementById('textInput');
-        var img = document.getElementById('summit');
-        var inputValue = input.value;
-        if (text === "") {
-            msg.push({"role": "user", "content": inputValue});
-        } else {
-            msg.push({"role": "assistant", "content": text});
-            msg.push({"role": "user", "content": inputValue});
-        }
-        addNewAnswerParagraph();
-        document.getElementById('answer').value = "";
-        // 清空输入框
-        input.value = "";
-        // 设置回答状态输入框不可用
-        input.disabled = true;
-        // 设置发送按钮变为终止按钮
-        img.src = "../../static/generate.png";
-
-        async function extracted() {
-            fetch('http://localhost:5000/eb_stream', {
-                method: 'post',
-                headers: {'Content-Type': 'text/plain'},
-                body: JSON.stringify({"msg": msg})
-            }).then(response => {
-                text = "";
-                markdown = "";
-                char_index = 0;
-                return response.body;
-            }).then(body => {
-                const reader = body.getReader();
-                const decoder = new TextDecoder();
-
-                function read() {
-                    return reader.read().then(({done, value}) => {
-                        if (done) { // 读取完成
-                            // 设置回答状态输入框可用
-                            input.disabled = false;
-                            // 设置发送按钮变为终止按钮
-                            img.src = "../../static/summit.png";
-                            return;
-                        }
-                        data = decoder.decode(value, {stream: true});
-                        // console.log(data);
-                        // data = data.replace(/�/g, '');
-                        console.log(data);
-                        text += JSON.parse(data).result;
-                        type();  // 打字机效果输出
-                        return read();
-                    });
-                }
-
-                hljs.highlightAll();
-                return read();
-            }).catch(error => {
-                console.error('发生错误:', error);
-            });
-        }
-
-        // 调用服务端的流式接口, 修改为自己的服务器地址和端口号
-        await extracted();
-    }
-
-    function type() {
-        /**
-         let enableCursor = true;  // 启用光标效果
-         if (char_index < text.length) {
-         let txt = document.getElementById('answer').value;
-         let cursor = enableCursor ? "|" : "";
-         if (enableCursor && txt.endsWith("|")) {
-         txt = txt.slice(0, -1);
-         }
-         document.getElementById('answer').value = txt + text.charAt(char_index) + cursor;
-         char_index++;
-         setTimeout(type, 1000/10);  // 打字机速度控制, 每秒5个字
-         } **/
-
-        let enableCursor = true;  // 启用光标效果
-        let cursor = "";
-        if (char_index < text.length) {
-            markdown = markdown + text.charAt(char_index);
-            let html = marked.parse(markdown);
-            let pElement = document.getElementById('answer');
-            pElement.innerHTML = html;
-            char_index++;
-            setTimeout(type, 1000 / 20);  // 打字机速度控制
-        }
-        if (cursor === "|") {
-            // 最后删除光标
-        }
-        hljs.highlightAll();
-    }
-
-    function addNewAnswerParagraph() {
-        let inputValue = document.getElementById('textInput').value;
-        // 改原来的id
-        let paragraphDiv = document.getElementById("div-answer");
-        let paragraph = document.getElementById("answer");
-        try {
-            paragraph.removeChild(paragraph.lastChild);
-        } catch (e) {
-        }
-        paragraphDiv.id = "div-answer" + counter;
-        paragraph.id = "answer" + counter;
-        // 创建一个新的图片元素
-        let img = document.createElement('img');
-        // 设置图片的 URL
-        img.src = "../../static/user_icon.png"; // 这里替换为您的图片 URL
-        img.className = "img";
-        let container = document.getElementById("container");
-        // 创建一个新的 <div> 元素
-        let promptParagraphDiv = document.createElement("div");
-        let promptParagraph = document.createElement("div");
-        promptParagraph.style.backgroundColor = "#f1f1f1";
-        promptParagraph.style.borderRadius = "10px";
-        promptParagraph.style.padding = "10px 30px";
-        promptParagraphDiv.appendChild(img.cloneNode(true));
-        promptParagraphDiv.appendChild(promptParagraph);
-        // promptParagraph.appendChild(img.cloneNode(true));
-        // 设置新元素的 id
-        promptParagraphDiv.id = "div-prompt" + counter;
-        promptParagraph.id = "prompt" + counter;
-        // 创建包含文本的文本节点
-        let textNode1 = document.createTextNode(inputValue);
-        // 将文本节点添加到段落中
-        promptParagraph.appendChild(textNode1);
-        // 将新的 <p> 元素添加到容器中
-        container.appendChild(promptParagraphDiv);
-
-        // 创建一个新的 <div> 元素
-        let newParagraphDiv = document.createElement("div");
-        let newParagraph = document.createElement("div");
-        // 设置新元素的 id
-        newParagraphDiv.id = "div-answer";
-        newParagraph.id = "answer";
-        newParagraph.className = "div-answer";
-        newParagraph.style.backgroundColor = "#FFFFFF";
-        newParagraph.style.borderRadius = "10px";
-        newParagraph.style.padding = "20px";
-        newParagraph.style.marginTop = "10px";
-        // 将新的 <p> 元素添加到容器中
-        newParagraphDiv.appendChild(newParagraph);
-        container.appendChild(newParagraphDiv);
-        addImg();
-        // 更新计数器
-        counter++;
-    }
-
-    function addImg() {
-        let img = document.createElement('img');
-        // 设置图片的 URL
-        img.src = "D:\\osu\\osu!\\osu!\\__kurioshi_fio_original_drawn_by_satou_3366_s__e8.png"; // 这里替换为您的图片 URL
-        img.className = "img";
-        let paragraph = document.getElementById("div-answer");
-        // 获取段落的第一个子节点（文本节点）
-        let textNode = paragraph.firstChild;
-        // 在文本节点前面插入图片
-        paragraph.insertBefore(img.cloneNode(true), textNode);
-    }
 </script>
 </body>
 </html>

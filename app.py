@@ -650,6 +650,17 @@ def eb_stream():
     print(msg)
     return Response(gen_stream(msg), content_type='text/event-stream')
 
+# 读者留言
+@app.route("/student/comment", methods=['GET', 'POST'])
+@login_required
+def comments_student():
+    return render_template('student/comments-student.html')
+
+# 管理员留言
+@app.route("/admin/comment", methods=['GET', 'POST'])
+@login_required
+def comments_admin():
+    return render_template('admin/comments-admin.html')
 
 if __name__ == '__main__':
     app.run()
