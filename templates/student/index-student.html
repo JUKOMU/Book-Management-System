@@ -162,6 +162,7 @@
             top: 60px;
             padding: 0 10px 5px 10px;
             border-radius: 5px;
+            z-index: 9999;
         }
 
         .tab-bar-item-item-parent:hover {
@@ -175,6 +176,7 @@
         .tab-bar-item-item {
             display: none;
             margin-top: 5px;
+            z-index: 9999;
         }
 
         .tab-bar-item-item:hover {
@@ -316,8 +318,6 @@
                 </div>
                 <div class="tab-bar-item-item" id="li_4_2"><a href="{{ url_for('return_book_student') }}">图书归还</a>
                 </div>
-                <div class="tab-bar-item-item" id="li_4_3"><a href="javascript:;">违规处理</a>
-                </div>
             </div>
             <span></span>
         </div>
@@ -366,6 +366,10 @@
         element.init();
     });
     $(document).ready(function () {
+        let loss = getCookie("loss");
+        if (loss) {
+            alert("您目前有违规记录，请到前台联系管理员处理");
+        }
         $("#li_1").addClass("height-light");
         // 适应屏幕高度
         document.getElementById("banner-imgBox").style.height = ($(window).height() - 170).toString() + "px";
@@ -419,6 +423,25 @@
         content.style.marginLeft = index * -($(window).width() - 500) + "px"
         // 显示轮播图的顺序
         switchBtn.children[index].classList.add('on2');
+    }
+
+    function getCookie(name) {
+        // 解析所有cookie
+        var cookieArray = document.cookie.split('; ');
+
+        // 遍历cookie数组
+        for (var i = 0; i < cookieArray.length; i++) {
+            var cookiePair = cookieArray[i].split('=');
+
+            // 找到匹配的cookie名称
+            if (cookiePair[0] === name) {
+                // 解码cookie值（如果它被编码了）
+                return decodeURIComponent(cookiePair[1]);
+            }
+        }
+
+        // 如果没有找到cookie，返回null
+        return null;
     }
 </script>
 </body>

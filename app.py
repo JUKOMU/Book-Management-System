@@ -87,6 +87,7 @@ def login():
                 response.set_cookie('admin_id', str(user.admin_id))
             elif isinstance(user, Student):
                 response.set_cookie('card_id', str(user.card_id))
+                response.set_cookie('loss', str(user.loss))
 
             # 返回响应对象，包含设置的 cookie
             return response
