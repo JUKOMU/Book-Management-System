@@ -146,11 +146,13 @@ class CommentsAdmin(db.Model):
 class Announcements(db.Model):
     __tablename__ = 'announcements'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    name = db.Column(db.String(255))
     date = db.Column(db.String(13))  # 日期
 
     def to_dict(self):
         return {
             'id': self.id,
+            'name': self.name,
             'date': self.date
         }
 

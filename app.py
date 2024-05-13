@@ -552,8 +552,9 @@ def return_book_admin():
 @app.route('/return_student', methods=['GET', 'POST'])
 @login_required
 def return_book_student():
+    card_id = current_user.card_id
     form = SearchStudentForm()
-    return render_template('student/return-student.html', name=session.get('name'), form=form)
+    return render_template('student/return-student.html', name=session.get('name'), form=form, card_id=card_id)
 
 
 @app.route('/find_not_return_book', methods=['GET', 'POST'])
@@ -738,6 +739,21 @@ def comments_admin_get():
     commentsAdmin = CommentsAdmin.query.filter_by(comment_id=comment_id).all()
     comments_list = [comment.to_dict() for comment in commentsAdmin]  # 使用列表推导式转换列表中的每个对象
     return jsonify({"comments": comments_list})
+
+@app.route("/student/announcement", methods=['GET', 'POST'])
+def announcement_student():
+    announcements = Announcements.query.all()
+    return render_template('student/announcements-student.html', name=session.get('name'), announcements=announcements)
+
+@app.route("/admin/announcement", methods=['GET', 'POST'])
+@login_required
+def announcement_admin():
+    return render_template('admin/announcements-admin.html', name=session.get('name'), id=session.get('id'))
+
+@app.route("/announcement/<id>", methods=['GET', 'POST'])
+def announcement_browse(id):
+    return render_template('announcement_browse.html', name=session.get('name'))
+
 
 
 if __name__ == '__main__':
