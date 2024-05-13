@@ -2,15 +2,14 @@ import datetime
 import json
 import time
 import random
-
+import os
 import requests
 from flask import Flask, request, jsonify, Response
 from flask import render_template, session, redirect, url_for, flash, make_response
 from flask_login import LoginManager, login_required, login_user, logout_user, current_user
 
 from forms import Login, SearchBookForm, ChangePasswordForm, EditInfoFormAdmin, EditInfoFormStudent, SearchStudentForm, \
-    NewStoreForm, StoreForm, \
-    BorrowForm, WriteOffForm
+    NewStoreForm, StoreForm, BorrowForm, WriteOffForm, AnnouncementForm
 from models import *
 
 
@@ -753,15 +752,56 @@ def announcement_student():
 @app.route("/admin/announcement", methods=['GET', 'POST'])
 @login_required
 def announcement_admin():
-    return render_template('admin/announcements-admin.html', name=session.get('name'), id=session.get('id'))
+    announcements = Announcements.query.all()
+    return render_template('admin/announcements-admin.html', name=session.get('name'), id=session.get('id'),
+                           announcements=announcements)
 
 
 @app.route("/announcement/<id>", methods=['GET', 'POST'])
 def announcement_browse(id):
-
     with open(f'static/announcements/{id}.md', 'r', encoding='utf-8') as file:
         markdown_text = file.read()
     return render_template('announcement_browse.html', name=session.get('name'), markdown_text=markdown_text)
+
+
+@app.route("/admin/announcement_add", methods=['GET', 'POST'])
+def announcement_admin_add():
+    form = AnnouncementForm()
+    return render_template('admin/post_announcement.html', name=session.get('name'), form=form)
+
+
+@app.route("/admin/announcement_post", methods=['GET', 'POST'])
+def post_announcement():
+    if request.method == 'POST':
+        title = request.form.get('title')
+        file = request.files['file']
+
+        if title and file:
+            # 创建announcement实例并设置标题和日期
+            announcement = Announcements()
+            announcement.name = title
+            today_date = datetime.date.today()
+            today_str = today_date.strftime("%Y-%m-%d")
+            today_stamp = time.mktime(time.strptime(today_str + ' 00:00:00', '%Y-%m-%d %H:%M:%S'))
+            comment_date = int(today_stamp) * 1000
+            announcement.date = comment_date
+
+            # 添加到数据库会话并提交以获取ID
+            db.session.add(announcement)
+            db.session.commit()
+
+            # 重命名文件并保存到本地
+            filename = f"{announcement.id}.md"
+            file_path = os.path.join('static/announcements', filename)
+            file.save(file_path)
+
+            # 这里可以添加将文件内容按UTF-8编码保存的逻辑
+            with open(file_path, 'w', encoding='utf-8') as f:
+                f.write(file.read().decode('utf-8'))
+
+            return redirect(f"/announcement/{announcement.id}")
+
+    return None
 
 
 if __name__ == '__main__':

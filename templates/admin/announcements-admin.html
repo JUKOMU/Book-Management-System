@@ -78,9 +78,7 @@
         }
 
         .height-light {
-            span {
-                background-color: #009688;
-            }
+            background-color: #009688;
         }
 
         .layui-layout-admin .layui-logo {
@@ -235,6 +233,28 @@
             text-decoration: underline;
             cursor: pointer;
         }
+
+        #title-btn {
+            width: 62px;
+            height: 30px;
+            font-weight: bold;
+            border: 1px solid rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            background-color: rgba(133, 255, 133, 0.8);
+            cursor: pointer;
+            pointer-events: all;
+            box-shadow: 1px 2px 0 1px rgba(15, 15, 15, 0.6);
+            font-size: 14px;
+            position: absolute;
+            right: 0;
+            margin: 10px 100px auto 0;
+            align-self: center;
+        }
+
+        #title-btn:hover {
+            filter: brightness(0.8);
+            box-shadow: -1px -2px 0 1px rgba(15, 15, 15, 0.8);
+        }
     </style>
 </head>
 <body class="layui-layout-body">
@@ -258,47 +278,48 @@
             <li class="layui-nav-item"><a href="{{ url_for('logout') }}">退出登录</a></li>
         </ul>
     </div>
-    <div class="tab-bar">
-        <div id="li_1" class="tab-bar-item">
-            <a href="{{url_for('index_student')}}">首页</a>
-            <span></span>
-        </div>
-        <div id="li_2" class="tab-bar-item">
-            <a href="{{ url_for('recommend') }}">智能推荐</a>
-            <span></span>
-        </div>
-        <div id="li_3" class="tab-bar-item">
-            <a href="{{ url_for('search_book_student') }}">图书查询</a>
-            <span></span>
-        </div>
-        <div id="li_4" class="tab-bar-item">
-            <a href="javascript:;">图书管理▼</a>
-            <div class="tab-bar-item-item-parent">
-                <div class="tab-bar-item-item" id="li_4_1"><a href="{{ url_for('borrow_student') }}">图书借阅</a>
-                </div>
-                <div class="tab-bar-item-item" id="li_4_2"><a href="{{ url_for('return_book_student') }}">图书归还</a>
-                </div>
-                <div class="tab-bar-item-item" id="li_4_3"><a href="javascript:;">违规处理</a>
-                </div>
-            </div>
-            <span></span>
-        </div>
-        <div id="li_5" class="tab-bar-item">
-            <a href="{{ url_for('change_info_student') }}">信息设置</a>
-            <span></span>
-        </div>
-        <div id="li_6" class="tab-bar-item">
-            <a href="{{ url_for('announcement_student') }}">查看公告</a>
-            <span></span>
-        </div>
-        <div id="li_7" class="tab-bar-item">
-            <a href="{{ url_for('comments_student') }}">读者留言</a>
-            <span></span>
+
+    <div class="layui-side layui-bg-black">
+        <div class="layui-side-scroll">
+            <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+            <ul class="layui-nav layui-nav-tree" lay-filter="test">
+                <li id="li_1" class="layui-nav-item">
+                    <a class="" href="javascript:;">图书管理</a>
+                    <dl class="layui-nav-child">
+                        <dd id="li_1_1"><a href="{{ url_for('storage') }}">入库管理</a></dd>
+                        <dd id="li_1_2"><a href="{{ url_for('borrow_admin') }}">学生借书</a></dd>
+                        <dd id="li_1_3"><a href="{{ url_for('return_book_admin') }}">学生还书</a></dd>
+                        <dd id="li_1_4"><a href="{{url_for('write_off') }}">图书注销</a></dd>
+                    </dl>
+                </li>
+                <li id="li_2" class="layui-nav-item">
+                    <a href="{{ url_for('change_info_admin') }}">管理员信息设置</a>
+                </li>
+                <li id="li_3" class="layui-nav-item">
+                    <a href="{{ url_for('search_book_admin') }}">图书信息查询</a>
+                </li>
+                <li id="li_4" class="layui-nav-item">
+                    <a href="{{ url_for('search_student') }}">学生信息查询</a>
+                </li>
+                </li>
+                <li id="li_5" class="layui-nav-item">
+                    <a href="{{url_for('announcement_admin') }}">发布公告</a>
+                </li>
+                <li id="li_6" class="layui-nav-item">
+                    <a href="{{url_for('comments_admin') }}">读者留言</a>
+                </li>
+            </ul>
         </div>
     </div>
 
     <div class="container" id="container">
-        <h1 class="title">公告</h1>
+        <h1 class="title">公告
+            <a href="/admin/announcement_add">
+                <button id="title-btn">
+                发布公告
+            </button>
+            </a>
+        </h1>
         <hr/>
         <ul class="announcements" id="announcements">
             {% for announcement in announcements %}
@@ -324,7 +345,7 @@
         element.init();
     });
     $(document).ready(function () {
-        $("#li_6").addClass("height-light");
+        $("#li_5").addClass("height-light");
         $("#container").css({
             'left': '260px',
             'bottom': '50px',

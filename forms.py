@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, SelectField, PasswordField
+from wtforms import StringField, SubmitField, SelectField, PasswordField, FileField
 from wtforms.validators import DataRequired, EqualTo, Length
 
 
@@ -22,8 +22,8 @@ class EditInfoFormAdmin(FlaskForm):
 
 
 class EditInfoFormStudent(FlaskForm):
-    name = StringField(u'用户名', validators=[Length(1,32)])
-    sex = StringField(u'性别',validators=[Length(2)])
+    name = StringField(u'用户名', validators=[Length(1, 32)])
+    sex = StringField(u'性别', validators=[Length(2)])
     telephone = StringField(u'电话号码', validators=[Length(11)])
     submit = SubmitField(u'提交')
 
@@ -44,14 +44,14 @@ class StoreForm(FlaskForm):
     barcode = StringField(validators=[DataRequired(), Length(6)])
     isbn = StringField(validators=[DataRequired(), Length(13)])
     location = StringField(validators=[DataRequired(), Length(1, 32)])
-    num= StringField(validators=[DataRequired(),Length(1,3)])
+    num = StringField(validators=[DataRequired(), Length(1, 3)])
     submit = SubmitField(u'提交')
 
 
 class WriteOffForm(FlaskForm):
     barcode = StringField(validators=[DataRequired(), Length(6)])
     isbn = StringField(validators=[DataRequired(), Length(13)])
-    submit = SubmitField(u'确认')    
+    submit = SubmitField(u'确认')
 
 
 class NewStoreForm(FlaskForm):
@@ -67,3 +67,9 @@ class BorrowForm(FlaskForm):
     card = StringField(validators=[DataRequired()])
     book_name = StringField()
     submit = SubmitField(u'搜索')
+
+
+class AnnouncementForm(FlaskForm):
+    title = StringField('Title', validators=[DataRequired()])
+    file = FileField('File', validators=[DataRequired()])
+    submit = SubmitField(u'发布')
