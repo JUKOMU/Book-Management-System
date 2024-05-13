@@ -505,7 +505,7 @@
                 </li>
                 {% elif comment.status == 1 and comment.student_id == id %}
                 <li>
-                    <p id={{comment.id}} class="my-comment solved-comment" onclick="showCommentForm(}{{comment.id}})">
+                    <p id={{comment.id}} class="my-comment solved-comment" onclick="showCommentForm({{comment.id}})">
                         {{comment.comment}}
                     </p>
                 </li>

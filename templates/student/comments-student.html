@@ -275,7 +275,7 @@
             float: none;
         }
 
-        .container-body ul li p{
+        .container-body ul li p {
             width: 32%;
             padding: 15px;
             margin-top: 15px;
@@ -321,6 +321,109 @@
             background-color: rgba(238, 46, 36, 0.5);
         }
 
+
+        display: block
+
+        ;
+        position: absolute
+
+        ;
+        z-index:
+
+        10000
+        ;
+        right:
+
+        -
+        500
+        px
+
+        ;
+        top:
+
+        20
+        %
+        ;
+        transition: all
+
+        1
+        s
+
+        ;
+        }
+
+        .form-show {
+            display: block;
+            position: absolute;
+            z-index: 10000;
+            right: 20%;
+            top: 20%;
+            transition: all 1s;
+        }
+
+        .comment-focus {
+            filter: brightness(0.7);
+        }
+
+        .prevent-click {
+            pointer-events: none;
+            cursor: none;
+        }
+
+        .form-hidden {
+            display: block;
+            position: absolute;
+            z-index: 10000;
+            right: -500px;
+            top: 20%;
+            transition: all 1s;
+        }
+
+        .form-show {
+            display: block;
+            position: absolute;
+            z-index: 10000;
+            right: -500px;
+            top: 20%;
+            transition: all 1s;
+        }
+
+        .comment-focus {
+            filter: brightness(0.7);
+        }
+
+        .prevent-click {
+            pointer-events: none;
+            cursor: none;
+        }
+
+        #side-nav {
+            height: 0;
+            width: 18%;
+            padding: 20px 20px;
+            top: 110px;
+            position: fixed;
+            background-color: #ecf5fd;
+            border-radius: 10px;
+            transition: all 1s;
+        }
+
+        .nav-show {
+            right: 0;
+        }
+
+        .nav-hide {
+            right: -500px;
+        }
+
+        .comment-admin {
+            width: 85% !important;
+            padding: 10px !important;
+            border-radius: 5px !important;
+            background-color: #fbf8e0;
+            align-self: center;
+            margin-top: 10px !important;
+        }
     </style>
 </head>
 <body class="layui-layout-body">
@@ -394,19 +497,27 @@
                 {% for comment in comments %}
                 {% if comment.status == 0 and comment.student_id == id %}
                 <li>
-                    <p id={{comment.id}} class="my-comment unsolved-comment">{{comment.comment}}</p>
+                    <p id={{comment.id}} class="my-comment unsolved-comment" onclick="showCommentForm({{comment.id}})">
+                        {{comment.comment}}
+                    </p>
                 </li>
                 {% elif comment.status == 1 and comment.student_id == id %}
                 <li>
-                    <p id={{comment.id}} class="my-comment solved-comment">{{comment.comment}}</p>
+                    <p id={{comment.id}} class="my-comment solved-comment" onclick="showCommentForm({{comment.id}})">
+                        {{comment.comment}}
+                    </p>
                 </li>
                 {% elif comment.status == 0 and comment.student_id != id %}
                 <li>
-                    <p id={{comment.id}} class="others-comment unsolved-comment">{{comment.comment}}</p>
+                    <p id={{comment.id}} class="others-comment unsolved-comment"
+                       onclick="showCommentForm({{comment.id}})">{{comment.comment}}
+                    </p>
                 </li>
                 {% else %}
                 <li>
-                    <p id={{comment.id}} class="others-comment solved-comment">{{comment.comment}}</p>
+                    <p id={{comment.id}} class="others-comment solved-comment"
+                       onclick="showCommentForm({{comment.id}})">{{comment.comment}}
+                    </p>
                 </li>
                 {% endif %}
                 {% endfor %}
@@ -425,6 +536,23 @@
     </div>
 
     <canvas id="side-canvas"></canvas>
+
+    <div class="comment-form form-hidden" id="comment-form">
+        <div class="dialog-box">
+            <p id="dialog-input-label"></p>
+            <textarea id="dialog-input" class="dialog-input"></textarea>
+            <input id="form-submit-value" type="hidden">
+            <div class="btns">
+                <button type="button" onclick="onSubmit()" class="comment-add">+</button>
+                <button type="button" onclick="onCancel()" class="comment-cancel">×</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="side-nav nav-hide" id="side-nav">
+        <ul id="side-nav-ul">
+        </ul>
+    </div>
 </div>
 <script type="text/javascript" src="../../static/layui/layui.js"></script>
 <script type="text/javascript" src="../../static/js/particle-animation.js"></script>
@@ -447,6 +575,26 @@
             'background-color': '#ffffff',
             'border-radius': '20px',
             'padding-bottom': '80px',
+        });
+
+        $("#side-nav").css({
+            'height': ($(window).height() - 160).toString() + "px",
+        });
+
+        var form = document.getElementById('comment-form');
+
+        // 添加单击事件监听器到整个文档
+        document.addEventListener('click', function (event) {
+            var target = event.target;
+
+            // 检查点击事件是否发生在菜单内部
+            var isClickInsideMenu = form.contains(target);
+
+            // 如果点击事件发生在菜单外部，则执行相应操作
+            if (!isClickInsideMenu) {
+                // 在这里执行菜单外的操作，例如关闭菜单
+                onCancel();
+            }
         });
     });
 
@@ -482,6 +630,137 @@
             console.error('发生错误:', error);
         });
     }
+
+
+    var old_focus_comment_id = "";
+
+    function showCommentForm(comment_id) {
+        if (old_focus_comment_id !== "") {
+            document.getElementById(old_focus_comment_id).classList.remove("comment-focus");
+        }
+        old_focus_comment_id = comment_id;
+        document.getElementById(comment_id).classList.add("comment-focus");
+        let form = document.querySelector(".comment-form");
+        let label = document.getElementById("dialog-input-label");
+        let container = document.querySelector(".container-body");
+        if (form.classList.contains("form-hidden")) {
+            form.classList.remove("form-hidden");
+        }
+        container.classList.add("prevent-click");
+        label.textContent = "comment id:  " + comment_id;
+        form.classList.add("form-show");
+        document.getElementById("form-submit-value").value = comment_id;
+        showSideNav(comment_id);
+        event.stopPropagation();
+    }
+
+
+    function onSubmit() {
+        let comment_id = $("#form-submit-value").val();
+        let admin_id = $("#id").val();
+        let comment_content = $('#dialog-input').val();
+        console.log(comment_content);
+        fetch('http://localhost:5000/admin/comment/add', {
+            method: 'post',
+            headers: {'Content-Type': 'text/plain'},
+            body: JSON.stringify({
+                "comment_id": comment_id,
+                "admin_id": admin_id,
+                "comment": comment_content
+            })
+        }).then(response => {
+            console.log(response);
+            return response.body;
+        }).then(body => {
+            const reader = body.getReader();
+            const decoder = new TextDecoder();
+            reader.read().then(({done, value}) => {
+                if (done) { // 读取完成
+                    return;
+                }
+                let data = decoder.decode(value, {stream: true});
+                console.log(data);
+                if (JSON.parse(data).code === 200) {
+                    // 留言成功
+                    showSideNav(comment_id);
+                }
+            });
+        }).catch(error => {
+            console.error('发生错误:', error);
+        });
+    }
+
+    function onCancel() {
+        let form = document.querySelector(".comment-form");
+        let container = document.querySelector(".container-body");
+        if (form.classList.contains("form-show")) {
+            form.classList.remove("form-show");
+        }
+        if (old_focus_comment_id !== "") {
+            document.getElementById(old_focus_comment_id).classList.remove("comment-focus");
+            old_focus_comment_id = "";
+        }
+        container.classList.remove("prevent-click");
+        form.classList.add("form-hidden");
+        hideSideNav();
+        event.stopPropagation();
+    }
+
+
+    /* 显示侧边栏，侧边栏显示用户评论下的评论 */
+    function showSideNav(comment_id) {
+        let nav = document.getElementById("side-nav");
+        if (nav.classList.contains("nav-hide")) {
+            nav.classList.remove("nav-hide");
+        }
+        nav.classList.add("nav-show");
+
+        fetch('http://localhost:5000/admin/comment/get', {
+            method: 'post',
+            headers: {'Content-Type': 'text/plain'},
+            body: JSON.stringify({
+                "id": comment_id,
+            })
+        }).then(response => {
+            console.log(response);
+            return response.body;
+        }).then(body => {
+            const reader = body.getReader();
+            const decoder = new TextDecoder();
+            reader.read().then(({done, value}) => {
+                if (done) { // 读取完成
+                    return;
+                }
+                let data = decoder.decode(value, {stream: true});
+                let comments = JSON.parse(data).comments;
+                let side_nav_ul = document.getElementById("side-nav-ul");
+                side_nav_ul.innerHTML = "";
+                for (const comment of comments) {
+                    let li = document.createElement("li");
+                    let p = document.createElement("p");
+                    let label = document.createElement("label");
+                    label.textContent = "Admin: "
+                    li.classList.add("comment-admin");
+                    p.textContent = comment.comment;
+                    li.appendChild(label);
+                    li.appendChild(p);
+                    side_nav_ul.appendChild(li);
+                }
+            });
+        }).catch(error => {
+            console.error('发生错误:', error);
+        });
+    }
+
+    /* 隐藏侧边栏 */
+    function hideSideNav() {
+        let nav = document.getElementById("side-nav");
+        if (nav.classList.contains("nav-show")) {
+            nav.classList.remove("nav-show");
+        }
+        nav.classList.add("nav-hide");
+    }
+
 </script>
 </body>
 </html>
