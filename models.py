@@ -123,3 +123,24 @@ class Comments(db.Model):
     def __repr__(self):
         return '<Comments %r>' % self.id
 
+class CommentsAdmin(db.Model):
+    __tablename__ = 'comments_admin'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    comment_id = db.Column(db.String(10))
+    admin_id = db.Column(db.String(10))
+    comment = db.Column(db.String(1024))
+    date = db.Column(db.String(13))  # 日期
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'comment_id': self.comment_id,
+            'admin_id': self.admin_id,
+            'comment': self.comment,
+            'date': self.date
+        }
+
+    def __repr__(self):
+        return '<CommentsAdmin %r>' % self.id
+
+
