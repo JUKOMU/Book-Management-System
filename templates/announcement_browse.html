@@ -9,7 +9,7 @@
     <script src="https://cdn.staticfile.org/popper.js/1.12.5/umd/popper.min.js"></script>
     <script type="text/javascript"
             src="https://cdn.staticfile.org/twitter-bootstrap/4.1.0/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="../../static/markdown/marked.min.js"></script>
+    <script type="text/javascript" src="../static/markdown/marked.min.js"></script>
     <style>
         body {
             background-color: #f1f1f1;
@@ -187,7 +187,7 @@
 
 
         .container {
-            position: fixed;
+            position: absolute;
             bottom: 10px;
             left: 10px;
             height: 10px;
@@ -196,6 +196,7 @@
             padding: 30px;
             background-color: #FFFFFF;
             border-radius: 5px;
+            overflow-y: scroll;
         }
 
         .container > * {
@@ -206,6 +207,18 @@
         .title {
             font-size: 40px;
             color: #1ba595;
+        }
+
+        .container-body {
+            padding-left: 15px;
+        }
+
+        .container-body > * {
+            margin-top: 5px;
+        }
+
+        .container-body ul li {
+            list-style-type: circle;
         }
 
     </style>
@@ -273,24 +286,26 @@
     <div class="container" id="container">
         <h1 class="title">公告</h1>
         <hr/>
-        <ul class="announcements" id="announcements">
-            {% for announcement in announcements %}
-            <li>
-                <p>{{ loop.index }}</p>
-                <a href="/announcement/{{announcement.id}}">{{ announcement.name }}</a>
-            </li>
-            {% endfor %}
-        </ul>
+        <div class="container-body" id="container-body">
+
+        </div>
     </div>
 
+    <input type="hidden" id="markdown" value="{{markdown_text}}">
     <div class="layui-footer">
         Copyright 2024 Construct
     </div>
 
+    <canvas id="side-canvas"></canvas>
+
     <!--<div id="left-cover"></div>
     <div id="right-cover"></div>-->
 </div>
-<script type="text/javascript" src="../../static/layui/layui.js"></script>
+<script type="text/javascript" src="../static/layui/layui.js"></script>
+<link rel="stylesheet" href="../static/highlight/styles/atom-one-dark.css">
+<script src="../static/highlight/highlight.js"></script>
+<script>hljs.highlightAll();</script>
+<script src="../static/js/particle-animation.js"></script>
 <script>
     layui.use('element', function () {
         var element = layui.element;
@@ -303,6 +318,12 @@
             'bottom': '50px',
             'height': ($(window).height() - 220).toString() + "px",
         });
+
+        let markdown = document.getElementById("markdown").value;
+        let html = marked.parse(markdown);
+        let container_body = document.getElementById('container-body');
+        container_body.innerHTML = html;
+        hljs.highlightAll();
     });
 </script>
 </body>

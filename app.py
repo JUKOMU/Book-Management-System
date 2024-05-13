@@ -710,6 +710,7 @@ def comments_admin_solved():
 
     return jsonify({'code': 200, 'message': "Success"})
 
+
 @app.route("/admin/comment/add", methods=['GET', 'POST'])
 def comments_admin_add():
     body = json.loads(request.data.decode("utf8"))
@@ -731,6 +732,7 @@ def comments_admin_add():
 
     return jsonify({'code': 200, 'message': "Success"})
 
+
 @app.route("/admin/comment/get", methods=['GET', 'POST'])
 def comments_admin_get():
     body = json.loads(request.data.decode("utf8"))
@@ -740,20 +742,25 @@ def comments_admin_get():
     comments_list = [comment.to_dict() for comment in commentsAdmin]  # 使用列表推导式转换列表中的每个对象
     return jsonify({"comments": comments_list})
 
+
 @app.route("/student/announcement", methods=['GET', 'POST'])
 def announcement_student():
     announcements = Announcements.query.all()
     return render_template('student/announcements-student.html', name=session.get('name'), announcements=announcements)
+
 
 @app.route("/admin/announcement", methods=['GET', 'POST'])
 @login_required
 def announcement_admin():
     return render_template('admin/announcements-admin.html', name=session.get('name'), id=session.get('id'))
 
+
 @app.route("/announcement/<id>", methods=['GET', 'POST'])
 def announcement_browse(id):
-    return render_template('announcement_browse.html', name=session.get('name'))
 
+    with open(f'static/announcements/{id}.md', 'r', encoding='utf-8') as file:
+        markdown_text = file.read()
+    return render_template('announcement_browse.html', name=session.get('name'), markdown_text=markdown_text)
 
 
 if __name__ == '__main__':
