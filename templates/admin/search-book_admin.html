@@ -110,7 +110,6 @@
                     }
                 }
             });
-            return false;
             $('#search').on('click', function () {
                 var form = new FormData(document.getElementById("searchForm"));
                 $.ajax({
@@ -160,6 +159,7 @@
                 });
                 return false;
             })
+            return false;
         });
 
     });
