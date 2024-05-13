@@ -709,6 +709,36 @@ def comments_admin_solved():
 
     return jsonify({'code': 200, 'message': "Success"})
 
+@app.route("/admin/comment/add", methods=['GET', 'POST'])
+def comments_admin_add():
+    body = json.loads(request.data.decode("utf8"))
+    print(body)
+    admin_id = body.get("admin_id")
+    comment_id = body.get("comment_id")
+    comment_str = body.get("comment")
+    today_date = datetime.date.today()
+    today_str = today_date.strftime("%Y-%m-%d")
+    today_stamp = time.mktime(time.strptime(today_str + ' 00:00:00', '%Y-%m-%d %H:%M:%S'))
+    comment_date = int(today_stamp) * 1000
+    commentAdmin = CommentsAdmin()
+    commentAdmin.comment_id = comment_id
+    commentAdmin.admin_id = admin_id
+    commentAdmin.comment = comment_str
+    commentAdmin.date = comment_date
+    db.session.add(commentAdmin)
+    db.session.commit()
+
+    return jsonify({'code': 200, 'message': "Success"})
+
+@app.route("/admin/comment/get", methods=['GET', 'POST'])
+def comments_admin_get():
+    body = json.loads(request.data.decode("utf8"))
+    print(body)
+    comment_id = body.get('id')
+    commentsAdmin = CommentsAdmin.query.filter_by(comment_id=comment_id).all()
+    comments_list = [comment.to_dict() for comment in commentsAdmin]  # 使用列表推导式转换列表中的每个对象
+    return jsonify({"comments": comments_list})
+
 
 if __name__ == '__main__':
     app.run()
