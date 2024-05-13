@@ -143,4 +143,17 @@ class CommentsAdmin(db.Model):
     def __repr__(self):
         return '<CommentsAdmin %r>' % self.id
 
+class Announcements(db.Model):
+    __tablename__ = 'announcements'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    date = db.Column(db.String(13))  # 日期
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'date': self.date
+        }
+
+    def __repr__(self):
+        return '<Announcements %r>' % self.id
 
