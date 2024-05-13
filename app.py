@@ -8,9 +8,11 @@ from flask import Flask, request, jsonify, Response
 from flask import render_template, session, redirect, url_for, flash, make_response
 from flask_login import LoginManager, login_required, login_user, logout_user, current_user
 
-from forms import Login, SearchBookForm, ChangePasswordForm, EditInfoFormAdmin,EditInfoFormStudent, SearchStudentForm, NewStoreForm, StoreForm, \
+from forms import Login, SearchBookForm, ChangePasswordForm, EditInfoFormAdmin, EditInfoFormStudent, SearchStudentForm, \
+    NewStoreForm, StoreForm, \
     BorrowForm, WriteOffForm
 from models import *
+
 
 # 配置 CORS，允许所有域名跨域
 @app.after_request
@@ -159,12 +161,15 @@ def echarts():
 def user_info_admin(id):
     user = Admin.query.filter_by(admin_id=id).first()
     return render_template('admin/user-info_admin.html', user=user, name=session.get('name'))
+
+
 @app.route('/user1/<id>')
 def user_info_student(id):
     user = Student.query.filter_by(card_id=id).first()
-    valid_date=timeStamp(current_user.valid_date)
-    enroll_date=timeStamp(current_user.enroll_date)
-    return render_template('student/user-info_student.html', user=user, name=session.get('name'),valid_date=valid_date,enroll_date=enroll_date)
+    valid_date = timeStamp(current_user.valid_date)
+    enroll_date = timeStamp(current_user.enroll_date)
+    return render_template('student/user-info_student.html', user=user, name=session.get('name'), valid_date=valid_date,
+                           enroll_date=enroll_date)
 
 
 @app.route('/change_password_admin', methods=['GET', 'POST'])
@@ -229,9 +234,9 @@ def change_info_student():
     form = EditInfoFormStudent()
     if form.is_submitted():
         print(current_user.student_name)
-        current_user.student_name =form.name.data
-        current_user.sex=form.sex.data
-        current_user.telephone=form.telephone.data
+        current_user.student_name = form.name.data
+        current_user.sex = form.sex.data
+        current_user.telephone = form.telephone.data
         db.session.add(current_user)
         # 提交修改
         db.session.commit()
@@ -243,8 +248,8 @@ def change_info_student():
     form.sex.data = current_user.sex
     form.telephone.data = current_user.telephone
     id = current_user.card_id
-    valid_date =timeStamp(current_user.valid_date)
-    return render_template('student/change-info-student.html', form=form, id=id,valid_date=valid_date)
+    valid_date = timeStamp(current_user.valid_date)
+    return render_template('student/change-info-student.html', form=form, id=id, valid_date=valid_date)
 
 
 @app.route('/search_book_admin', methods=['GET', 'POST'])
@@ -410,11 +415,11 @@ def storage():
                 if exist is not None:
                     flash(u'该编号已经存在！')
                 else:
-                    num=request.form.get('num')
-                    num=int(num)
-                    while(num>0):
+                    num = request.form.get('num')
+                    num = int(num)
+                    while (num > 0):
                         item = Inventory()
-                        item.barcode =str(random.randint(100000,999999))
+                        item.barcode = str(random.randint(100000, 999999))
                         item.isbn = request.form.get('isbn')
                         item.admin = current_user.admin_id
                         item.location = request.form.get('location')
@@ -423,10 +428,10 @@ def storage():
                         today_date = datetime.date.today()
                         today_str = today_date.strftime("%Y-%m-%d")
                         today_stamp = time.mktime(time.strptime(today_str + ' 00:00:00', '%Y-%m-%d %H:%M:%S'))
-                        item.storage_date = int(today_stamp) * 1000 
+                        item.storage_date = int(today_stamp) * 1000
                         db.session.add(item)
                         db.session.commit()
-                        num-=1
+                        num -= 1
                     flash(u'入库成功！')
         return redirect(url_for('storage'))
     return render_template('admin/storage.html', name=session.get('name'), form=form)
@@ -462,8 +467,9 @@ def new_store():
 def borrow_admin():
     form = BorrowForm()
     books = Book.query.all()
-    inventorys=Inventory.query.all()
-    return render_template('admin/borrow-admin.html', name=session.get('name'), form=form,books=books, inventorys=inventorys)
+    inventorys = Inventory.query.all()
+    return render_template('admin/borrow-admin.html', name=session.get('name'), form=form, books=books,
+                           inventorys=inventorys)
 
 
 @app.route('/borrow_student', methods=['GET', 'POST'])
@@ -471,9 +477,10 @@ def borrow_admin():
 def borrow_student():
     form = BorrowForm()
     books = Book.query.all()
-    inventorys=Inventory.query.all()
-    id=current_user.card_id
-    return render_template('student/borrow-student.html', name=session.get('name'), form=form,id=id,books=books,inventorys=inventorys)
+    inventorys = Inventory.query.all()
+    id = current_user.card_id
+    return render_template('student/borrow-student.html', name=session.get('name'), form=form, id=id, books=books,
+                           inventorys=inventorys)
 
 
 @app.route('/find_stu_book', methods=['GET', 'POST'])
@@ -650,17 +657,58 @@ def eb_stream():
     print(msg)
     return Response(gen_stream(msg), content_type='text/event-stream')
 
+
 # 读者留言
 @app.route("/student/comment", methods=['GET', 'POST'])
 @login_required
 def comments_student():
-    return render_template('student/comments-student.html')
+    id = current_user.student_id
+    comments = Comments.query.all()
+    return render_template('student/comments-student.html', name=session.get('name'), id=id, comments=comments)
+
 
 # 管理员留言
 @app.route("/admin/comment", methods=['GET', 'POST'])
 @login_required
 def comments_admin():
-    return render_template('admin/comments-admin.html')
+    id = current_user.admin_id
+    comments = Comments.query.all()
+    return render_template('admin/comments-admin.html', name=session.get('name'), id=id, comments=comments)
+
+
+@app.route("/student/comment/add", methods=['GET', 'POST'])
+def comments_student_add():
+    body = json.loads(request.data.decode("utf8"))
+    print(body)
+    student_id = body.get('id')
+    comment_str = body.get("comment")
+    today_date = datetime.date.today()
+    today_str = today_date.strftime("%Y-%m-%d")
+    today_stamp = time.mktime(time.strptime(today_str + ' 00:00:00', '%Y-%m-%d %H:%M:%S'))
+    comment_date = int(today_stamp) * 1000
+    comment = Comments()
+    comment.student_id = student_id
+    comment.comment = comment_str
+    comment.date = comment_date
+    comment.status = 0
+    db.session.add(comment)
+    db.session.commit()
+
+    return jsonify({'code': 200, 'message': "Success"})
+
+
+@app.route("/admin/comment/solved", methods=['GET', 'POST'])
+def comments_admin_solved():
+    body = json.loads(request.data.decode("utf8"))
+    print(body)
+    comment_id = body.get("comment_id")
+    comment = Comments.query.filter_by(id=comment_id).first()
+    comment.status = 1
+    db.session.add(comment)
+    db.session.commit()
+
+    return jsonify({'code': 200, 'message': "Success"})
+
 
 if __name__ == '__main__':
     app.run()

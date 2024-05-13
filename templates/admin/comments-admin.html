@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <title>智能推荐</title>
+    <title>读者留言</title>
     <link rel="stylesheet" href="../../static/layui/css/layui.css">
     <script src="https://cdn.staticfile.org/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://cdn.staticfile.org/popper.js/1.12.5/umd/popper.min.js"></script>
@@ -14,6 +14,7 @@
         body {
             background-color: #f1f1f1;
         }
+
         .alert {
             position: relative;
             padding: .75rem 1.25rem;
@@ -128,10 +129,12 @@
                 color: #ffffff;
                 display: block;
             }
+
             span {
                 height: 5px;
                 display: block;
             }
+
             align-self: center;
             height: 40px;
         }
@@ -146,6 +149,7 @@
             .tab-bar-item-item-parent {
                 display: block;
             }
+
             .tab-bar-item-item {
                 display: block;
             }
@@ -159,27 +163,33 @@
             padding: 0 10px 5px 10px;
             border-radius: 5px;
         }
+
         .tab-bar-item-item-parent:hover {
             display: block;
+
             .tab-bar-item-item {
                 display: block;
             }
         }
+
         .tab-bar-item-item {
             display: none;
             margin-top: 5px;
         }
+
         .tab-bar-item-item:hover {
             display: block;
+
             a {
                 color: #25bba4;
             }
         }
 
         .title {
-            position: fixed;
-            top: 130px;
-            left: 230px;
+            position: absolute;
+            top: 10px;
+            left: 45%;
+            text-decoration-line: underline;
         }
 
         .container {
@@ -209,40 +219,34 @@
         .input {
             position: fixed;
             bottom: 44px;
-            right: 120px;
-            width: calc(100% - 220px);
+            left: 280px;
+            width: calc(100% - 600px);
             padding: 10px;
             text-align: center;
         }
 
         .input #textInput {
-            height: 40px;
+            height: 80px;
             width: calc(100% - 420px);
             border-radius: 10px;
             font-size: 16px;
             text-indent: 1ch;
+            padding: 4px;
         }
 
         .input #summit {
-            height: 40px;
-            width: 40px;
+            position: absolute;
+            height: 30px;
+            width: 30px;
             border-radius: 50%;
             font-size: 14px;
             cursor: pointer;
+            right: 210px;
+            bottom: 10px;
         }
 
         .input #summit:hover {
             opacity: 0.8;
-        }
-
-        .img {
-            height: 30px;
-            width: 30px;
-            margin-right: 5px;
-            padding: 3px;
-            border-radius: 50%;
-            background-color: #c0effd;
-            border: 1px solid #c0effd;
         }
 
         code {
@@ -250,31 +254,82 @@
             margin: 5px 15px;
         }
 
-        .div-answer {
-            display: flex;
-            flex-direction: column;
-            gap: 10px; /* 上下间隔 */
+        .container-body {
+            padding-top: 60px;
         }
 
-        #left-cover {
-            position: fixed;
-            height: 100%;
-            width: 250px;
-            top: -50px;
-            left: -30px;
-            background-color: #ffffff;
-            border-radius: 30px;
+        .container-body ul {
+            padding-left: 15px;
+            padding-right: 15px;
+            display: block;
         }
 
-        #right-cover {
-            position: fixed;
-            height: 100%;
-            width: 250px;
-            top: -50px;
-            right: -30px;
-            background-color: #ffffff;
-            border-radius:30px
+        .container-body ul li {
+            padding: 2px;
+            width: 100%;
+            height: fit-content;
+            float: none;
         }
+
+        .container-body ul li p {
+            width: 40%;
+            padding: 15px;
+            margin-top: 20px;
+        }
+
+        .container-body ul li input {
+            display: list-item;
+            position: relative;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            margin: 0 0 0 auto;
+            padding: 0 0 20px 0;
+            right: 0;
+            background-color: #0ed839;
+            cursor: pointer;
+        }
+
+        .my-comment {
+            position: relative;
+            text-align: right;
+            right: 25px;
+            border-radius: 6px 6px 15px 6px;
+            margin: 0 0 0 auto;
+        }
+
+        .my-comment:after {
+            content: "○";
+            position: absolute;
+            right: -15px;
+            bottom: 0;
+            font-size: 20px;
+        }
+
+        .others-comment {
+            position: relative;
+            text-align: left;
+            left: 25px;
+            border-radius: 6px 6px 6px 15px;
+            margin: 0 auto 0 0;
+        }
+
+        .others-comment:before {
+            content: "○";
+            position: absolute;
+            left: -15px;
+            bottom: 0;
+            font-size: 20px;
+        }
+
+        .solved-comment {
+            background-color: rgba(0, 204, 102, 0.6);
+        }
+
+        .unsolved-comment {
+            background-color: rgba(238, 46, 36, 0.5);
+        }
+
     </style>
 </head>
 <body class="layui-layout-body">
@@ -338,28 +393,56 @@
         </div>
     </div>
 
-    <div class="title">
-        <h2>智能推荐</h2>
-    </div>
-
     <div class="container" id="container">
-        <div id="div-answer" class="div-answer">
-            <div id="answer"></div>
+        <div class="title">
+            <h2>留言板</h2>
+        </div>
+
+        <div class="container-body">
+            <ul>
+                {% for comment in comments %}
+                {% if comment.status == 0 and comment.student_id == id %}
+                <li>
+                    <p id={{comment.id}} class="my-comment unsolved-comment" onclick="showCommentForm()">{{comment.comment}}
+                        <input type="button" onclick="solved({{comment.id}})" value="✓">
+                    </p>
+                </li>
+                {% elif comment.status == 1 and comment.student_id == id %}
+                <li>
+                    <p id={{comment.id}} class="my-comment solved-comment" onclick="showCommentForm()">{{comment.comment}}
+                    </p>
+                </li>
+                {% elif comment.status == 0 and comment.student_id != id %}
+                <li>
+                    <p id={{comment.id}} class="others-comment unsolved-comment" onclick="showCommentForm()">{{comment.comment}}
+                        <input type="button" onclick="solved({{comment.id}})" value="✓">
+                    </p>
+                </li>
+                {% else %}
+                <li>
+                    <p id={{comment.id}} class="others-comment solved-comment" onclick="showCommentForm()">{{comment.comment}}
+                    </p>
+                </li>
+                {% endif %}
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="input">
+            <textarea type="textarea" id="textInput" placeholder="在这里评论"></textarea>
+            <img onclick="comment()" id="summit" src="../../static/summit.png"/>
         </div>
     </div>
-    <div class="input">
-        <textarea type="textarea" id="textInput" placeholder="在这里评论"></textarea>
-        <img onclick="run_prompt()" id="summit" src="../../static/summit.png"/>
-    </div>
+
+    <input id="id" hidden="hidden" value={{id}}>
 
     <div class="layui-footer">
         Copyright 2024 Construct
     </div>
 
-    <div id="left-cover"></div>
-    <div id="right-cover"></div>
+    <canvas id="side-canvas"></canvas>
 </div>
 <script type="text/javascript" src="../../static/layui/layui.js"></script>
+<script type="text/javascript" src="../../static/js/particle-animation.js"></script>
 <script>
     layui.use('element', function () {
         var element = layui.element;
@@ -367,8 +450,103 @@
     });
 
     $(document).ready(function () {
-        $("#li_7").addClass("height-light");
+        $("#li_6").addClass("height-light");
+        $("#container").css({
+            'position': 'fixed',
+            'top': '100px',
+            'left': '280px',
+            'width': 'calc(100% -500px)',
+            'height': ($(window).height() - 280).toString() + "px",
+            'margin': '0',
+            'padding': '10px',
+            'background-color': '#ffffff',
+            'border-radius': '20px',
+            'padding-bottom': '80px',
+        });
+
+        // 获取所有class为"solved-comment"的p标签
+        var solvedComments = document.getElementsByClassName("solved-comment");
+
+        // 遍历每个solved-comment类的p标签
+        for (var i = 0; i < solvedComments.length; i++) {
+            // 在每个p标签上创建并添加文字水印
+            var watermark = document.createElement("span");
+            watermark.style.color = "rgba(0, 0, 0, 0.3)"; // 设置水印颜色
+            watermark.style.position = "relative"; // 设置水印位置为相对定位
+            watermark.style.fontSize = "20px"; // 设置水印字体大小
+            watermark.style.fontWeight = "bold"; // 设置水印字体粗细
+            watermark.style.marginRight = "-20px"; // 负的右边距，调整水印位置
+            watermark.innerHTML = "Solved"; // 设置水印文字
+            solvedComments[i].appendChild(watermark); // 将水印添加到p标签中
+        }
     });
+
+    function comment() {
+        let student_id = $("#id").val();
+        let comment_content = $('#textInput').val();
+        console.log(comment_content);
+        fetch('http://localhost:5000/student/comment/add', {
+            method: 'post',
+            headers: {'Content-Type': 'text/plain'},
+            body: JSON.stringify({
+                "id": student_id,
+                "comment": comment_content
+            })
+        }).then(response => {
+            console.log(response);
+            return response.body;
+        }).then(body => {
+            const reader = body.getReader();
+            const decoder = new TextDecoder();
+            reader.read().then(({done, value}) => {
+                if (done) { // 读取完成
+                    return;
+                }
+                let data = decoder.decode(value, {stream: true});
+                console.log(data);
+                if (JSON.parse(data).code === 200) {
+                    // 留言成功
+                    window.location.reload();
+                }
+            });
+        }).catch(error => {
+            console.error('发生错误:', error);
+        });
+    }
+
+    function solved(id) {
+        let comment_id = id;
+        fetch('http://localhost:5000/admin/comment/solved', {
+            method: 'post',
+            headers: {'Content-Type': 'text/plain'},
+            body: JSON.stringify({
+                "comment_id": comment_id
+            })
+        }).then(response => {
+            console.log(response);
+            return response.body;
+        }).then(body => {
+            const reader = body.getReader();
+            const decoder = new TextDecoder();
+            reader.read().then(({done, value}) => {
+                if (done) { // 读取完成
+                    return;
+                }
+                let data = decoder.decode(value, {stream: true});
+                console.log(data);
+                if (JSON.parse(data).code === 200) {
+                    //
+                    window.location.reload();
+                }
+            });
+        }).catch(error => {
+            console.error('发生错误:', error);
+        });
+    }
+
+    function showCommentForm() {
+        
+    }
 </script>
 </body>
 </html>
