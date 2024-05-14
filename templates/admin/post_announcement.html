@@ -36,6 +36,10 @@
 
 {% block style_2 %}
 <style>
+    .container {
+        overflow-y: hidden;
+    }
+
     #preview > * {
         margin-top: 15px;
     }
@@ -148,8 +152,8 @@
 </form>
 <p style="color: #0aaeb3;font-size: 20px">预览</p>
 <div class="operation" id="operation">
-    <button id="edit-button" onclick="showEdit()">编辑</button>
-    <button id="preview-button" onclick="showPreview()">预览</button>
+    <button id="edit-button" class="disabled-button" onclick="showEdit()">编辑</button>
+    <button id="preview-button"class="disabled-button" onclick="showPreview()">预览</button>
 </div>
 <div class="container" id="container">
     <h1 class="title" id="title-show"></h1>
@@ -174,11 +178,11 @@
             'overflow-y': 'scroll',
             'left': '260px',
             'bottom': '50px',
-            'height': ($(window).height() - 220).toString() + "px",
+            'height': ($(window).height() - 350).toString() + "px",
         });
         $("#text-edit").css({
             'width': document.getElementById("container").offsetWidth - 100 + "px",
-            'height': ($(window).height() - 270).toString() + "px",
+            'height': ($(window).height() - 420).toString() + "px",
             'padding': '10px',
         });
         $('#post').on('click', function () {
@@ -210,7 +214,7 @@
                     } else {
                         layui.use('layer', function () {
                             var layer = layui.layer;
-                            layer.msg('发布失败', {time: 1000});
+                            layer.msg('发布失败,请检查标题或文件是否填写', {time: 2000});
                         });
                     }
                 },
