@@ -24,11 +24,6 @@
         font-size: 16px;
     }
 
-    .title {
-        font-size: 40px;
-        color: #1ba595;
-    }
-
     .container-body {
         padding-left: 15px;
     }
@@ -36,8 +31,17 @@
 
 {% block style_2 %}
 <style>
+    .title {
+        font-size: 40px;
+        color: #1ba595;
+    }
+
     .container {
         overflow-y: hidden;
+    }
+
+    #preview {
+        background-color: #f1f1f1;
     }
 
     #preview > * {
@@ -64,12 +68,65 @@
         resize: none;
         overflow-y: unset;
         padding-left: 10px;
+        background-color: #f1f1f1;
+    }
+
+    #operation #new-button {
+        position: absolute;
+        right: 180px;
+        top: -10px;
+        width: 120px;
+        height: 30px;
+        font-weight: bold;
+        border: 1px solid rgba(0, 0, 0, 0.2);
+        border-radius: 8px;
+        background-color: rgba(0, 255, 166, 0.9);
+        cursor: pointer;
+        pointer-events: all;
+        box-shadow: 1px 2px 0 1px rgba(15, 15, 15, 0.6);
+        font-size: 14px;
+        margin: 10px 100px auto 0;
+        align-self: center;
+    }
+
+    #operation #new-button:hover {
+        filter: brightness(0.8);
+        box-shadow: -1px -2px 0 1px rgba(15, 15, 15, 0.8);
+    }
+
+    #operation #post-button {
+        position: absolute;
+        right: 0;
+        top: -10px;
+        width: 120px;
+        height: 30px;
+        font-weight: bold;
+        border: 1px solid rgba(0, 0, 0, 0.2);
+        border-radius: 8px;
+        background-color: rgba(92, 241, 255, 0.9);
+        cursor: pointer;
+        pointer-events: all;
+        box-shadow: 1px 2px 0 1px rgba(15, 15, 15, 0.6);
+        font-size: 14px;
+        margin: 10px 100px auto 0;
+        align-self: center;
+    }
+
+    #operation #post-button:hover {
+        filter: brightness(0.8);
+        box-shadow: -1px -2px 0 1px rgba(15, 15, 15, 0.8);
+    }
+
+    #operation #post-button.disabled-button {
+        background-color: #f1f1f1;
+        cursor: none;
+        pointer-events: none;
     }
 
     #operation #edit-button {
         position: absolute;
         right: 0;
-        top: 80px;
+        top: 60px;
         width: 62px;
         height: 30px;
         font-weight: bold;
@@ -92,7 +149,7 @@
     #operation #preview-button {
         position: absolute;
         right: 82px;
-        top: 80px;
+        top: 60px;
         width: 62px;
         height: 30px;
         font-weight: bold;
@@ -144,25 +201,31 @@
                     {{ form.file(class="layui-input-block", accept=".md,.txt") }}
                 </div>
                 <div class="layui-col-md2">
-                    <div class="layui-input-inline">{{ form.submit(class="layui-btn", id="post") }}</div>
+                    <div class="layui-input-inline" style="display: none">{{ form.submit(class="layui-btn", id="post")
+                        }}
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </form>
-<p style="color: #0aaeb3;font-size: 20px">预览</p>
+<p style="color: #0aaeb3;font-size: 20px;margin-bottom: 15px">预览</p>
 <div class="operation" id="operation">
+    <button id="new-button" onclick="newFile()">新建公告</button>
+    <button id="post-button" class="disabled-button" onclick="postData()">发布公告</button>
     <button id="edit-button" class="disabled-button" onclick="showEdit()">编辑</button>
-    <button id="preview-button"class="disabled-button" onclick="showPreview()">预览</button>
+    <button id="preview-button" class="disabled-button" onclick="showPreview()">预览</button>
 </div>
 <div class="container" id="container">
     <h1 class="title" id="title-show"></h1>
-    <hr/>
+    <hr style="border: none; height: 3px; background-color: rgba(12,12,12,0.4)"/>
     <div class="container-body" id="container-body">
-        <textarea id="text-edit"></textarea>
+        <textarea id="text-edit" readonly="readonly" oninput="checkInput(event)"></textarea>
         <div id="preview"></div>
     </div>
 </div>
+
+<a href="/announcement/" id="open-announcement" style="display: none" target="_blank"></a>
 
 {% endblock %}
 
@@ -173,7 +236,7 @@
         $("#container").css({
             'margin': '0 auto',
             'padding': '30px',
-            'background-color': '#FFFFFF',
+            'background-color': '#f1f1f1',
             'border-radius': '5px',
             'overflow-y': 'scroll',
             'left': '260px',
@@ -189,11 +252,14 @@
             let title = $("#title");
             // 文件元素
             let file = document.querySelector('[type=file]');
+            let file_text = $("#text-edit");
+            console.log(file_text.val())
             // 通过FormData将文件转成二进制数据
             let formData = new FormData();
             formData.append('title', title.val())
             // 将文件转二进制
             formData.append('file', file.files[0]);
+            formData.append('file_text', file_text.val());
             $.ajax({
                 url: "{{ url_for('post_announcement') }}",
                 type: "post",
@@ -207,8 +273,9 @@
                             var layer = layui.layer;
                             layer.msg('发布成功', {time: 1000})
                         });
-                        window.open("http://localhost:5000/announcement/" + data.id);
-                        title.val("");
+                        let t = document.getElementById("open-announcement");
+                        t.href = "/announcement/" + data.id;
+                        t.click()
                         file.after(file.clone().val(""));
                         file.remove();
                     } else {
@@ -226,7 +293,7 @@
                 }
             });
             return false;
-        })
+        });
         $('#file').on('change', function (event) {
             let file = event.target.files[0];
             if (file) {
@@ -238,6 +305,16 @@
                         let fileContent = e.target.result;
                         let container_edit = document.getElementById("text-edit");
                         container_edit.textContent = fileContent;
+                        if (fileContent.length > 0) {
+                            let title = document.getElementById("title");
+                            console.log(title.value);
+                            if (title.value.length > 0) {
+                                let post = document.getElementById("post-button");
+                                if (post.classList.contains("disabled-button")) {
+                                    post.classList.remove("disabled-button");
+                                }
+                            }
+                        }
                         showPreview();
                     };
                     reader.onerror = function (e) {
@@ -255,7 +332,19 @@
     });
 
     function showTitle(event) {
-        $('#title-show').text(event.target.value);
+        let title = event.target.value;
+        let post = document.getElementById("post-button");
+        let text = document.getElementById("text-edit");
+        $('#title-show').text(title);
+        if (title.length === 0 || text.value.length === 0) {
+            if (!post.classList.contains("disabled-button")) {
+                post.classList.add("disabled-button");
+            }
+        } else {
+            if (post.classList.contains("disabled-button")) {
+                post.classList.remove("disabled-button");
+            }
+        }
     }
 
     /* 显示预览 */
@@ -296,7 +385,45 @@
         }
         /* 切换显示 */
         edit_field.hidden = false;
+        edit_field.readOnly = "";
         preview_field.hidden = true;
+    }
+
+    /* 覆盖原发布按钮 */
+    function postData() {
+        let post = document.getElementById("post");
+        post.click();
+    }
+
+    /* 新建文件 */
+    function newFile() {
+        let text_field = document.getElementById("text-edit");
+        if (text_field.value > 0) {
+            layui.use('layer', function () {
+                var layer = layui.layer;
+                layer.confirm('确定新建一个公告并清空当前内容吗？', {icon: 3, title: '新建公告'}, function (index) {
+                    // 清空文本
+                    text_field.value = "";
+                    layer.close(index);
+                });
+            });
+        }
+        showEdit();
+    }
+
+    function checkInput(event) {
+        let text = event.target.value;
+        let title = document.getElementById("title");
+        let post = document.getElementById("post-button");
+        if (text.length === 0 || title.value.length === 0) {
+            if (!post.classList.contains("disabled-button")) {
+                post.classList.add("disabled-button");
+            }
+        } else {
+            if (post.classList.contains("disabled-button")) {
+                post.classList.remove("disabled-button");
+            }
+        }
     }
 </script>
 {% endblock %}

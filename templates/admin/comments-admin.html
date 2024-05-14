@@ -191,7 +191,50 @@
             position: absolute;
             top: 10px;
             left: 45%;
-            text-decoration-line: underline;
+        }
+
+        .title::before {
+            position: absolute;
+            content: "";
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            border-bottom: 2px solid #000000;
+            transition: all 0.5s linear;
+        }
+
+        .title::after {
+            position: absolute;
+            content: "";
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            border-top: 2px solid #000000;
+            transition: all 0.5s linear;
+        }
+
+        .title:hover::before {
+            position: absolute;
+            content: "";
+            width: 100%;
+            height: 120%;
+            top: 0;
+            left: 0;
+            border-bottom: 5px solid rgba(0, 0, 0, 0);
+            transition-delay: 0.1s;
+        }
+
+        .title:hover::after {
+            position: absolute;
+            content: "";
+            width: 100%;
+            height: 120%;
+            top: 0;
+            left: 0;
+            border-top: 5px solid rgba(0, 0, 0, 0);
+            transition-delay: 0.1s;
         }
 
         .container {
@@ -199,7 +242,7 @@
             bottom: 110px;
             left: 280px;
             right: 400px;
-            width: calc(100% - 620px);
+            width: calc(100% - 420px);
             height: 10px;
             margin: 0;
             padding: 10px;
@@ -276,7 +319,7 @@
         }
 
         .container-body ul li p {
-            width: 40%;
+            width: 80%;
             padding: 15px;
             margin-top: 20px;
         }
@@ -299,7 +342,7 @@
             text-align: right;
             right: 25px;
             border-radius: 6px 6px 15px 6px;
-            margin: 0 0 0 auto;
+            margin: 0 0 0 0;
         }
 
         .my-comment:after {
@@ -315,7 +358,7 @@
             text-align: left;
             left: 25px;
             border-radius: 6px 6px 6px 15px;
-            margin: 0 auto 0 0;
+            margin: 0 0 0 0;
         }
 
         .others-comment:before {
@@ -327,24 +370,75 @@
         }
 
         .solved-comment {
+            background-color: rgb(176, 255, 213);
+        }
+
+        .solved-comment::after {
+            position: absolute;
+            content: "Solved";
+            width: fit-content;
+            height: 100%;
+            top: 0;
+            left: calc(100% - 90px);
+            border: 0;
+            color: rgba(0, 0, 0, 0.3);
+            font-size: 20px;
+            font-style: italic;
+            font-weight: bold;
+            transition: all 0.5s linear;
+        }
+
+        .solved-comment:hover::after {
+            position: absolute;
+            content: "Solved";
+            width: fit-content;
+            height: 100%;
+            top: 0;
+            left: calc(100% - 90px);
+            border: 0;
+            color: rgba(0, 0, 0, 0.8);
+            font-size: 20px;
+            font-style: italic;
+            font-weight: bold;
+            transition: all 0.2s linear;
+        }
+
+        .solved-comment:hover {
             background-color: rgba(0, 204, 102, 0.6);
         }
 
         .unsolved-comment {
+            background-color: rgba(255, 181, 176, 0.5);
+        }
+
+        .unsolved-comment:hover {
             background-color: rgba(238, 46, 36, 0.5);
         }
 
+        #comment-form {
+            margin-left: 10px;
+            transition: all 0.2s linear;
+        }
+
         .dialog-box {
+            width: fit-content;
             border: 1px solid #8f8f8f;
-            border-radius: 10px;
-            padding: 20px 30px;
-            background-color: rgb(244, 244, 244);
+            border-radius: 10px 10px 8px 20px;
+            padding: 10px;
+            background-color: #fbf8e0;
+        }
+
+        #dialog-input-label {
+            width: fit-content;
         }
 
         #dialog-input {
             height: 0;
             width: 300px;
-            text-indent: 2ch;
+            resize: none;
+            border: 0;
+            background-color: #fbf8e0;
+            overflow-y: hidden;
         }
 
         .btns {
@@ -391,7 +485,9 @@
         }
 
         .comment-focus {
-            filter: brightness(0.7);
+            filter: brightness(1.1);
+            background-color: #00e676;
+            box-shadow: 1px 1px 10px rgba(5, 71, 4, 0.35), -1px -1px 10px rgba(5, 71, 4, 0.34);
         }
 
         .prevent-click {
@@ -401,13 +497,17 @@
 
         #side-nav {
             height: 0;
-            width: 18%;
-            padding: 20px 20px;
-            top: 110px;
+            width: 0;
+            margin-left: 10px;
+            padding: 10px 20px;
+            top: 60px;
             position: fixed;
-            background-color: #ecf5fd;
-            border-radius: 10px;
+            background-color: #ffffff;
+            border: 1px rgba(12, 12, 12, 0.3) solid;
+            border-radius: 9px;
             transition: all 1s;
+            overflow-y: scroll;
+            box-shadow: 2px 2px 15px rgba(0, 0, 0, 0.5);
         }
 
         .nav-show {
@@ -415,7 +515,7 @@
         }
 
         .nav-hide {
-            right: -500px;
+            right: -100%;
         }
 
         .comment-admin {
@@ -424,8 +524,31 @@
             border-radius: 5px !important;
             background-color: #fbf8e0;
             align-self: center;
-            margin-top: 10px !important;
+            margin-top: 20px !important;
+            box-shadow: 1px 1px 9px rgba(0, 0, 0, 0.3);
         }
+
+        /* 自定义滚动条的整体样式 */
+        ::-webkit-scrollbar {
+            width: 6px; /* 设置滚动条的宽度 */
+        }
+
+        /* 自定义滚动轨迹的样式 */
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1; /* 设置滚动轨迹的背景颜色 */
+        }
+
+        /* 自定义滚动滑块的样式 */
+        ::-webkit-scrollbar-thumb {
+            background: #888; /* 设置滚动滑块的背景颜色 */
+            border-radius: 3px; /* 滚动条圆角 */
+        }
+
+        /* 当鼠标悬停在滚动滑块上时的样式 */
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555; /* 设置鼠标悬停时滚动滑块的背景颜色 */
+        }
+
     </style>
 </head>
 <body class="layui-layout-body">
@@ -457,8 +580,8 @@
                 <li id="li_1" class="layui-nav-item">
                     <a class="" href="javascript:;">图书管理</a>
                     <dl class="layui-nav-child">
-                        <dd id="li_1_1" ><a href="{{ url_for('storage') }}">入库管理</a></dd>
-                        <dd id="li_1_2" ><a href="{{ url_for('borrow_admin') }}">学生借书</a></dd>
+                        <dd id="li_1_1"><a href="{{ url_for('storage') }}">入库管理</a></dd>
+                        <dd id="li_1_2"><a href="{{ url_for('borrow_admin') }}">学生借书</a></dd>
                         <dd id="li_1_3"><a href="{{ url_for('return_book_admin') }}">学生还书</a></dd>
                         <dd id="li_1_4"><a href="{{url_for('write_off') }}">图书注销</a></dd>
                     </dl>
@@ -472,9 +595,9 @@
                 <li id="li_4" class="layui-nav-item">
                     <a href="{{ url_for('search_student') }}">学生信息查询</a>
                 </li>
-                 </li>
+                </li>
                 <li id="li_5" class="layui-nav-item">
-                <a href="{{url_for('announcement_admin')}}">发布公告</a>
+                    <a href="{{url_for('announcement_admin')}}">发布公告</a>
                 </li>
                 <li id="li_6" class="layui-nav-item">
                     <a href="{{url_for('comments_admin') }}">读者留言</a>
@@ -532,28 +655,30 @@
                 {% for comment in comments %}
                 {% if comment.status == 0 and comment.student_id == id %}
                 <li>
-                    <p id={{comment.id}} class="my-comment unsolved-comment" onclick="showCommentForm({{comment.id}})">
+                    <p id={{comment.id}} class="my-comment unsolved-comment"
+                       onclick="showCommentForm(this,{{comment.id}})">
                         {{comment.comment}}
                         <input type="button" onclick="solved({{comment.id}})" value="✓">
                     </p>
                 </li>
                 {% elif comment.status == 1 and comment.student_id == id %}
                 <li>
-                    <p id={{comment.id}} class="my-comment solved-comment" onclick="showCommentForm({{comment.id}})">
+                    <p id={{comment.id}} class="my-comment solved-comment"
+                       onclick="showCommentForm(this,{{comment.id}})">
                         {{comment.comment}}
                     </p>
                 </li>
                 {% elif comment.status == 0 and comment.student_id != id %}
                 <li>
                     <p id={{comment.id}} class="others-comment unsolved-comment"
-                       onclick="showCommentForm({{comment.id}})">{{comment.comment}}
+                       onclick="showCommentForm(this,{{comment.id}})">{{comment.comment}}
                         <input type="button" onclick="solved({{comment.id}})" value="✓">
                     </p>
                 </li>
                 {% else %}
                 <li>
                     <p id={{comment.id}} class="others-comment solved-comment"
-                       onclick="showCommentForm({{comment.id}})">{{comment.comment}}
+                       onclick="showCommentForm(this,{{comment.id}})">{{comment.comment}}
                     </p>
                 </li>
                 {% endif %}
@@ -576,8 +701,8 @@
 
     <div class="comment-form form-hidden" id="comment-form">
         <div class="dialog-box">
-            <p id="dialog-input-label"></p>
-            <textarea id="dialog-input" class="dialog-input"></textarea>
+            <p id="dialog-input-label" hidden="hidden"></p>
+            <textarea id="dialog-input" class="dialog-input" placeholder="在这里给读者评论"></textarea>
             <input id="form-submit-value" type="hidden">
             <div class="btns">
                 <button type="button" onclick="onSubmit()" class="comment-add">+</button>
@@ -587,6 +712,7 @@
     </div>
 
     <div class="side-nav nav-hide" id="side-nav">
+        <p>该留言下的评论</p>
         <ul id="side-nav-ul">
         </ul>
     </div>
@@ -605,8 +731,8 @@
             'position': 'fixed',
             'top': '100px',
             'left': '280px',
-            'width': 'calc(100% -500px)',
-            'height': ($(window).height() - 280).toString() + "px",
+            'width': '40%',
+            'height': ($(window).height() - 244).toString() + "px",
             'margin': '0',
             'padding': '10px',
             'background-color': '#ffffff',
@@ -614,17 +740,19 @@
             'padding-bottom': '80px',
         });
 
-        $("#dialog-input").css({
-            'height': ($(window).height() - 400).toString() + "px",
-            'width': '300px',
-            'text-indent': '2ch',
+        $("#dialog-input").on('input', function () {
+            if (this.scrollHeight > this.clientHeight) {
+                /* 调整side-nav高度 */
+                document.getElementById("side-nav").style.height = parseInt(this.scrollHeight) - parseInt(this.style.height) + "px";
+                this.style.height = this.scrollHeight + 'px';
+            }
         });
 
         $("#side-nav").css({
-            'height': ($(window).height() - 160).toString() + "px",
+            'height': ($(window).height() - 144).toString() + "px",
         });
 
-        // 获取所有class为"solved-comment"的p标签
+        /*// 获取所有class为"solved-comment"的p标签//设置水印
         var solvedComments = document.getElementsByClassName("solved-comment");
 
         // 遍历每个solved-comment类的p标签
@@ -639,7 +767,7 @@
             watermark.style.marginRight = "-20px"; // 负的右边距，调整水印位置
             watermark.innerHTML = "Solved"; // 设置水印文字
             solvedComments[i].appendChild(watermark); // 将水印添加到p标签中
-        }
+        }*/
 
         var form = document.getElementById('comment-form');
 
@@ -690,7 +818,17 @@
 
     var old_focus_comment_id = "";
 
-    function showCommentForm(comment_id) {
+    function showCommentForm(element, comment_id) {
+        let position = getElementPosition(element);
+        $("#dialog-input").css({
+            'width': element.offsetWidth + 'px',
+            'height': element.offsetHeight + 'px',
+        });
+        $("#comment-form").css({
+            'display': 'block',
+            'top': position.top + 'px',
+            'left': position.left + element.offsetWidth + 'px',
+        });
         if (old_focus_comment_id !== "") {
             document.getElementById(old_focus_comment_id).classList.remove("comment-focus");
         }
@@ -713,15 +851,14 @@
     function onSubmit() {
         let comment_id = $("#form-submit-value").val();
         let admin_id = $("#id").val();
-        let comment_content = $('#dialog-input').val();
-        console.log(comment_content);
+        let comment_content = $('#dialog-input');
         fetch('http://localhost:5000/admin/comment/add', {
             method: 'post',
             headers: {'Content-Type': 'text/plain'},
             body: JSON.stringify({
                 "comment_id": comment_id,
                 "admin_id": admin_id,
-                "comment": comment_content
+                "comment": comment_content.val()
             })
         }).then(response => {
             console.log(response);
@@ -737,6 +874,7 @@
                 console.log(data);
                 if (JSON.parse(data).code === 200) {
                     // 留言成功
+                    comment_content.val("");
                     showSideNav(comment_id);
                 }
             });
@@ -751,6 +889,10 @@
         if (form.classList.contains("form-show")) {
             form.classList.remove("form-show");
         }
+        $("#comment-form").css({
+            'display': 'none',
+        });
+        document.getElementById("dialog-input").value = "";
         if (old_focus_comment_id !== "") {
             document.getElementById(old_focus_comment_id).classList.remove("comment-focus");
             old_focus_comment_id = "";
@@ -768,6 +910,27 @@
             nav.classList.remove("nav-hide");
         }
         nav.classList.add("nav-show");
+
+        let element1 = document.getElementById("comment-form");
+        let element2 = document.getElementById("dialog-input");
+
+        /* 计算侧边栏顶部相对页面位置 */
+        let top = element2.offsetHeight + parseInt(element1.style.top, 10) + 60;
+        let height;
+        if (top > window.innerHeight/2) {
+            // 位于页面下半
+            height = parseInt(element1.style.top, 10) - 110;
+            top = 70;
+        } else {
+            height = window.innerHeight - element2.offsetHeight - parseInt(element1.style.top, 10) - 140;
+            top = element2.offsetHeight + parseInt(element1.style.top, 10) + 60;
+        }
+        $("#side-nav").css({
+            'top': top + "px",
+            'left': element1.style.left,
+            'width': element2.offsetWidth + "px",
+            'height': height + "px",
+        });
 
         fetch('http://localhost:5000/admin/comment/get', {
             method: 'post',
@@ -793,9 +956,17 @@
                     let li = document.createElement("li");
                     let p = document.createElement("p");
                     let label = document.createElement("label");
+                    let time_label = document.createElement("div");
                     label.textContent = "Admin: "
                     li.classList.add("comment-admin");
                     p.textContent = comment.comment;
+                    time_label.textContent = timestampToDate(comment.date);
+                    time_label.style.color = "rgba(255,0,0,0.3)";
+                    time_label.style.margin = "0 0 0 0";
+                    time_label.style.position = "relative";
+                    time_label.style.left = "-10px";
+                    time_label.style.top = "-10px";
+                    li.appendChild(time_label);
                     li.appendChild(label);
                     li.appendChild(p);
                     side_nav_ul.appendChild(li);
@@ -813,6 +984,30 @@
             nav.classList.remove("nav-show");
         }
         nav.classList.add("nav-hide");
+        $("#side-nav").css({
+
+            'left': '100%'
+        });
+    }
+
+    /* 获取元素绝对位置 */
+    function getElementPosition(element) {
+        const rect = element.getBoundingClientRect();
+        const position = {
+            top: rect.top + window.pageYOffset,
+            left: rect.left + window.pageXOffset
+        };
+        return position;
+    }
+
+    /* 时间戳转换年月日 */
+    function timestampToDate(timestamp) {
+        const date = new Date(Number.parseFloat(timestamp));
+        const year = date.getFullYear();
+        const month = date.getMonth() + 1; // 月份是从0开始的，所以需要+1
+        const day = date.getDate();
+
+        return `${year}-${month < 10 ? '0' + month : month}-${day < 10 ? '0' + day : day}`;
     }
 
 

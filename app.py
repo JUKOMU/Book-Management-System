@@ -759,10 +759,11 @@ def announcement_admin():
 
 @app.route("/announcement/<id>", methods=['GET', 'POST'])
 def announcement_browse(id):
+    name = current_user.name if session.get('name') is None else session.get('name')
     announcements = Announcements.query.filter_by(id=id).first()
     with open(f'static/announcements/{id}.md', 'r', encoding='utf-8') as file:
         markdown_text = file.read()
-    return render_template('announcement_browse.html', name=session.get('name'), title=announcements.name, markdown_text=markdown_text)
+    return render_template('announcement_browse.html', name=name, title=announcements.name, markdown_text=markdown_text)
 
 
 @app.route("/admin/announcement_add", methods=['GET', 'POST'])
@@ -775,9 +776,11 @@ def announcement_admin_add():
 def post_announcement():
     if request.method == 'POST':
         title = request.form.get('title')
-        file = request.files['file']
+        file_text = request.form['file_text']
+        print(file_text)
+        print(type(file_text))
 
-        if title and file:
+        if title and file_text:
             # 创建announcement实例并设置标题和日期
             announcement = Announcements()
             announcement.name = title
@@ -794,7 +797,9 @@ def post_announcement():
             # 重命名文件并保存到本地
             filename = f"{announcement.id}.md"
             file_path = os.path.join('static/announcements', filename)
-            file.save(file_path)
+            with open(file_path, 'w', encoding='utf-8') as file:
+                # 将字符串写入文件
+                file.write(file_text)
 
             return jsonify({'code': 200, 'message': "Success", 'id': announcement.id})
 

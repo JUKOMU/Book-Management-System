@@ -71,5 +71,5 @@ class BorrowForm(FlaskForm):
 
 class AnnouncementForm(FlaskForm):
     title = StringField('Title', validators=[DataRequired()])
-    file = FileField('File', validators=[DataRequired()])
+    file = FileField('File')
     submit = SubmitField(u'发布')
