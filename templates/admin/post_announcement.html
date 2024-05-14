@@ -1,5 +1,126 @@
 {% extends "base-admin.html" %}
-{% block title %}查询图书信息{% endblock %}
+{% block title %}发布公告{% endblock %}
+{% block head %}
+<link rel="stylesheet" href="../../static/highlight/styles/atom-one-dark.css">
+<script src="../../static/highlight/highlight.js"></script>
+<script type="text/javascript" src="../../static/markdown/marked.min.js"></script>
+<script>hljs.highlightAll();</script>
+{% endblock %}
+<style>
+    .container {
+        position: absolute;
+        bottom: 10px;
+        left: 10px;
+        height: 10px;
+        width: calc(100% - 520px);
+        margin: 0 auto;
+        padding: 30px;
+        background-color: #FFFFFF;
+        border-radius: 5px;
+    }
+
+    .container > * {
+        margin-bottom: 10px; /* 设置元素之间的外边距 */
+        font-size: 16px;
+    }
+
+    .title {
+        font-size: 40px;
+        color: #1ba595;
+    }
+
+    .container-body {
+        padding-left: 15px;
+    }
+</style>
+
+{% block style_2 %}
+<style>
+    #preview > * {
+        margin-top: 15px;
+    }
+
+    #preview > * > * {
+        margin-top: 5px;
+    }
+
+    #preview ol {
+        padding-left: 30px;
+        list-style-type: decimal;
+    }
+
+    #preview ul {
+        padding-left: 30px;
+        list-style-type: circle;
+    }
+
+    #text-edit {
+        width: calc(90%);
+        border: 2px solid rgba(0, 0, 0, 0.25);
+        resize: none;
+        overflow-y: unset;
+        padding-left: 10px;
+    }
+
+    #operation #edit-button {
+        position: absolute;
+        right: 0;
+        top: 80px;
+        width: 62px;
+        height: 30px;
+        font-weight: bold;
+        border: 1px solid rgba(0, 0, 0, 0.2);
+        border-radius: 8px;
+        background-color: rgba(133, 255, 133, 0.8);
+        cursor: pointer;
+        pointer-events: all;
+        box-shadow: 1px 2px 0 1px rgba(15, 15, 15, 0.6);
+        font-size: 14px;
+        margin: 10px 100px auto 0;
+        align-self: center;
+    }
+
+    #operation #edit-button:hover {
+        filter: brightness(0.8);
+        box-shadow: -1px -2px 0 1px rgba(15, 15, 15, 0.8);
+    }
+
+    #operation #preview-button {
+        position: absolute;
+        right: 82px;
+        top: 80px;
+        width: 62px;
+        height: 30px;
+        font-weight: bold;
+        border: 1px solid rgba(0, 0, 0, 0.2);
+        border-radius: 8px;
+        background-color: rgba(133, 255, 133, 0.8);
+        cursor: pointer;
+        pointer-events: all;
+        box-shadow: 1px 2px 0 1px rgba(15, 15, 15, 0.6);
+        font-size: 14px;
+        margin: 10px 100px auto 0;
+        align-self: center;
+    }
+
+    #operation #preview-button:hover {
+        filter: brightness(0.8);
+        box-shadow: -1px -2px 0 1px rgba(15, 15, 15, 0.8);
+    }
+
+    #operation #preview-button.disabled-button {
+        background-color: #f1f1f1;
+        cursor: none;
+        pointer-events: none;
+    }
+
+    #operation #edit-button.disabled-button {
+        background-color: #f1f1f1;
+        cursor: none;
+        pointer-events: none;
+    }
+</style>
+{% endblock %}
 
 {% block card %}
 <div class="layui-card-header"><h2>发布公告</h2></div>{% endblock %}
@@ -12,7 +133,7 @@
                 <div class="layui-col-md6">
                     <label class="layui-form-label">公告标题：</label>
                     <div class="layui-input-inline">
-                        {{ form.title(class="layui-input",style="width:250px") }}
+                        {{ form.title(class="layui-input",style="width:250px",oninput="showTitle(event)") }}
                     </div>
                 </div>
                 <div class="layui-col-md4">
@@ -23,9 +144,21 @@
                 </div>
             </div>
         </div>
-
     </div>
 </form>
+<p style="color: #0aaeb3;font-size: 20px">预览</p>
+<div class="operation" id="operation">
+    <button id="edit-button" onclick="showEdit()">编辑</button>
+    <button id="preview-button" onclick="showPreview()">预览</button>
+</div>
+<div class="container" id="container">
+    <h1 class="title" id="title-show"></h1>
+    <hr/>
+    <div class="container-body" id="container-body">
+        <textarea id="text-edit"></textarea>
+        <div id="preview"></div>
+    </div>
+</div>
 
 {% endblock %}
 
@@ -33,6 +166,21 @@
 <script>
     $(document).ready(function () {
         $("#li_5").addClass("height-light");
+        $("#container").css({
+            'margin': '0 auto',
+            'padding': '30px',
+            'background-color': '#FFFFFF',
+            'border-radius': '5px',
+            'overflow-y': 'scroll',
+            'left': '260px',
+            'bottom': '50px',
+            'height': ($(window).height() - 220).toString() + "px",
+        });
+        $("#text-edit").css({
+            'width': document.getElementById("container").offsetWidth - 100 + "px",
+            'height': ($(window).height() - 270).toString() + "px",
+            'padding': '10px',
+        });
         $('#post').on('click', function () {
             let title = $("#title");
             // 文件元素
@@ -55,10 +203,10 @@
                             var layer = layui.layer;
                             layer.msg('发布成功', {time: 1000})
                         });
-                        window.open("http://localhost:5000/announcement/"+data.id);
+                        window.open("http://localhost:5000/announcement/" + data.id);
                         title.val("");
                         file.after(file.clone().val(""));
-			            file.remove();
+                        file.remove();
                     } else {
                         layui.use('layer', function () {
                             var layer = layui.layer;
@@ -75,7 +223,77 @@
             });
             return false;
         })
+        $('#file').on('change', function (event) {
+            let file = event.target.files[0];
+            if (file) {
+                // 检查文件扩展名
+                let extension = file.name.split('.').pop().toLowerCase();
+                if (extension === 'md' || extension === 'txt') {
+                    let reader = new FileReader();
+                    reader.onload = function (e) {
+                        let fileContent = e.target.result;
+                        let container_edit = document.getElementById("text-edit");
+                        container_edit.textContent = fileContent;
+                        showPreview();
+                    };
+                    reader.onerror = function (e) {
+                        layui.use('layer', function () {
+                            var layer = layui.layer;
+                            layer.error("文件读取出错: " + e.target.error, {time: 1000});
+                        });
+                    };
+                    reader.readAsText(file); // 读取文本文件
+                } else {
+                    alert('请选择一个 Markdown (.md) 或纯文本 (.txt) 文件。');
+                }
+            }
+        });
     });
+
+    function showTitle(event) {
+        $('#title-show').text(event.target.value);
+    }
+
+    /* 显示预览 */
+    function showPreview() {
+        let preview_button = document.getElementById("preview-button");
+        let editor_button = document.getElementById("edit-button");
+        let edit_field = document.getElementById("text-edit");
+        let preview_field = document.getElementById("preview");
+        /* 设置按钮样式 */
+        if (!preview_button.classList.contains("disabled-button")) {
+            preview_button.classList.add("disabled-button");
+        }
+        if (editor_button.classList.contains("disabled-button")) {
+            editor_button.classList.remove("disabled-button");
+        }
+        /* 切换显示 */
+        edit_field.hidden = true;
+        preview_field.hidden = false;
+
+        /* 显示预览 */
+        let markdown = edit_field.value;
+        preview_field.innerHTML = marked.parse(markdown);
+        hljs.highlightAll();
+    }
+
+    /* 显示编辑 */
+    function showEdit() {
+        let preview_button = document.getElementById("preview-button");
+        let editor_button = document.getElementById("edit-button");
+        let edit_field = document.getElementById("text-edit");
+        let preview_field = document.getElementById("preview");
+        /* 设置按钮样式 */
+        if (preview_button.classList.contains("disabled-button")) {
+            preview_button.classList.remove("disabled-button");
+        }
+        if (!editor_button.classList.contains("disabled-button")) {
+            editor_button.classList.add("disabled-button");
+        }
+        /* 切换显示 */
+        edit_field.hidden = false;
+        preview_field.hidden = true;
+    }
 </script>
 {% endblock %}
 
