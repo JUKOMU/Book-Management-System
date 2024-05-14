@@ -384,10 +384,11 @@
             padding: 20px 20px;
             top: 100px;
             position: fixed;
-            background-color: #fffff3;
+            background-color: #ffffff;
             border-radius: 10px;
             transition: all 0.8s;
             border: 1px solid rgba(5, 5, 5, 0.3);
+            box-shadow: -10px 0 20px rgba(0, 0, 0, 0.4);
         }
 
         .nav-show {
@@ -402,7 +403,7 @@
             width: 85% !important;
             padding: 10px !important;
             border-radius: 5px !important;
-            background-color: #fffbdb;
+            background-color: #ffe9cd;
             align-self: center;
             margin-top: 10px !important;
         }
@@ -708,6 +709,12 @@
             nav.classList.remove("nav-hide");
         }
         nav.classList.add("nav-show");
+        // 设置阴影
+        // let shadow = "";
+        // for (let i = 20; i > 0; i--) {
+        //     nav.style.boxShadow += -(21 - i) + "px 0px 2px rgba(0, 0, 0," + 0.025 * i + ");"
+        // }
+        // console.log(shadow);
 
         fetch('http://localhost:5000/admin/comment/get', {
             method: 'post',
