@@ -34,22 +34,43 @@
     $(document).ready(function () {
         $("#li_5").addClass("height-light");
         $('#post').on('click', function () {
-            var form = new FormData(document.getElementById("searchForm"));
+            let title = $("#title");
+            // 文件元素
+            let file = document.querySelector('[type=file]');
+            // 通过FormData将文件转成二进制数据
+            let formData = new FormData();
+            formData.append('title', title.val())
+            // 将文件转二进制
+            formData.append('file', file.files[0]);
             $.ajax({
                 url: "{{ url_for('post_announcement') }}",
                 type: "post",
-                data: form,
+                data: formData,
+                cache: false,
                 processData: false,
                 contentType: false,
                 success: function (data) {
-                    if (data.length !== 0) {
-                        window.location.replace()
+                    if (data.code === 200) {
+                        layui.use('layer', function () {
+                            var layer = layui.layer;
+                            layer.msg('发布成功', {time: 1000})
+                        });
+                        window.open("http://localhost:5000/announcement/"+data.id);
+                        title.val("");
+                        file.after(file.clone().val(""));
+			            file.remove();
                     } else {
                         layui.use('layer', function () {
                             var layer = layui.layer;
                             layer.msg('发布失败', {time: 1000});
                         });
                     }
+                },
+                fail: function () {
+                    layui.use('layer', function () {
+                        var layer = layui.layer;
+                        layer.msg('发布失败', {time: 1000});
+                    });
                 }
             });
             return false;

@@ -759,9 +759,10 @@ def announcement_admin():
 
 @app.route("/announcement/<id>", methods=['GET', 'POST'])
 def announcement_browse(id):
+    announcements = Announcements.query.filter_by(id=id).first()
     with open(f'static/announcements/{id}.md', 'r', encoding='utf-8') as file:
         markdown_text = file.read()
-    return render_template('announcement_browse.html', name=session.get('name'), markdown_text=markdown_text)
+    return render_template('announcement_browse.html', name=session.get('name'), title=announcements.name, markdown_text=markdown_text)
 
 
 @app.route("/admin/announcement_add", methods=['GET', 'POST'])
@@ -795,13 +796,9 @@ def post_announcement():
             file_path = os.path.join('static/announcements', filename)
             file.save(file_path)
 
-            # 这里可以添加将文件内容按UTF-8编码保存的逻辑
-            with open(file_path, 'w', encoding='utf-8') as f:
-                f.write(file.read().decode('utf-8'))
+            return jsonify({'code': 200, 'message': "Success", 'id': announcement.id})
 
-            return redirect(f"/announcement/{announcement.id}")
-
-    return None
+    return jsonify({'code': 500, 'message': "Failure"})
 
 
 if __name__ == '__main__':

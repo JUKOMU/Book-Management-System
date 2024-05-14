@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <title>公告</title>
-    <link rel="stylesheet" href="../../static/layui/css/layui.css">
+    <link rel="stylesheet" href="../static/layui/css/layui.css">
     <script src="https://cdn.staticfile.org/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://cdn.staticfile.org/popper.js/1.12.5/umd/popper.min.js"></script>
     <script type="text/javascript"
@@ -214,10 +214,20 @@
         }
 
         .container-body > * {
+            margin-top: 15px;
+        }
+
+        .container-body > * > * {
             margin-top: 5px;
         }
 
-        .container-body ul li {
+        ol {
+            padding-left: 30px;
+            list-style-type: decimal;
+        }
+
+        ul {
+            padding-left: 30px;
             list-style-type: circle;
         }
 
@@ -284,7 +294,7 @@
     </div>
 
     <div class="container" id="container">
-        <h1 class="title">公告</h1>
+        <h1 class="title">{{title}}</h1>
         <hr/>
         <div class="container-body" id="container-body">
 
@@ -312,6 +322,8 @@
         element.init();
     });
     $(document).ready(function () {
+        setDecimalListStyle();
+        setCircleListStyle();
         $("#li_6").addClass("height-light");
         $("#container").css({
             'left': '260px',
@@ -325,6 +337,32 @@
         container_body.innerHTML = html;
         hljs.highlightAll();
     });
+
+    function setDecimalListStyle() {
+        // 获取container-body元素
+        var container = document.getElementById('container-body');
+
+        // 获取container-body内的所有ol元素
+        var olElements = container.getElementsByTagName('ol');
+
+        // 遍历所有ol元素，并设置list-style-type为decimal
+        for (var i = 0; i < olElements.length; i++) {
+            olElements[i].style.listStyleType = 'decimal !important';
+        }
+    }
+
+    function setCircleListStyle() {
+        // 获取container-body元素
+        var container = document.getElementById('container-body');
+
+        // 获取container-body内的所有ul元素
+        var ulElements = container.getElementsByTagName('ul');
+
+        // 遍历所有ul元素，并设置list-style-type为decimal
+        for (var i = 0; i < ulElements.length; i++) {
+            ulElements[i].style.listStyleType = 'circle !important';
+        }
+    }
 </script>
 </body>
 </html>

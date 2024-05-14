@@ -45,6 +45,14 @@ li {
     list-style: none
 }
 
+.container-body ul li {
+    list-style-type: circle;
+}
+
+.container-body ol li {
+    list-style-type: decimal;
+}
+
 table {
     border-collapse: collapse;
     border-spacing: 0
