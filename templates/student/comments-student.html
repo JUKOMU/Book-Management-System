@@ -227,6 +227,7 @@
             width: calc(100% - 600px);
             padding: 10px;
             text-align: center;
+            transition: all 1s;
         }
 
         .input #textInput {
@@ -236,6 +237,7 @@
             font-size: 16px;
             text-indent: 1ch;
             padding: 4px;
+            transition: all 1s;
         }
 
         .input #summit {
@@ -247,6 +249,7 @@
             cursor: pointer;
             right: 210px;
             bottom: 10px;
+            transition: all 1s;
         }
 
         .input #summit:hover {
@@ -321,35 +324,13 @@
             background-color: rgba(238, 46, 36, 0.5);
         }
 
-
-        display: block
-
-        ;
-        position: absolute
-
-        ;
-        z-index:
-
-        10000
-        ;
-        right:
-
-        -
-        500
-        px
-
-        ;
-        top:
-
-        20
-        %
-        ;
-        transition: all
-
-        1
-        s
-
-        ;
+        .dialog-box {
+            display: block;
+            position: absolute;
+            z-index: 10000;
+            right: -500px;
+            top: 20%;
+            transition: all 1s;
         }
 
         .form-show {
@@ -401,15 +382,16 @@
             height: 0;
             width: 18%;
             padding: 20px 20px;
-            top: 110px;
+            top: 100px;
             position: fixed;
-            background-color: #ecf5fd;
+            background-color: #fffff3;
             border-radius: 10px;
-            transition: all 1s;
+            transition: all 0.8s;
+            border: 1px solid rgba(5, 5, 5, 0.3);
         }
 
         .nav-show {
-            right: 0;
+            right: 10px;
         }
 
         .nav-hide {
@@ -420,9 +402,18 @@
             width: 85% !important;
             padding: 10px !important;
             border-radius: 5px !important;
-            background-color: #fbf8e0;
+            background-color: #fffbdb;
             align-self: center;
             margin-top: 10px !important;
+        }
+
+        .blur-effect {
+            filter: blur(5px); /* 使用模糊效果 */
+        }
+
+        .blur-effect-dark {
+            background-color: #FFFFFF;
+            filter: blur(1px) brightness(90%); /* 使用模糊效果,亮度降低 */
         }
     </style>
 </head>
@@ -707,6 +698,11 @@
 
     /* 显示侧边栏，侧边栏显示用户评论下的评论 */
     function showSideNav(comment_id) {
+        // 留言板变暗和模糊
+        let container_body = document.querySelector(".container");
+        if (!container_body.classList.contains("blur-effect-dark")) {
+            container_body.classList.add("blur-effect-dark");
+        }
         let nav = document.getElementById("side-nav");
         if (nav.classList.contains("nav-hide")) {
             nav.classList.remove("nav-hide");
@@ -752,6 +748,11 @@
 
     /* 隐藏侧边栏 */
     function hideSideNav() {
+        // 恢复留言板状态
+        let container_body = document.querySelector(".container");
+        if (container_body.classList.contains("blur-effect-dark")) {
+            container_body.classList.remove("blur-effect-dark");
+        }
         let nav = document.getElementById("side-nav");
         if (nav.classList.contains("nav-show")) {
             nav.classList.remove("nav-show");
