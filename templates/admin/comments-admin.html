@@ -144,40 +144,150 @@
             margin-bottom: 0;
         }
 
-        .input {
-            position: fixed;
-            bottom: 44px;
-            left: 280px;
-            width: calc(100% - 600px);
-            padding: 10px;
-            text-align: center;
-            transition: all 1s;
+        .input-box {
+            display: flex;
+            padding: 10px 15px;
         }
 
-        .input #textInput {
-            height: 80px;
-            width: calc(100% - 420px);
+        .input-box2 {
+            display: flex;
+            padding: 10px 15px;
+        }
+
+        .input {
+            display: flex;
+            width: 100%;
+            transition: all 1s;
+            flex-direction: column;
+            margin-left: 10px;
+            padding: 2px;
+            border: 1px solid #f1f1f1;
+            border-radius: 10px;
+            background-color: #f1f1f1;
+        }
+
+        .input2 {
+            display: flex;
+            width: 100%;
+            transition: all 1s;
+            flex-direction: column;
+            margin-left: 10px;
+            padding: 2px;
+            border: 1px solid #f1f1f1;
+            border-radius: 10px;
+            background-color: #f1f1f1;
+        }
+
+        .input-box a span {
+            width: 60px;
+            height: 60px;
+            display: block;
+            background-size: cover;
+            border-radius: 50%;
+        }
+
+        .input-box2 a span {
+            width: 60px;
+            height: 60px;
+            display: block;
+            background-size: cover;
+            border-radius: 50%;
+        }
+
+        #textInput {
+            display: block;
+            height: fit-content;
+            width: calc(100% - 8px);
+            border: 0;
             border-radius: 10px;
             font-size: 16px;
-            text-indent: 1ch;
-            padding: 4px;
-            transition: all 1s;
+            padding: 4px 4px;
+            resize: none;
         }
 
-        .input #summit {
-            position: absolute;
+        #textInput2 {
+            display: block;
+            height: fit-content;
+            width: calc(100% - 8px);
+            border: 0;
+            border-radius: 10px;
+            font-size: 16px;
+            padding: 4px 4px;
+            resize: none;
+        }
+
+        .submit {
+            display: flex;
+            flex-direction: row;
             height: 30px;
-            width: 30px;
             border-radius: 50%;
             font-size: 14px;
-            cursor: pointer;
-            right: 210px;
-            bottom: 10px;
             transition: all 1s;
+            padding: 4px 4px;
+            justify-content: space-between;
         }
 
-        .input #summit:hover {
-            opacity: 0.8;
+        .submit2 {
+            display: flex;
+            flex-direction: row;
+            height: 30px;
+            border-radius: 50%;
+            font-size: 14px;
+            transition: all 1s;
+            padding: 4px 4px;
+            justify-content: space-between;
+        }
+
+        .submit div {
+            font-size: 12px;
+            margin: auto 0;
+        }
+
+        .submit2 div {
+            font-size: 12px;
+            margin: auto 0;
+        }
+
+        .submit input {
+            font-size: 12px;
+            font-weight: bold;
+            width: 60px;
+            height: min-content;
+            margin: auto 0;
+            padding: 4px 0;
+            border: 0;
+            border-radius: 10px;
+            background-color: #e1e1e1;
+            pointer-events: none;
+            cursor: none;
+        }
+
+        .submit2 input {
+            font-size: 12px;
+            font-weight: bold;
+            width: 60px;
+            height: min-content;
+            margin: auto 0;
+            padding: 4px 0;
+            border: 0;
+            border-radius: 10px;
+            background-color: #e1e1e1;
+            pointer-events: none;
+            cursor: none;
+        }
+
+        .submit.enable input {
+            color: #f1f1f1;
+            background-color: rgb(86, 199, 255);
+            pointer-events: all;
+            cursor: pointer;
+        }
+
+        .submit2.enable input {
+            color: #f1f1f1;
+            background-color: rgb(86, 199, 255);
+            pointer-events: all;
+            cursor: pointer;
         }
 
         code {
@@ -188,7 +298,7 @@
         .container-body {
             background-color: #ffffff;
             border-radius: 10px;
-            padding: 0;
+            padding-right: 10px;
             overflow-x: hidden;
         }
 
@@ -204,7 +314,8 @@
             height: fit-content;
             float: none;
             list-style-type: none;
-            border: 1px solid rgba(0, 0, 0, 0.3);
+            border-top: 1px solid rgba(0, 0, 0, 0.3);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.3);
             display: flex;
             justify-items: left;
         }
@@ -246,11 +357,14 @@
         }
 
         .operator a {
-            color: rgba(143,156,163);
+            color: rgba(143, 156, 163);
             margin-right: 10px;
             cursor: pointer;
         }
 
+        .operator a:hover {
+            color: #0C0C0C;
+        }
 
         .my-comment {
             position: relative;
@@ -284,7 +398,6 @@
 
         .solved-comment {
             background-color: rgb(240, 255, 246);
-            cursor: pointer;
         }
 
         .solved-comment:hover {
@@ -293,7 +406,6 @@
 
         .unsolved-comment {
             background-color: rgba(255, 181, 176, 0.5);
-            cursor: pointer;
         }
 
         .unsolved-comment:hover {
@@ -309,79 +421,8 @@
             transition: all 1s;
         }
 
-        .form-show {
-            display: block;
-            position: absolute;
-            z-index: 10000;
-            right: 20%;
-            top: 20%;
-            transition: all 1s;
-        }
-
-        .comment-focus {
-            filter: brightness(0.7);
-        }
-
-        .prevent-click {
-            pointer-events: none;
-            cursor: none;
-        }
-
-        .form-hidden {
-            display: block;
-            position: absolute;
-            z-index: 10000;
-            right: -500px;
-            top: 20%;
-            transition: all 1s;
-        }
-
-        .form-show {
-            display: block;
-            position: absolute;
-            z-index: 10000;
-            right: -500px;
-            top: 20%;
-            transition: all 1s;
-        }
-
-        .comment-focus {
-            filter: brightness(0.7);
-        }
-
-        .prevent-click {
-            pointer-events: none;
-            cursor: none;
-        }
-
-        #side-nav {
-            height: 0;
-            width: 18%;
-            padding: 20px 20px;
-            top: 100px;
-            position: fixed;
-            background-color: #ffffff;
-            border-radius: 10px;
-            transition: all 0.8s;
-            border: 1px solid rgba(5, 5, 5, 0.3);
-            box-shadow: -10px 0 20px rgba(0, 0, 0, 0.4);
-        }
-
-        .nav-show {
-            right: 10px;
-        }
-
-        .nav-hide {
-            right: -500px;
-        }
-
-        .comment-admin {
-            width: 85% !important;
-            padding: 10px !important;
-            border-radius: 5px !important;
-            background-color: #ffe9cd;
-            align-self: center;
-            margin-top: 10px !important;
+        .comment-name.comment-admin {
+            color: rgba(255, 47, 47, 0.77);
         }
 
         .blur-effect {
@@ -425,8 +466,8 @@
         <!-- 头部区域（可配合layui已有的水平导航） -->
         <ul class="layui-nav layui-layout-right">
             <li class="layui-nav-item">
-                <a href="javascript:;">
-                    <img src="../static/icon.jpg" class="layui-nav-img">
+                <a href="javascript:">
+                    <img src="../../static/avatar/{{id}}.png" class="layui-nav-img">
                     <span id="name">{{ name }}</span>
                 </a>
                 <dl class="layui-nav-child">
@@ -443,7 +484,7 @@
             <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
             <ul class="layui-nav layui-nav-tree" lay-filter="test">
                 <li id="li_1" class="layui-nav-item">
-                    <a class="" href="javascript:;">图书管理</a>
+                    <a class="" href="javascript:">图书管理</a>
                     <dl class="layui-nav-child">
                         <dd id="li_1_1"><a href="{{ url_for('storage') }}">入库管理</a></dd>
                         <dd id="li_1_2"><a href="{{ url_for('borrow_admin') }}">学生借书</a></dd>
@@ -487,17 +528,22 @@
                     <!--评论主体-->
                     <div class="comment-main">
                         <!--名称-->
+                        {% if comment.student_id|length == 6 %}
+                        <p class="comment-name comment-admin">{{comment.student_name}}</p>
+                        {% else %}
                         <p class="comment-name">{{comment.student_name}}</p>
+                        {% endif %}
                         <!--评论-->
                         <p id={{comment.id}} class="my-comment unsolved-comment comment"
-                           onclick="showCommentForm({{comment.id}})">
+                           >
                             {{comment.comment}}
                         </p>
                         <!--操作按钮-->
                         <div class="operator">
-                            <a>回复</a>
-                            <a>删除</a>
-                            <a>solved</a>
+                            <p class="date">{{comment.date}}</p>
+                            <a onclick="reply(this,{{comment.id}})">回复</a>
+                            <a onclick="deleted({{comment.id}})">删除</a>
+                            <a onclick="solved({{comment.id}})">solved</a>
                         </div>
                     </div>
                 </li>
@@ -509,16 +555,21 @@
                     <!--评论主体-->
                     <div class="comment-main">
                         <!--名称-->
+                        {% if comment.student_id|length == 6 %}
+                        <p class="comment-name comment-admin">{{comment.student_name}}</p>
+                        {% else %}
                         <p class="comment-name">{{comment.student_name}}</p>
+                        {% endif %}
                         <!--评论-->
                         <p id={{comment.id}} class="my-comment solved-comment comment"
-                           onclick="showCommentForm({{comment.id}})">
+                           >
                             {{comment.comment}}
                         </p>
                         <!--操作按钮-->
                         <div class="operator">
-                            <a>回复</a>
-                            <a>删除</a>
+                            <p class="date">{{comment.date}}</p>
+                            <a onclick="reply(this,{{comment.id}})">回复</a>
+                            <a onclick="deleted({{comment.id}})">删除</a>
                         </div>
                     </div>
                 </li>
@@ -530,16 +581,21 @@
                     <!--评论主体-->
                     <div class="comment-main">
                         <!--名称-->
+                        {% if comment.student_id|length == 6 %}
+                        <p class="comment-name comment-admin">{{comment.student_name}}</p>
+                        {% else %}
                         <p class="comment-name">{{comment.student_name}}</p>
+                        {% endif %}
                         <!--评论-->
                         <p id={{comment.id}} class="others-comment unsolved-comment comment"
-                           onclick="showCommentForm({{comment.id}})">{{comment.comment}}
+                           >{{comment.comment}}
                         </p>
                         <!--操作按钮-->
                         <div class="operator">
-                            <a>回复</a>
-                            <a>删除</a>
-                            <a>solved</a>
+                            <p class="date">{{comment.date}}</p>
+                            <a onclick="reply(this,{{comment.id}})">回复</a>
+                            <a onclick="deleted({{comment.id}})">删除</a>
+                            <a onclick="solved({{comment.id}})">solved</a>
                         </div>
                     </div>
                 </li>
@@ -551,29 +607,39 @@
                     <!--评论主体-->
                     <div class="comment-main">
                         <!--名称-->
+                        {% if comment.student_id|length == 6 %}
+                        <p class="comment-name comment-admin">{{comment.student_name}}</p>
+                        {% else %}
                         <p class="comment-name">{{comment.student_name}}</p>
+                        {% endif %}
                         <!--评论-->
                         <p id={{comment.id}} class="others-comment solved-comment comment"
-                           onclick="showCommentForm({{comment.id}})">{{comment.comment}}
+                           >{{comment.comment}}
                         </p>
                         <!--操作按钮-->
                         <div class="operator">
-                            <a>回复</a>
-                            <a>删除</a>
+                            <p class="date">{{comment.date}}</p>
+                            <a onclick="reply(this,{{comment.id}})">回复</a>
+                            <a onclick="deleted({{comment.id}})">删除</a>
                         </div>
                     </div>
                 </li>
                 {% endif %}
                 {% endfor %}
             </ul>
+            <div class="input-box">
+                <a><span style="background-image: url('../../static/avatar/{{avatar}}.png')"></span></a>
+                <div class="input">
+                    <textarea type="textarea" id="textInput" placeholder="在这里评论"></textarea>
+                    <div class="submit">
+                        <div>按回车发送。使用 Shift+Enter 换行。</div>
+                        <input type="button" value="发表" onclick="comment()"/>
+                    </div>
+                </div>
+            </div>
         </div>
-
     </div>
 
-    <div class="input">
-        <textarea type="textarea" id="textInput" placeholder="在这里评论"></textarea>
-        <img onclick="comment()" id="summit" src="../../static/summit.png"/>
-    </div>
 
     <input id="id" hidden="hidden" value={{id}}>
 
@@ -583,26 +649,15 @@
 
     <canvas id="side-canvas"></canvas>
 
-    <div class="comment-form form-hidden" id="comment-form">
-        <div class="dialog-box">
-            <p id="dialog-input-label"></p>
-            <textarea id="dialog-input" class="dialog-input"></textarea>
-            <input id="form-submit-value" type="hidden">
-            <div class="btns">
-                <button type="button" onclick="onSubmit()" class="comment-add">+</button>
-                <button type="button" onclick="onCancel()" class="comment-cancel">×</button>
-            </div>
-        </div>
-    </div>
-
-    <div class="side-nav nav-hide" id="side-nav">
-        <p>该留言下的评论</p>
-        <ul id="side-nav-ul">
-        </ul>
-    </div>
 </div>
 <script type="text/javascript" src="../../static/layui/layui.js"></script>
 <script type="text/javascript" src="../../static/js/particle-animation.js"></script>
+<script>
+    layui.use('element', function () {
+        var element = layui.element;
+        element.init();
+    });
+</script>
 <script>
     layui.use('element', function () {
         var element = layui.element;
@@ -622,33 +677,42 @@
             'background-color': '#f1f1f1',
             'border-radius': '0',
         });
+        $('.date').each(function () {
+            let timestamp = $(this).text(); // 获取时间戳文本
+            let convertedDate = timestampToDate(timestamp); // 转换时间戳
+            $(this).text(convertedDate); // 更新元素文本为转换后的日期
+        });
+        $("#textInput").on('input', function () {
+            if (this.scrollHeight > this.clientHeight) {
+                this.style.height = this.scrollHeight + 'px';
+            } else {
+                this.style.height = "auto";
+                this.style.height = this.scrollHeight + 'px';
+            }
+            document.getElementById("container").scrollTop = document.getElementById("container").scrollHeight;
+            if (this.value.length > 0) {
+                document.querySelector(".submit").classList.add("enable");
+            } else {
+                document.querySelector(".submit").classList.remove("enable");
+            }
+        });
 
         document.getElementById("container").scrollTop = document.getElementById("container").scrollHeight;
 
-        $("#side-nav").css({
-            'height': ($(window).height() - 160).toString() + "px",
-        });
-
-        var form = document.getElementById('comment-form');
-
-        // 添加单击事件监听器到整个文档
-        document.addEventListener('click', function (event) {
-            var target = event.target;
-
-            // 检查点击事件是否发生在菜单内部
-            var isClickInsideMenu = form.contains(target);
-
-            // 如果点击事件发生在菜单外部，则执行相应操作
-            if (!isClickInsideMenu) {
-                // 在这里执行菜单外的操作，例如关闭菜单
-                onCancel();
+        /* 获取留言下评论 */
+        for (let i = 1; i <= {{last_comment_id}}; i++)
+        {
+            let p_comment = document.getElementById(i.toString());
+            if (p_comment !== null) {
+                let comment_main = p_comment.parentElement;
+                getCommentComments(i.toString(),comment_main);
             }
-        });
+        }
     });
 
     function comment() {
         let student_id = $("#id").val();
-        let student_name = document.getElementById("name");
+        let name = document.getElementById("name");
         let comment_content = $('#textInput').val();
         console.log(comment_content);
         fetch('http://localhost:5000/student/comment/add', {
@@ -656,7 +720,7 @@
             headers: {'Content-Type': 'text/plain'},
             body: JSON.stringify({
                 "id": student_id,
-                "name": student_name.textContent,
+                "name": name.textContent,
                 "comment": comment_content
             })
         }).then(response => {
@@ -681,41 +745,176 @@
         });
     }
 
+    /* 时间戳转换年月日 */
+    function timestampToDate(timestamp) {
+        const date = new Date(Number.parseFloat(timestamp));
+        const year = date.getFullYear();
+        const month = date.getMonth() + 1; // 月份是从0开始的，所以需要+1
+        const day = date.getDate();
 
-    var old_focus_comment_id = "";
-
-    function showCommentForm(comment_id) {
-        if (old_focus_comment_id !== "") {
-            document.getElementById(old_focus_comment_id).classList.remove("comment-focus");
-        }
-        old_focus_comment_id = comment_id;
-        document.getElementById(comment_id).classList.add("comment-focus");
-        let form = document.querySelector(".comment-form");
-        let label = document.getElementById("dialog-input-label");
-        let container = document.querySelector(".container-body");
-        if (form.classList.contains("form-hidden")) {
-            form.classList.remove("form-hidden");
-        }
-        container.classList.add("prevent-click");
-        label.textContent = "comment id:  " + comment_id;
-        form.classList.add("form-show");
-        document.getElementById("form-submit-value").value = comment_id;
-        showSideNav(comment_id);
-        event.stopPropagation();
+        return `${year}-${month < 10 ? '0' + month : month}-${day < 10 ? '0' + day : day}`;
     }
 
+    function solved(id) {
+        fetch('http://localhost:5000/admin/comment/solved', {
+            method: 'post',
+            headers: {'Content-Type': 'text/plain'},
+            body: JSON.stringify({
+                "comment_id": id
+            })
+        }).then(response => {
+            console.log(response);
+            return response.body;
+        }).then(body => {
+            const reader = body.getReader();
+            const decoder = new TextDecoder();
+            reader.read().then(({done, value}) => {
+                if (done) { // 读取完成
+                    return;
+                }
+                let data = decoder.decode(value, {stream: true});
+                console.log(data);
+                if (JSON.parse(data).code === 200) {
+                    //
+                    window.location.reload();
+                }
+            });
+        }).catch(error => {
+            console.error('发生错误:', error);
+        });
+    }
 
-    function onSubmit() {
-        let comment_id = $("#form-submit-value").val();
+    function deleted(id) {
+        layui.use('layer', function () {
+            var layer = layui.layer;
+            layer.confirm('确定删除这个留言吗？', {icon: 0, title: '警告'}, function (index) {
+                fetch('http://localhost:5000/admin/comment/deleted', {
+                    method: 'post',
+                    headers: {'Content-Type': 'text/plain'},
+                    body: JSON.stringify({
+                        "comment_id": id
+                    })
+                }).then(response => {
+                    console.log(response);
+                    return response.body;
+                }).then(body => {
+                    const reader = body.getReader();
+                    const decoder = new TextDecoder();
+                    reader.read().then(({done, value}) => {
+                        if (done) { // 读取完成
+                            return;
+                        }
+                        let data = decoder.decode(value, {stream: true});
+                        console.log(data);
+                        if (JSON.parse(data).code === 200) {
+                            //
+                            window.location.reload();
+                        }
+                    });
+                }).catch(error => {
+                    console.error('发生错误:', error);
+                });
+                layer.close(index);
+            });
+        });
+    }
+
+    function getCommentComments(comment_id,element) {
+        fetch('http://localhost:5000/admin/comment/get', {
+            method: 'post',
+            headers: {'Content-Type': 'text/plain'},
+            body: JSON.stringify({
+                "id": comment_id,
+            })
+        }).then(response => {
+            return response.body;
+        }).then(body => {
+            const reader = body.getReader();
+            const decoder = new TextDecoder();
+            reader.read().then(({done, value}) => {
+                if (done) { // 读取完成
+                    return;
+                }
+                let data = decoder.decode(value, {stream: true});
+                let comments = JSON.parse(data).comments;
+                let ul = document.createElement('ul');
+                for (const comment of comments) {
+                    let li = document.createElement('li');
+                    let name = comment.name;
+                    let comment_text = comment.comment;
+                    let date = timestampToDate(comment.date);
+                    let id;
+                    let isAdmin = false;
+                    try {
+                        id = comment.admin_id;
+                        isAdmin = true;
+                    } catch (error) {
+                        id = comment.student_id;
+                    }
+                    console.log(id)
+                    // 头像
+                    let a = document.createElement("a");
+                    let span = document.createElement("span");
+                    span.style.backgroundImage = "url('../../static/avatar/@id.png')".replace("@id",id);
+                    span.style.width = "50px";
+                    span.style.height = "50px";
+                    span.style.display = "block";
+                    span.style.backgroundSize = "cover";
+                    span.style.borderRadius = "50%";
+                    a.appendChild(span);
+                    li.appendChild(a);
+                    // 评论主体
+                    let div = document.createElement("div");
+                    let p_name = document.createElement("p");
+                    let p_comment = document.createElement("p");
+                    let p_date = document.createElement("p");
+                    p_name.textContent = name;
+                    p_name.style.color = "#0f7ddb";
+                    if (isAdmin) {
+                        p_name.style.color = "rgba(255, 47, 47, 0.77)";
+                    }
+                    p_name.style.fontSize = "12px";
+                    p_name.style.fontWeight = "bold";
+                    p_name.style.padding = "10px 15px";
+                    p_name.style.cursor = "pointer";
+                    p_comment.textContent = comment_text;
+                    p_comment.style.fontSize = "18px";
+                    p_comment.style.padding = "10px 15px";
+                    p_comment.style.borderRadius = "10px";
+                    p_comment.style.backgroundColor = "#f1f1f1";
+                    p_date.textContent = date;
+                    p_date.style.marginRight = "20px";
+                    p_date.style.fontSize = "12px";
+                    p_date.style.fontWeight = "bold";
+                    div.appendChild(p_name);
+                    div.appendChild(p_comment);
+                    div.appendChild(p_date);
+                    li.appendChild(div);
+                    li.style.border = "0";
+                    li.style.borderLeft = "1px solid rgba(0, 0, 0, 0.3)";
+                    li.style.display = "flex";
+                    ul.appendChild(li);
+                }
+                element.appendChild(ul);
+            });
+        }).catch(error => {
+            console.error('发生错误:', error);
+        });
+    }
+
+    function onReply(id) {
+        let comment_id = id;
         let admin_id = $("#id").val();
-        let comment_content = $('#dialog-input').val();
+        let name = document.getElementById("name");
+        let comment_content = $('#textInput2').val();
         console.log(comment_content);
-        fetch('http://localhost:5000/admin/comment/add', {
+        fetch('http://localhost:5000/admin/reply/add', {
             method: 'post',
             headers: {'Content-Type': 'text/plain'},
             body: JSON.stringify({
                 "comment_id": comment_id,
                 "admin_id": admin_id,
+                'name': name.textContent,
                 "comment": comment_content
             })
         }).then(response => {
@@ -732,7 +931,7 @@
                 console.log(data);
                 if (JSON.parse(data).code === 200) {
                     // 留言成功
-                    showSideNav(comment_id);
+                    window.location.reload();
                 }
             });
         }).catch(error => {
@@ -740,93 +939,67 @@
         });
     }
 
-    function onCancel() {
-        let form = document.querySelector(".comment-form");
-        let container = document.querySelector(".container-body");
-        if (form.classList.contains("form-show")) {
-            form.classList.remove("form-show");
+    /* 回复留言 */
+    function reply(element,id) {
+        // 找两次父节点
+        let comment_main = element.parentElement.parentElement;
+        // 存在已经打开的则清除
+        try {
+            let old = document.getElementById("reply-input-box");
+            if (old !== null) {
+                comment_main.removeChild(old);
+                return;
+            }
+        } catch (error) {
         }
-        if (old_focus_comment_id !== "") {
-            document.getElementById(old_focus_comment_id).classList.remove("comment-focus");
-            old_focus_comment_id = "";
-        }
-        container.classList.remove("prevent-click");
-        form.classList.add("form-hidden");
-        hideSideNav();
-        event.stopPropagation();
-    }
+        let input_box = document.createElement("div");
+        input_box.classList.add("input-box2");
+        input_box.id = "reply-input-box";
+        let input = document.createElement("div");
+        input.classList.add("input2");
+        let text_input = document.createElement("textarea");
+        text_input.id = "textInput2";
+        text_input.placeholder = "在这里评论";
+        let submit = document.createElement("div");
+        submit.classList.add("submit2");
+        let div = document.createElement("div");
+        div.textContent = "按回车发送。使用 Shift+Enter 换行。";
+        let button = document.createElement("input");
+        button.type = "button";
+        button.value= "发表";
+        button.addEventListener('click', function () {
+            onReply(id);
+        });
+        submit.appendChild(div);
+        submit.appendChild(button);
+        input.appendChild(text_input);
+        input.appendChild(submit);
+        input_box.appendChild(input);
+        comment_main.appendChild(input_box);
 
-
-    /* 显示侧边栏，侧边栏显示用户评论下的评论 */
-    function showSideNav(comment_id) {
-        // 留言板变暗和模糊
-        let container_body = document.querySelector(".container");
-        if (!container_body.classList.contains("blur-effect-dark")) {
-            container_body.classList.add("blur-effect-dark");
-        }
-        let nav = document.getElementById("side-nav");
-        if (nav.classList.contains("nav-hide")) {
-            nav.classList.remove("nav-hide");
-        }
-        nav.classList.add("nav-show");
-        // 设置阴影
-        // let shadow = "";
-        // for (let i = 20; i > 0; i--) {
-        //     nav.style.boxShadow += -(21 - i) + "px 0px 2px rgba(0, 0, 0," + 0.025 * i + ");"
-        // }
-        // console.log(shadow);
-
-        fetch('http://localhost:5000/admin/comment/get', {
-            method: 'post',
-            headers: {'Content-Type': 'text/plain'},
-            body: JSON.stringify({
-                "id": comment_id,
-            })
-        }).then(response => {
-            console.log(response);
-            return response.body;
-        }).then(body => {
-            const reader = body.getReader();
-            const decoder = new TextDecoder();
-            reader.read().then(({done, value}) => {
-                if (done) { // 读取完成
-                    return;
+        let textInput2 = $("#textInput2");
+        textInput2.on('input', function () {
+            if (this.scrollHeight > this.clientHeight) {
+                this.style.height = this.scrollHeight + 'px';
+            } else {
+                this.style.height = "auto";
+                this.style.height = this.scrollHeight + 'px';
+            }
+            if (this.value.length > 0) {
+                document.querySelector(".submit2").classList.add("enable");
+            } else {
+                document.querySelector(".submit2").classList.remove("enable");
+            }
+        });
+        textInput2.keydown(function(event) {
+            if (event.shiftKey && event.keyCode === 13) {
+            } else {
+                if (event.keyCode === 13) {
+                    onReply(id);
                 }
-                let data = decoder.decode(value, {stream: true});
-                let comments = JSON.parse(data).comments;
-                let side_nav_ul = document.getElementById("side-nav-ul");
-                side_nav_ul.innerHTML = "";
-                for (const comment of comments) {
-                    let li = document.createElement("li");
-                    let p = document.createElement("p");
-                    let label = document.createElement("label");
-                    label.textContent = "Admin: "
-                    li.classList.add("comment-admin");
-                    p.textContent = comment.comment;
-                    li.appendChild(label);
-                    li.appendChild(p);
-                    side_nav_ul.appendChild(li);
-                }
-            });
-        }).catch(error => {
-            console.error('发生错误:', error);
+            }
         });
     }
-
-    /* 隐藏侧边栏 */
-    function hideSideNav() {
-        // 恢复留言板状态
-        let container_body = document.querySelector(".container");
-        if (container_body.classList.contains("blur-effect-dark")) {
-            container_body.classList.remove("blur-effect-dark");
-        }
-        let nav = document.getElementById("side-nav");
-        if (nav.classList.contains("nav-show")) {
-            nav.classList.remove("nav-show");
-        }
-        nav.classList.add("nav-hide");
-    }
-
 </script>
 </body>
 </html>
