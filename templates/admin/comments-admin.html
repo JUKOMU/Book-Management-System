@@ -606,45 +606,6 @@
         </div>
     </div>
 
-    <!--   <div class="tab-bar">
-           <div id="li_1" class="tab-bar-item">
-               <a href="{{url_for('index_student')}}">首页</a>
-               <span></span>
-           </div>
-           <div id="li_2" class="tab-bar-item">
-               <a href="{{ url_for('recommend') }}">智能推荐</a>
-               <span></span>
-           </div>
-           <div id="li_3" class="tab-bar-item">
-               <a href="{{ url_for('search_book_student') }}">图书查询</a>
-               <span></span>
-           </div>
-           <div id="li_4" class="tab-bar-item">
-               <a href="javascript:;">图书管理▼</a>
-               <div class="tab-bar-item-item-parent">
-                   <div class="tab-bar-item-item" id="li_4_1"><a href="{{ url_for('borrow_student') }}">图书借阅</a>
-                   </div>
-                   <div class="tab-bar-item-item" id="li_4_2"><a href="{{ url_for('return_book_student') }}">图书归还</a>
-                   </div>
-                   <div class="tab-bar-item-item" id="li_4_3"><a href="javascript:;">违规处理</a>
-                   </div>
-               </div>
-               <span></span>
-           </div>
-           <div id="li_5" class="tab-bar-item">
-               <a href="{{ url_for('change_info_student') }}">信息设置</a>
-               <span></span>
-           </div>
-           <div id="li_6" class="tab-bar-item">
-               <a href="javascript:;">查看公告</a>
-               <span></span>
-           </div>
-           <div id="li_7" class="tab-bar-item">
-               <a href="javascript:;">读者留言</a>
-               <span></span>
-           </div>
-       </div>-->
-
     <div class="container" id="container">
         <div class="title">
             <h2>留言板</h2>
@@ -685,10 +646,6 @@
                 {% endfor %}
             </ul>
         </div>
-        <!--        <div class="input">-->
-        <!--            <textarea type="textarea" id="textInput" placeholder="在这里评论"></textarea>-->
-        <!--            <img onclick="comment()" id="summit" src="../../static/summit.png"/>-->
-        <!--        </div>-->
     </div>
 
     <input id="id" hidden="hidden" value={{id}}>
@@ -751,23 +708,6 @@
         $("#side-nav").css({
             'height': ($(window).height() - 144).toString() + "px",
         });
-
-        /*// 获取所有class为"solved-comment"的p标签//设置水印
-        var solvedComments = document.getElementsByClassName("solved-comment");
-
-        // 遍历每个solved-comment类的p标签
-        for (var i = 0; i < solvedComments.length; i++) {
-            // 在每个p标签上创建并添加文字水印
-            var watermark = document.createElement("span");
-            watermark.style.color = "rgba(0, 0, 0, 0.3)"; // 设置水印颜色
-            watermark.style.position = "relative"; // 设置水印位置为相对定位
-            watermark.style.fontSize = "20px"; // 设置水印字体大小
-            watermark.style.fontStyle = "italic"; //设置斜体
-            watermark.style.fontWeight = "bold"; // 设置水印字体粗细
-            watermark.style.marginRight = "-20px"; // 负的右边距，调整水印位置
-            watermark.innerHTML = "Solved"; // 设置水印文字
-            solvedComments[i].appendChild(watermark); // 将水印添加到p标签中
-        }*/
 
         var form = document.getElementById('comment-form');
 
@@ -1009,8 +949,6 @@
 
         return `${year}-${month < 10 ? '0' + month : month}-${day < 10 ? '0' + day : day}`;
     }
-
-
 </script>
 </body>
 </html>
