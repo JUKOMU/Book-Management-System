@@ -722,12 +722,11 @@
     });
 
     function solved(id) {
-        let comment_id = id;
         fetch('http://localhost:5000/admin/comment/solved', {
             method: 'post',
             headers: {'Content-Type': 'text/plain'},
             body: JSON.stringify({
-                "comment_id": comment_id
+                "comment_id": id
             })
         }).then(response => {
             console.log(response);
@@ -936,11 +935,10 @@
     /* 获取元素绝对位置 */
     function getElementPosition(element) {
         const rect = element.getBoundingClientRect();
-        const position = {
+        return {
             top: rect.top + window.pageYOffset,
             left: rect.left + window.pageXOffset
         };
-        return position;
     }
 
     /* 时间戳转换年月日 */
