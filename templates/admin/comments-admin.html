@@ -710,17 +710,13 @@
         });
 
         var form = document.getElementById('comment-form');
-
         // 添加单击事件监听器到整个文档
         document.addEventListener('click', function (event) {
-            var target = event.target;
-
             // 检查点击事件是否发生在菜单内部
-            var isClickInsideMenu = form.contains(target);
-
+            let isClickInsideMenu = form.contains(event.target);
             // 如果点击事件发生在菜单外部，则执行相应操作
             if (!isClickInsideMenu) {
-                // 在这里执行菜单外的操作，例如关闭菜单
+                // 关闭菜单
                 onCancel();
             }
         });
@@ -925,7 +921,6 @@
         }
         nav.classList.add("nav-hide");
         $("#side-nav").css({
-
             'left': '100%'
         });
     }
