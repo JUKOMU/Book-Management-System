@@ -7,18 +7,22 @@ from config import DevelopmentConfig
 app = Flask(__name__)
 app.config.from_object(DevelopmentConfig)
 db = SQLAlchemy(app)
+
+
 class Admin(UserMixin, db.Model):
     __tablename__ = 'admin'
     admin_id = db.Column(db.String(6), primary_key=True)
     admin_name = db.Column(db.String(32))
     password = db.Column(db.String(24))
     right_col = db.Column(db.String(32))
+    avatar = db.Column(db.Boolean, default=False)
 
-    def __init__(self, admin_id, admin_name, password, right_col):
+    def __init__(self, admin_id, admin_name, password, right_col, avatar):
         self.admin_id = admin_id
         self.admin_name = admin_name
         self.password = password
         self.right_col = right_col
+        self.avatar = avatar
 
     def get_id(self):
         return self.admin_id
@@ -45,9 +49,10 @@ class Student(UserMixin, db.Model):
     valid_date = db.Column(db.String(13))
     loss = db.Column(db.Boolean, default=False)  # 是否挂失
     debt = db.Column(db.Boolean, default=False)  # 是否欠费
+    avatar = db.Column(db.Boolean, default=False)  # 头像
 
     def __init__(self, card_id, student_id, password, student_name, sex, telephone, enroll_date, valid_date, loss=False,
-                 debt=False):
+                 debt=False, avatar=False):
         self.card_id = card_id
         self.student_id = student_id
         self.password = password
@@ -58,6 +63,7 @@ class Student(UserMixin, db.Model):
         self.valid_date = valid_date
         self.loss = loss
         self.debt = debt
+        self.avatar = avatar
 
     def get_id(self):
         return self.card_id
@@ -112,6 +118,7 @@ class ReadBook(db.Model):
     def __repr__(self):
         return '<ReadBook %r>' % self.id
 
+
 class Comments(db.Model):
     __tablename__ = 'comments'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -122,6 +129,7 @@ class Comments(db.Model):
 
     def __repr__(self):
         return '<Comments %r>' % self.id
+
 
 class CommentsAdmin(db.Model):
     __tablename__ = 'comments_admin'
@@ -143,6 +151,7 @@ class CommentsAdmin(db.Model):
     def __repr__(self):
         return '<CommentsAdmin %r>' % self.id
 
+
 class Announcements(db.Model):
     __tablename__ = 'announcements'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -159,3 +168,23 @@ class Announcements(db.Model):
     def __repr__(self):
         return '<Announcements %r>' % self.id
 
+
+class CommentsStudent(db.Model):
+    __tablename__ = 'comments_student'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    comment_id = db.Column(db.String(10))
+    student_id = db.Column(db.String(10))
+    comment = db.Column(db.String(1024))
+    date = db.Column(db.String(13))  # 日期
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'comment_id': self.comment_id,
+            'student_id': self.student_id,
+            'comment': self.comment,
+            'date': self.date
+        }
+
+    def __repr__(self):
+        return '<CommentsStudent %r>' % self.id
