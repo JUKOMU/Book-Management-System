@@ -123,6 +123,7 @@ class Comments(db.Model):
     __tablename__ = 'comments'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     student_id = db.Column(db.String(10))
+    student_name = db.Column(db.String(32))
     comment = db.Column(db.String(1024))
     date = db.Column(db.String(13))  # 日期
     status = db.Column(db.Integer)
