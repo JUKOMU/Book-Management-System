@@ -663,9 +663,16 @@ def eb_stream():
 @app.route("/student/comment", methods=['GET', 'POST'])
 @login_required
 def comments_student():
-    id = current_user.student_id
+    id = ""
+    if current_user.student_id:
+        id = current_user.student_id
+    else:
+        return redirect("/admin/comment", 302, Response)
+    avatar = id if current_user.avatar else "default"
     comments = Comments.query.all()
-    return render_template('student/comments-student.html', name=session.get('name'), id=id, comments=comments)
+    last_comment_id = comments[len(comments)-1].id
+    return render_template('student/comments-student.html', name=session.get('name'), id=id, comments=comments,
+                           avatar=avatar, last_comment_id=last_comment_id)
 
 
 # 管理员留言
@@ -673,8 +680,11 @@ def comments_student():
 @login_required
 def comments_admin():
     id = current_user.admin_id
+    avatar = id if current_user.avatar else "default"
     comments = Comments.query.all()
-    return render_template('admin/comments-admin.html', name=session.get('name'), id=id, comments=comments)
+    last_comment_id = comments[len(comments)-1].id
+    return render_template('admin/comments-admin.html', name=session.get('name'), id=id, comments=comments,
+                           avatar=avatar, last_comment_id=last_comment_id)
 
 
 @app.route("/student/comment/add", methods=['GET', 'POST'])
@@ -713,10 +723,23 @@ def comments_admin_solved():
     return jsonify({'code': 200, 'message': "Success"})
 
 
-@app.route("/admin/comment/add", methods=['GET', 'POST'])
+@app.route("/admin/comment/deleted", methods=['GET', 'POST'])
+def comments_admin_deleted():
+    body = json.loads(request.data.decode("utf8"))
+    print(body)
+    comment_id = body.get("comment_id")
+    comment = Comments.query.filter_by(id=comment_id).first()
+    db.session.delete(comment)
+    db.session.commit()
+
+    return jsonify({'code': 200, 'message': "Success"})
+
+
+@app.route("/admin/reply/add", methods=['GET', 'POST'])
 def comments_admin_add():
     body = json.loads(request.data.decode("utf8"))
     print(body)
+    admin_name = body.get("name")
     admin_id = body.get("admin_id")
     comment_id = body.get("comment_id")
     comment_str = body.get("comment")
@@ -727,6 +750,7 @@ def comments_admin_add():
     commentAdmin = CommentsAdmin()
     commentAdmin.comment_id = comment_id
     commentAdmin.admin_id = admin_id
+    commentAdmin.name = admin_name
     commentAdmin.comment = comment_str
     commentAdmin.date = comment_date
     db.session.add(commentAdmin)
@@ -735,14 +759,40 @@ def comments_admin_add():
     return jsonify({'code': 200, 'message': "Success"})
 
 
+@app.route("/student/reply/add", methods=['GET', 'POST'])
+def comments_student_add_reply():
+    body = json.loads(request.data.decode("utf8"))
+    print(body)
+    student_name = body.get("name")
+    student_id = body.get("student_id")
+    comment_id = body.get("comment_id")
+    comment_str = body.get("comment")
+    today_date = datetime.date.today()
+    today_str = today_date.strftime("%Y-%m-%d")
+    today_stamp = time.mktime(time.strptime(today_str + ' 00:00:00', '%Y-%m-%d %H:%M:%S'))
+    comment_date = int(today_stamp) * 1000
+    commentStudent = CommentsStudent()
+    commentStudent.comment_id = comment_id
+    commentStudent.student_id = student_id
+    commentStudent.name = student_name
+    commentStudent.comment = comment_str
+    commentStudent.date = comment_date
+    db.session.add(commentStudent)
+    db.session.commit()
+
+    return jsonify({'code': 200, 'message': "Success"})
+
+
 @app.route("/admin/comment/get", methods=['GET', 'POST'])
 def comments_admin_get():
     body = json.loads(request.data.decode("utf8"))
-    print(body)
     comment_id = body.get('id')
     commentsAdmin = CommentsAdmin.query.filter_by(comment_id=comment_id).all()
-    comments_list = [comment.to_dict() for comment in commentsAdmin]  # 使用列表推导式转换列表中的每个对象
-    return jsonify({"comments": comments_list})
+    commentsStudent = CommentsStudent.query.filter_by(comment_id=comment_id).all()
+    all_comments = [comment.to_dict() for comment in commentsAdmin + commentsStudent]
+    print(comment_id, all_comments)
+    sorted_comments = sorted(all_comments, key=lambda x: int(x['date']))
+    return jsonify({"comments": sorted_comments})
 
 
 @app.route("/student/announcement", methods=['GET', 'POST'])
