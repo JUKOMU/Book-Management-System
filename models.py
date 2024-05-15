@@ -213,6 +213,7 @@ class CommentsAdmin(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     comment_id = db.Column(db.String(10))
     admin_id = db.Column(db.String(10))
+    name = db.Column(db.String(255))
     comment = db.Column(db.String(1024))
     date = db.Column(db.String(13))  # 日期
 
@@ -221,6 +222,7 @@ class CommentsAdmin(db.Model):
             'id': self.id,
             'comment_id': self.comment_id,
             'admin_id': self.admin_id,
+            'name': self.name,
             'comment': self.comment,
             'date': self.date
         }
@@ -251,6 +253,7 @@ class CommentsStudent(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     comment_id = db.Column(db.String(10))
     student_id = db.Column(db.String(10))
+    name = db.Column(db.String(255))
     comment = db.Column(db.String(1024))
     date = db.Column(db.String(13))  # 日期
 
@@ -259,6 +262,7 @@ class CommentsStudent(db.Model):
             'id': self.id,
             'comment_id': self.comment_id,
             'student_id': self.student_id,
+            'name': self.name,
             'comment': self.comment,
             'date': self.date
         }
