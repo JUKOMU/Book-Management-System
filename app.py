@@ -682,6 +682,7 @@ def comments_student_add():
     body = json.loads(request.data.decode("utf8"))
     print(body)
     student_id = body.get('id')
+    student_name = body.get('name')
     comment_str = body.get("comment")
     today_date = datetime.date.today()
     today_str = today_date.strftime("%Y-%m-%d")
@@ -689,6 +690,7 @@ def comments_student_add():
     comment_date = int(today_stamp) * 1000
     comment = Comments()
     comment.student_id = student_id
+    comment.student_name = student_name
     comment.comment = comment_str
     comment.date = comment_date
     comment.status = 0

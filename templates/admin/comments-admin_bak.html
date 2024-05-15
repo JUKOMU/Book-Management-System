@@ -12,7 +12,7 @@
     <script type="text/javascript" src="../../static/markdown/marked.min.js"></script>
     <style>
         body {
-            background-color: #e1e1e1;
+            background-color: #f1f1f1;
         }
 
         .alert {
@@ -112,7 +112,6 @@
             left: 0;
             right: 0;
             text-align: center;
-            background-color: #ffffff;
         }
 
         .tab-bar {
@@ -149,12 +148,10 @@
         #li_4:hover {
             .tab-bar-item-item-parent {
                 display: block;
-                z-index: 9999;
             }
 
             .tab-bar-item-item {
                 display: block;
-                z-index: 9999;
             }
         }
 
@@ -165,6 +162,7 @@
             top: 60px;
             padding: 0 10px 5px 10px;
             border-radius: 5px;
+            z-index: 10000;
         }
 
         .tab-bar-item-item-parent:hover {
@@ -172,14 +170,13 @@
 
             .tab-bar-item-item {
                 display: block;
-                z-index: 9999;
             }
         }
 
         .tab-bar-item-item {
             display: none;
             margin-top: 5px;
-            z-index: 9999;
+            z-index: 10000;
         }
 
         .tab-bar-item-item:hover {
@@ -194,7 +191,50 @@
             position: absolute;
             top: 10px;
             left: 45%;
-            text-decoration-line: underline;
+        }
+
+        .title::before {
+            position: absolute;
+            content: "";
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            border-bottom: 2px solid #000000;
+            transition: all 0.5s linear;
+        }
+
+        .title::after {
+            position: absolute;
+            content: "";
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            border-top: 2px solid #000000;
+            transition: all 0.5s linear;
+        }
+
+        .title:hover::before {
+            position: absolute;
+            content: "";
+            width: 100%;
+            height: 120%;
+            top: 0;
+            left: 0;
+            border-bottom: 5px solid rgba(0, 0, 0, 0);
+            transition-delay: 0.1s;
+        }
+
+        .title:hover::after {
+            position: absolute;
+            content: "";
+            width: 100%;
+            height: 120%;
+            top: 0;
+            left: 0;
+            border-top: 5px solid rgba(0, 0, 0, 0);
+            transition-delay: 0.1s;
         }
 
         .container {
@@ -202,7 +242,7 @@
             bottom: 110px;
             left: 280px;
             right: 400px;
-            width: calc(100% - 600px);
+            width: calc(100% - 420px);
             height: 10px;
             margin: 0;
             padding: 10px;
@@ -228,7 +268,6 @@
             width: calc(100% - 600px);
             padding: 10px;
             text-align: center;
-            transition: all 1s;
         }
 
         .input #textInput {
@@ -238,7 +277,6 @@
             font-size: 16px;
             text-indent: 1ch;
             padding: 4px;
-            transition: all 1s;
         }
 
         .input #summit {
@@ -250,7 +288,6 @@
             cursor: pointer;
             right: 210px;
             bottom: 10px;
-            transition: all 1s;
         }
 
         .input #summit:hover {
@@ -263,120 +300,173 @@
         }
 
         .container-body {
-            background-color: #ffffff;
-            border-radius: 10px;
-            padding: 0;
-            overflow-x: hidden;
+            padding-top: 60px;
         }
 
         .container-body ul {
-            padding-left: 0;
-            padding-right: 0;
+            padding-left: 15px;
+            padding-right: 15px;
             display: block;
         }
 
         .container-body ul li {
-            padding: 10px 15px;
+            padding: 2px;
             width: 100%;
             height: fit-content;
             float: none;
+            cursor: pointer;
             list-style-type: none;
-            border: 1px solid rgba(0, 0, 0, 0.3);
-            display: flex;
-            justify-items: left;
         }
 
-        .container-body ul li div p {
-            margin-right: 20px;
+        .container-body ul li p {
+            width: 80%;
+            padding: 15px;
+            margin-top: 20px;
         }
 
-        .container-body ul li a {
-            cursor: pointer;
-        }
-
-        .container-body ul li a span {
-            width: 50px;
-            height: 50px;
-            display: block;
-            background-size: cover;
+        .container-body ul li input {
+            display: list-item;
+            position: relative;
+            width: 20px;
+            height: 20px;
             border-radius: 50%;
-        }
-
-        .comment-name {
-            font-size: 12px;
-            color: #0f7ddb;
-            font-weight: bold;
-            padding: 10px 15px;
-            cursor: pointer;
-        }
-
-        .comment {
-            font-size: 16px;
-            padding: 10px 15px;
-            border-radius: 10px;
-        }
-
-        .operator {
-            font-size: 12px;
-            font-weight: bold;
-            padding: 5px 0 0 5px;
-        }
-
-        .operator a {
-            color: rgba(143,156,163);
-            margin-right: 10px;
+            margin: 0 0 0 auto;
+            padding: 0 0 20px 0;
+            right: 0;
+            background-color: #0ed839;
             cursor: pointer;
         }
 
         .my-comment {
             position: relative;
-            text-align: left;
-            left: 0;
-            margin: 0 auto 0 0;
+            text-align: right;
+            right: 25px;
+            border-radius: 6px 6px 15px 6px;
+            margin: 0 0 0 0;
         }
 
-        /*.my-comment:after {*/
-        /*    content: "○";*/
-        /*    position: absolute;*/
-        /*    right: -15px;*/
-        /*    bottom: 0;*/
-        /*    font-size: 20px;*/
-        /*}*/
+        .my-comment:after {
+            content: "○";
+            position: absolute;
+            right: -15px;
+            bottom: 0;
+            font-size: 20px;
+        }
 
         .others-comment {
             position: relative;
             text-align: left;
-            left: 0;
-            margin: 0 auto 0 0;
+            left: 25px;
+            border-radius: 6px 6px 6px 15px;
+            margin: 0 0 0 0;
         }
 
-        /*.others-comment:before {*/
-        /*    content: "○";*/
-        /*    position: absolute;*/
-        /*    left: -15px;*/
-        /*    bottom: 0;*/
-        /*    font-size: 20px;*/
-        /*}*/
+        .others-comment:before {
+            content: "○";
+            position: absolute;
+            left: -15px;
+            bottom: 0;
+            font-size: 20px;
+        }
 
         .solved-comment {
-            background-color: rgb(240, 255, 246);
-            cursor: pointer;
+            background-color: rgb(176, 255, 213);
+        }
+
+        .solved-comment::after {
+            position: absolute;
+            content: "Solved";
+            width: fit-content;
+            height: 100%;
+            top: 0;
+            left: calc(100% - 90px);
+            border: 0;
+            color: rgba(0, 0, 0, 0.3);
+            font-size: 20px;
+            font-style: italic;
+            font-weight: bold;
+            transition: all 0.5s linear;
+        }
+
+        .solved-comment:hover::after {
+            position: absolute;
+            content: "Solved";
+            width: fit-content;
+            height: 100%;
+            top: 0;
+            left: calc(100% - 90px);
+            border: 0;
+            color: rgba(0, 0, 0, 0.8);
+            font-size: 20px;
+            font-style: italic;
+            font-weight: bold;
+            transition: all 0.2s linear;
         }
 
         .solved-comment:hover {
-            filter: brightness(1.2);
+            background-color: rgba(0, 204, 102, 0.6);
         }
 
         .unsolved-comment {
             background-color: rgba(255, 181, 176, 0.5);
-            cursor: pointer;
         }
 
         .unsolved-comment:hover {
-            filter: brightness(1.2);
+            background-color: rgba(238, 46, 36, 0.5);
+        }
+
+        #comment-form {
+            margin-left: 10px;
+            transition: all 0.2s linear;
         }
 
         .dialog-box {
+            width: fit-content;
+            border: 1px solid #8f8f8f;
+            border-radius: 10px 10px 8px 20px;
+            padding: 10px;
+            background-color: #fbf8e0;
+        }
+
+        #dialog-input-label {
+            width: fit-content;
+        }
+
+        #dialog-input {
+            height: 0;
+            width: 300px;
+            resize: none;
+            border: 0;
+            background-color: #fbf8e0;
+            overflow-y: hidden;
+        }
+
+        .btns {
+            width: 60px;
+            display: flex;
+            justify-content: space-around;
+            margin: 0 0 0 auto;
+        }
+
+        .btns button {
+            width: 30px;
+            height: 30px;
+            padding: 0;
+            margin: 0;
+            border-radius: 5px;
+            flex: 1;
+            font-size: 14px;
+        }
+
+        .comment-add:hover {
+            background-color: rgba(27, 244, 136, 0.8);
+        }
+
+        .comment-cancel:hover {
+            background-color: rgba(251, 104, 82, 0.8);
+        }
+
+        .form-hidden {
             display: block;
             position: absolute;
             z-index: 10000;
@@ -395,34 +485,9 @@
         }
 
         .comment-focus {
-            filter: brightness(0.7);
-        }
-
-        .prevent-click {
-            pointer-events: none;
-            cursor: none;
-        }
-
-        .form-hidden {
-            display: block;
-            position: absolute;
-            z-index: 10000;
-            right: -500px;
-            top: 20%;
-            transition: all 1s;
-        }
-
-        .form-show {
-            display: block;
-            position: absolute;
-            z-index: 10000;
-            right: -500px;
-            top: 20%;
-            transition: all 1s;
-        }
-
-        .comment-focus {
-            filter: brightness(0.7);
+            filter: brightness(1.1);
+            background-color: #00e676;
+            box-shadow: 1px 1px 10px rgba(5, 71, 4, 0.35), -1px -1px 10px rgba(5, 71, 4, 0.34);
         }
 
         .prevent-click {
@@ -432,43 +497,36 @@
 
         #side-nav {
             height: 0;
-            width: 18%;
-            padding: 20px 20px;
-            top: 100px;
+            width: 0;
+            margin-left: 10px;
+            padding: 10px 20px;
+            top: 60px;
             position: fixed;
             background-color: #ffffff;
-            border-radius: 10px;
-            transition: all 0.8s;
-            border: 1px solid rgba(5, 5, 5, 0.3);
-            box-shadow: -10px 0 20px rgba(0, 0, 0, 0.4);
+            border: 1px rgba(12, 12, 12, 0.3) solid;
+            border-radius: 9px;
+            transition: all 1s;
+            overflow-y: scroll;
+            box-shadow: 2px 2px 15px rgba(0, 0, 0, 0.5);
         }
 
         .nav-show {
-            right: 10px;
+            right: 0;
         }
 
         .nav-hide {
-            right: -500px;
+            right: -100%;
         }
 
         .comment-admin {
             width: 85% !important;
             padding: 10px !important;
             border-radius: 5px !important;
-            background-color: #ffe9cd;
+            background-color: #fbf8e0;
             align-self: center;
-            margin-top: 10px !important;
+            margin-top: 20px !important;
+            box-shadow: 1px 1px 9px rgba(0, 0, 0, 0.3);
         }
-
-        .blur-effect {
-            filter: blur(5px); /* 使用模糊效果 */
-        }
-
-        .blur-effect-dark {
-            background-color: #FFFFFF;
-            filter: blur(1px) brightness(90%); /* 使用模糊效果,亮度降低 */
-        }
-
 
         /* 自定义滚动条的整体样式 */
         ::-webkit-scrollbar {
@@ -503,7 +561,7 @@
             <li class="layui-nav-item">
                 <a href="javascript:;">
                     <img src="../static/icon.jpg" class="layui-nav-img">
-                    <span id="name">{{ name }}</span>
+                    {{ name }}
                 </a>
                 <dl class="layui-nav-child">
                     <dd><a href="{{ url_for('user_info_student', id=current_user.card_id) }}">个人信息</a></dd>
@@ -514,40 +572,36 @@
         </ul>
     </div>
 
-    <div class="tab-bar">
-        <div id="li_1" class="tab-bar-item">
-            <a href="{{url_for('index_student')}}">首页</a>
-            <span></span>
-        </div>
-        <div id="li_2" class="tab-bar-item">
-            <a href="{{ url_for('recommend') }}">智能推荐</a>
-            <span></span>
-        </div>
-        <div id="li_3" class="tab-bar-item">
-            <a href="{{ url_for('search_book_student') }}">图书查询</a>
-            <span></span>
-        </div>
-        <div id="li_4" class="tab-bar-item">
-            <a href="javascript:;">图书管理▼</a>
-            <div class="tab-bar-item-item-parent">
-                <div class="tab-bar-item-item" id="li_4_1"><a href="{{ url_for('borrow_student') }}">图书借阅</a>
-                </div>
-                <div class="tab-bar-item-item" id="li_4_2"><a href="{{ url_for('return_book_student') }}">图书归还</a>
-                </div>
-            </div>
-            <span></span>
-        </div>
-        <div id="li_5" class="tab-bar-item">
-            <a href="{{ url_for('change_info_student') }}">信息设置</a>
-            <span></span>
-        </div>
-        <div id="li_6" class="tab-bar-item">
-            <a href="{{ url_for('announcement_student') }}">查看公告</a>
-            <span></span>
-        </div>
-        <div id="li_7" class="tab-bar-item">
-            <a href="{{ url_for('comments_student') }}">读者留言</a>
-            <span></span>
+    <div class="layui-side layui-bg-black">
+        <div class="layui-side-scroll">
+            <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+            <ul class="layui-nav layui-nav-tree" lay-filter="test">
+                <li id="li_1" class="layui-nav-item">
+                    <a class="" href="javascript:;">图书管理</a>
+                    <dl class="layui-nav-child">
+                        <dd id="li_1_1"><a href="{{ url_for('storage') }}">入库管理</a></dd>
+                        <dd id="li_1_2"><a href="{{ url_for('borrow_admin') }}">学生借书</a></dd>
+                        <dd id="li_1_3"><a href="{{ url_for('return_book_admin') }}">学生还书</a></dd>
+                        <dd id="li_1_4"><a href="{{url_for('write_off') }}">图书注销</a></dd>
+                    </dl>
+                </li>
+                <li id="li_2" class="layui-nav-item">
+                    <a href="{{ url_for('change_info_admin') }}">管理员信息设置</a>
+                </li>
+                <li id="li_3" class="layui-nav-item">
+                    <a href="{{ url_for('search_book_admin') }}">图书信息查询</a>
+                </li>
+                <li id="li_4" class="layui-nav-item">
+                    <a href="{{ url_for('search_student') }}">学生信息查询</a>
+                </li>
+                </li>
+                <li id="li_5" class="layui-nav-item">
+                    <a href="{{url_for('announcement_admin')}}">发布公告</a>
+                </li>
+                <li id="li_6" class="layui-nav-item">
+                    <a href="{{url_for('comments_admin') }}">读者留言</a>
+                </li>
+            </ul>
         </div>
     </div>
 
@@ -561,94 +615,36 @@
                 {% for comment in comments %}
                 {% if comment.status == 0 and comment.student_id == id %}
                 <li>
-                    <!--头像-->
-                    <a><span style="background-image: url('../../static/avatar/{{comment.student_id}}.png')"></span>
-                    </a>
-                    <!--评论主体-->
-                    <div class="comment-main">
-                        <!--名称-->
-                        <p class="comment-name">{{comment.student_name}}</p>
-                        <!--评论-->
-                        <p id={{comment.id}} class="my-comment unsolved-comment comment"
-                           onclick="showCommentForm({{comment.id}})">
-                            {{comment.comment}}
-                        </p>
-                        <!--操作按钮-->
-                        <div class="operator">
-                            <a>回复</a>
-                            <a>删除</a>
-                        </div>
-                    </div>
+                    <p id={{comment.id}} class="my-comment unsolved-comment"
+                       onclick="showCommentForm(this,{{comment.id}})">
+                        {{comment.comment}}
+                        <input type="button" onclick="solved({{comment.id}})" value="✓">
+                    </p>
                 </li>
                 {% elif comment.status == 1 and comment.student_id == id %}
                 <li>
-                    <!--头像-->
-                    <a><span style="background-image: url('../../static/avatar/{{comment.student_id}}.png')"></span>
-                    </a>
-                    <!--评论主体-->
-                    <div class="comment-main">
-                        <!--名称-->
-                        <p class="comment-name">{{comment.student_name}}</p>
-                        <!--评论-->
-                        <p id={{comment.id}} class="my-comment solved-comment comment"
-                           onclick="showCommentForm({{comment.id}})">
-                            {{comment.comment}}
-                        </p>
-                        <!--操作按钮-->
-                        <div class="operator">
-                            <a>回复</a>
-                            <a>删除</a>
-                        </div>
-                    </div>
+                    <p id={{comment.id}} class="my-comment solved-comment"
+                       onclick="showCommentForm(this,{{comment.id}})">
+                        {{comment.comment}}
+                    </p>
                 </li>
                 {% elif comment.status == 0 and comment.student_id != id %}
                 <li>
-                    <!--头像-->
-                    <a><span style="background-image: url('../../static/avatar/{{comment.student_id}}.png')"></span>
-                    </a>
-                    <!--评论主体-->
-                    <div class="comment-main">
-                        <!--名称-->
-                        <p class="comment-name">{{comment.student_name}}</p>
-                        <!--评论-->
-                        <p id={{comment.id}} class="others-comment unsolved-comment comment"
-                           onclick="showCommentForm({{comment.id}})">{{comment.comment}}
-                        </p>
-                        <!--操作按钮-->
-                        <div class="operator">
-                            <a>回复</a>
-                        </div>
-                    </div>
+                    <p id={{comment.id}} class="others-comment unsolved-comment"
+                       onclick="showCommentForm(this,{{comment.id}})">{{comment.comment}}
+                        <input type="button" onclick="solved({{comment.id}})" value="✓">
+                    </p>
                 </li>
                 {% else %}
                 <li>
-                    <!--头像-->
-                    <a><span style="background-image: url('../../static/avatar/{{comment.student_id}}.png')"></span>
-                    </a>
-                    <!--评论主体-->
-                    <div class="comment-main">
-                        <!--名称-->
-                        <p class="comment-name">{{comment.student_name}}</p>
-                        <!--评论-->
-                        <p id={{comment.id}} class="others-comment solved-comment comment"
-                           onclick="showCommentForm({{comment.id}})">{{comment.comment}}
-                        </p>
-                        <!--操作按钮-->
-                        <div class="operator">
-                            <a>回复</a>
-                        </div>
-                    </div>
+                    <p id={{comment.id}} class="others-comment solved-comment"
+                       onclick="showCommentForm(this,{{comment.id}})">{{comment.comment}}
+                    </p>
                 </li>
                 {% endif %}
                 {% endfor %}
             </ul>
         </div>
-
-    </div>
-
-    <div class="input">
-        <textarea type="textarea" id="textInput" placeholder="在这里评论"></textarea>
-        <img onclick="comment()" id="summit" src="../../static/summit.png"/>
     </div>
 
     <input id="id" hidden="hidden" value={{id}}>
@@ -661,8 +657,8 @@
 
     <div class="comment-form form-hidden" id="comment-form">
         <div class="dialog-box">
-            <p id="dialog-input-label"></p>
-            <textarea id="dialog-input" class="dialog-input"></textarea>
+            <p id="dialog-input-label" hidden="hidden"></p>
+            <textarea id="dialog-input" class="dialog-input" placeholder="在这里给读者评论"></textarea>
             <input id="form-submit-value" type="hidden">
             <div class="btns">
                 <button type="button" onclick="onSubmit()" class="comment-add">+</button>
@@ -686,54 +682,52 @@
     });
 
     $(document).ready(function () {
-        $("#li_7").addClass("height-light");
+        $("#li_6").addClass("height-light");
         $("#container").css({
             'position': 'fixed',
             'top': '100px',
             'left': '280px',
-            'width': 'calc(100% -600px)',
-            'height': ($(window).height() - 164).toString() + "px",
+            'width': '40%',
+            'height': ($(window).height() - 244).toString() + "px",
             'margin': '0',
             'padding': '10px',
-            'background-color': '#f1f1f1',
-            'border-radius': '0',
+            'background-color': '#ffffff',
+            'border-radius': '20px',
+            'padding-bottom': '80px',
         });
 
-        document.getElementById("container").scrollTop = document.getElementById("container").scrollHeight;
+        $("#dialog-input").on('input', function () {
+            if (this.scrollHeight > this.clientHeight) {
+                /* 调整side-nav高度 */
+                document.getElementById("side-nav").style.height = parseInt(this.scrollHeight) - parseInt(this.style.height) + "px";
+                this.style.height = this.scrollHeight + 'px';
+            }
+        });
 
         $("#side-nav").css({
-            'height': ($(window).height() - 160).toString() + "px",
+            'height': ($(window).height() - 144).toString() + "px",
         });
 
         var form = document.getElementById('comment-form');
-
         // 添加单击事件监听器到整个文档
         document.addEventListener('click', function (event) {
-            var target = event.target;
-
             // 检查点击事件是否发生在菜单内部
-            var isClickInsideMenu = form.contains(target);
-
+            let isClickInsideMenu = form.contains(event.target);
             // 如果点击事件发生在菜单外部，则执行相应操作
             if (!isClickInsideMenu) {
-                // 在这里执行菜单外的操作，例如关闭菜单
+                // 关闭菜单
                 onCancel();
             }
         });
     });
 
-    function comment() {
-        let student_id = $("#id").val();
-        let student_name = document.getElementById("name");
-        let comment_content = $('#textInput').val();
-        console.log(comment_content);
-        fetch('http://localhost:5000/student/comment/add', {
+    function solved(id) {
+        let comment_id = id;
+        fetch('http://localhost:5000/admin/comment/solved', {
             method: 'post',
             headers: {'Content-Type': 'text/plain'},
             body: JSON.stringify({
-                "id": student_id,
-                "name": student_name.textContent,
-                "comment": comment_content
+                "comment_id": comment_id
             })
         }).then(response => {
             console.log(response);
@@ -748,7 +742,7 @@
                 let data = decoder.decode(value, {stream: true});
                 console.log(data);
                 if (JSON.parse(data).code === 200) {
-                    // 留言成功
+                    //
                     window.location.reload();
                 }
             });
@@ -757,10 +751,28 @@
         });
     }
 
-
     var old_focus_comment_id = "";
 
-    function showCommentForm(comment_id) {
+    function showCommentForm(element, comment_id) {
+        let position = getElementPosition(element);
+        let height;
+        let top;
+        if (element.offsetHeight > window.innerHeight*0.7) {
+            height = 75;
+            top = window.innerHeight-139;
+        } else {
+            height = element.offsetHeight;
+            top = position.top;
+        }
+        $("#dialog-input").css({
+            'width': element.offsetWidth + 'px',
+            'height': height + 'px',
+        });
+        $("#comment-form").css({
+            'display': 'block',
+            'top': top + 'px',
+            'left': position.left + element.offsetWidth + 'px',
+        });
         if (old_focus_comment_id !== "") {
             document.getElementById(old_focus_comment_id).classList.remove("comment-focus");
         }
@@ -780,19 +792,17 @@
         event.stopPropagation();
     }
 
-
     function onSubmit() {
         let comment_id = $("#form-submit-value").val();
         let admin_id = $("#id").val();
-        let comment_content = $('#dialog-input').val();
-        console.log(comment_content);
+        let comment_content = $('#dialog-input');
         fetch('http://localhost:5000/admin/comment/add', {
             method: 'post',
             headers: {'Content-Type': 'text/plain'},
             body: JSON.stringify({
                 "comment_id": comment_id,
                 "admin_id": admin_id,
-                "comment": comment_content
+                "comment": comment_content.val()
             })
         }).then(response => {
             console.log(response);
@@ -808,6 +818,7 @@
                 console.log(data);
                 if (JSON.parse(data).code === 200) {
                     // 留言成功
+                    comment_content.val("");
                     showSideNav(comment_id);
                 }
             });
@@ -822,6 +833,10 @@
         if (form.classList.contains("form-show")) {
             form.classList.remove("form-show");
         }
+        $("#comment-form").css({
+            'display': 'none',
+        });
+        document.getElementById("dialog-input").value = "";
         if (old_focus_comment_id !== "") {
             document.getElementById(old_focus_comment_id).classList.remove("comment-focus");
             old_focus_comment_id = "";
@@ -832,25 +847,34 @@
         event.stopPropagation();
     }
 
-
     /* 显示侧边栏，侧边栏显示用户评论下的评论 */
     function showSideNav(comment_id) {
-        // 留言板变暗和模糊
-        let container_body = document.querySelector(".container");
-        if (!container_body.classList.contains("blur-effect-dark")) {
-            container_body.classList.add("blur-effect-dark");
-        }
         let nav = document.getElementById("side-nav");
         if (nav.classList.contains("nav-hide")) {
             nav.classList.remove("nav-hide");
         }
         nav.classList.add("nav-show");
-        // 设置阴影
-        // let shadow = "";
-        // for (let i = 20; i > 0; i--) {
-        //     nav.style.boxShadow += -(21 - i) + "px 0px 2px rgba(0, 0, 0," + 0.025 * i + ");"
-        // }
-        // console.log(shadow);
+
+        let element1 = document.getElementById("comment-form");
+        let element2 = document.getElementById("dialog-input");
+
+        /* 计算侧边栏顶部相对页面位置 */
+        let top = element2.offsetHeight + parseInt(element1.style.top, 10) + 60;
+        let height;
+        if (top > window.innerHeight/2) {
+            // 位于页面下半
+            height = parseInt(element1.style.top, 10) - 110;
+            top = 70;
+        } else {
+            height = window.innerHeight - element2.offsetHeight - parseInt(element1.style.top, 10) - 140;
+            top = element2.offsetHeight + parseInt(element1.style.top, 10) + 60;
+        }
+        $("#side-nav").css({
+            'top': top + "px",
+            'left': element1.style.left,
+            'width': element2.offsetWidth + "px",
+            'height': height + "px",
+        });
 
         fetch('http://localhost:5000/admin/comment/get', {
             method: 'post',
@@ -876,9 +900,17 @@
                     let li = document.createElement("li");
                     let p = document.createElement("p");
                     let label = document.createElement("label");
+                    let time_label = document.createElement("div");
                     label.textContent = "Admin: "
                     li.classList.add("comment-admin");
                     p.textContent = comment.comment;
+                    time_label.textContent = timestampToDate(comment.date);
+                    time_label.style.color = "rgba(255,0,0,0.3)";
+                    time_label.style.margin = "0 0 0 0";
+                    time_label.style.position = "relative";
+                    time_label.style.left = "-10px";
+                    time_label.style.top = "-10px";
+                    li.appendChild(time_label);
                     li.appendChild(label);
                     li.appendChild(p);
                     side_nav_ul.appendChild(li);
@@ -891,18 +923,35 @@
 
     /* 隐藏侧边栏 */
     function hideSideNav() {
-        // 恢复留言板状态
-        let container_body = document.querySelector(".container");
-        if (container_body.classList.contains("blur-effect-dark")) {
-            container_body.classList.remove("blur-effect-dark");
-        }
         let nav = document.getElementById("side-nav");
         if (nav.classList.contains("nav-show")) {
             nav.classList.remove("nav-show");
         }
         nav.classList.add("nav-hide");
+        $("#side-nav").css({
+            'left': '100%'
+        });
     }
 
+    /* 获取元素绝对位置 */
+    function getElementPosition(element) {
+        const rect = element.getBoundingClientRect();
+        const position = {
+            top: rect.top + window.pageYOffset,
+            left: rect.left + window.pageXOffset
+        };
+        return position;
+    }
+
+    /* 时间戳转换年月日 */
+    function timestampToDate(timestamp) {
+        const date = new Date(Number.parseFloat(timestamp));
+        const year = date.getFullYear();
+        const month = date.getMonth() + 1; // 月份是从0开始的，所以需要+1
+        const day = date.getDate();
+
+        return `${year}-${month < 10 ? '0' + month : month}-${day < 10 ? '0' + day : day}`;
+    }
 </script>
 </body>
 </html>

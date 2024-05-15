@@ -367,7 +367,7 @@
     });
     $(document).ready(function () {
         let loss = getCookie("loss");
-        if (loss) {
+        if (loss === "True") {
             alert("您目前有违规记录，请到前台联系管理员处理");
         }
         $("#li_1").addClass("height-light");

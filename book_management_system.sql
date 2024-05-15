@@ -1,17 +1,17 @@
 /*
  Navicat Premium Data Transfer
 
- Source Server         : MyLinuxServe
+ Source Server         : root
  Source Server Type    : MySQL
- Source Server Version : 80036 (8.0.36)
- Source Host           : 13.78.119.4:3306
+ Source Server Version : 80200 (8.2.0)
+ Source Host           : localhost:3306
  Source Schema         : book_management_system
 
  Target Server Type    : MySQL
- Target Server Version : 80036 (8.0.36)
+ Target Server Version : 80200 (8.2.0)
  File Encoding         : 65001
 
- Date: 15/05/2024 02:25:50
+ Date: 15/05/2024 22:42:30
 */
 
 SET NAMES utf8mb4;
@@ -26,18 +26,19 @@ CREATE TABLE `admin`  (
   `admin_name` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `password` varchar(24) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `right_col` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `avatar` tinyint(1) NULL DEFAULT NULL COMMENT '头像',
   PRIMARY KEY (`admin_id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of admin
 -- ----------------------------
-INSERT INTO `admin` VALUES ('201801', '中南', '123456', '入库 借书 还书 注销');
-INSERT INTO `admin` VALUES ('201802', '任雯倩', '111111', '入库 借书 还书');
-INSERT INTO `admin` VALUES ('201803', '李丹清', '2222', '入库 借书 还书 注销');
-INSERT INTO `admin` VALUES ('202401', '中南', '123', '入库 借书 还书 注销');
-INSERT INTO `admin` VALUES ('202402', 'cxk', '111111', '入库 借书 还书 注销');
-INSERT INTO `admin` VALUES ('202403', 'man', '111', '入库 借书 还书 注销');
+INSERT INTO `admin` VALUES ('201801', '中南', '123456', '入库 借书 还书 注销', NULL);
+INSERT INTO `admin` VALUES ('201802', '任雯倩', '111111', '入库 借书 还书', NULL);
+INSERT INTO `admin` VALUES ('201803', '李丹清', '2222', '入库 借书 还书 注销', NULL);
+INSERT INTO `admin` VALUES ('202401', '中南', '123', '入库 借书 还书 注销', NULL);
+INSERT INTO `admin` VALUES ('202402', 'cxk', '111111', '入库 借书 还书 注销', NULL);
+INSERT INTO `admin` VALUES ('202403', 'man', '111', '入库 借书 还书 注销', NULL);
 
 -- ----------------------------
 -- Table structure for announcements
@@ -48,7 +49,7 @@ CREATE TABLE `announcements`  (
   `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `date` varchar(13) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 13 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 13 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of announcements
@@ -100,25 +101,31 @@ DROP TABLE IF EXISTS `comments`;
 CREATE TABLE `comments`  (
   `id` int NOT NULL AUTO_INCREMENT,
   `student_id` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `comment` varchar(1024) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `student_name` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `comment` varchar(10240) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `date` varchar(13) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `status` int(1) UNSIGNED ZEROFILL NOT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 11 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 16 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of comments
 -- ----------------------------
-INSERT INTO `comments` VALUES (1, '161001222', '你好', '1715529600000', 1);
-INSERT INTO `comments` VALUES (2, '161001228', '这里是留言页面吗？', '1715529600000', 1);
-INSERT INTO `comments` VALUES (3, '161001228', '还真是', '1715529600000', 1);
-INSERT INTO `comments` VALUES (4, '161001228', '你好', '1715529600000', 1);
-INSERT INTO `comments` VALUES (5, '161001228', 'hello？', '1715529600000', 1);
-INSERT INTO `comments` VALUES (6, '82092401', '玩原神玩的', '1715529600000', 1);
-INSERT INTO `comments` VALUES (7, '82092401', '为什么没有原神相关书籍？\n', '1715529600000', 1);
-INSERT INTO `comments` VALUES (8, '82092401', '你好', '1715529600000', 1);
-INSERT INTO `comments` VALUES (9, '82092401', '你好', '1715529600000', 1);
-INSERT INTO `comments` VALUES (10, '82092401', '我爱中南', '1715529600000', 1);
+INSERT INTO `comments` VALUES (1, '161001222', '许致立', '你好', '1715529600000', 1);
+INSERT INTO `comments` VALUES (2, '161001228', '丹清', '这里是留言页面吗？', '1715529600000', 1);
+INSERT INTO `comments` VALUES (3, '161001228', '丹清', '还真是', '1715529600000', 1);
+INSERT INTO `comments` VALUES (4, '161001228', '丹清', '你好', '1715529600000', 1);
+INSERT INTO `comments` VALUES (5, '161001228', '丹清', 'hello？', '1715529600000', 1);
+INSERT INTO `comments` VALUES (6, '82092401', '刻晴', '玩原神玩的', '1715529600000', 1);
+INSERT INTO `comments` VALUES (7, '82092401', '刻晴', '为什么没有原神相关书籍？\n', '1715529600000', 1);
+INSERT INTO `comments` VALUES (8, '82092401', '刻晴', '你好', '1715529600000', 1);
+INSERT INTO `comments` VALUES (9, '82092401', '刻晴', '你好', '1715529600000', 1);
+INSERT INTO `comments` VALUES (10, '82092401', '刻晴', '我爱中南', '1715529600000', 1);
+INSERT INTO `comments` VALUES (11, '161001222', '许致立', '评论居然还有颜色区分？', '1715702400000', 0);
+INSERT INTO `comments` VALUES (12, '82092403', '可莉', '好欸', '1715702400000', 0);
+INSERT INTO `comments` VALUES (13, '82092403', '可莉', '试试评论', '1715702400000', 0);
+INSERT INTO `comments` VALUES (14, '82092403', '可莉', '没人吗？', '1715702400000', 0);
+INSERT INTO `comments` VALUES (15, '82092403', '可莉', '长文本测试：\nLorem ipsum dolor sit amet, consectetur adipisicing elit. Ab aliquam autem, cumque delectus dicta dolor, esse ex\n    exercitationem neque omnis praesentium quaerat quasi reiciendis veritatis voluptate. Cum iusto nesciunt quas? \nAliquid animi corporis culpa deleniti dolores, ea, facilis fugiat mollitia neque non officia optio pariatur, quae\n    reprehenderit soluta tempora veniam. Asperiores consequatur dolor eius laborum nesciunt numquam quia ratione\n    sapiente.\nAliquam architecto exercitationem explicabo nihil nulla quos recusandae rerum suscipit temporibus voluptatibus.\n    Accusantium ad aliquid hic illum impedit libero, molestias mollitia officia quas, reiciendis ullam voluptatum. Aut\n    blanditiis inventore quae?\nAccusantium aliquid ea facilis fugit perferendis voluptatem voluptatibus. A alias consectetur dolor, eaque error\n    esse exercitationem harum, impedit in iste iusto labore libero mollitia natus perferendis quia repellendus\n    reprehenderit vel!\nAccusantium aspernatur aut autem esse eum expedita fuga id illo iste magnam maiores, natus, nesciunt nostrum\n    officiis omnis pariatur quam quos similique sit sunt unde veniam veritatis vitae voluptas voluptatem.\nA ab alias assumenda atque, commodi cumque ducimus enim error esse est explicabo laborum laudantium maxime modi\n    perferendis perspiciatis porro quos, reprehenderit rerum sed sequi soluta sunt tenetur voluptatem voluptatum?\nA adipisci assumenda atque consectetur consequuntur cum earum excepturi exercitationem harum labore, minus modi\n    odit officia officiis, quisquam similique tenetur, voluptas voluptatum? Aliquam consectetur distinctio error, eum\n    minus quis vitae. \nAd aliquam architecto assumenda blanditiis cum cumque cupiditate dolor doloribus eum exercitationem impedit magni\n    nostrum odio officia quas, quidem soluta sunt! Cupiditate distinctio natus numquam qui quisquam rerum voluptatem!\n    Quos?\nConsequuntur eveniet explicabo ipsam numquam vel! Accusantium asperiores aspernatur blanditiis cumque dolor, dolore\n    doloribus eligendi et eum ex exercitationem inventore itaque, non perspiciatis placeat provident quidem, rem tempore\n    veniam vero!\nAb ad aperiam corporis cupiditate debitis est, et explicabo ipsum laudantium nesciunt nobis quasi quod, rerum sunt\n    ut velit vero vitae! A, id ipsum nobis perferendis perspiciatis sequi veritatis vitae! \nAt aut cum cupiditate dolores eaque non nulla perferendis quas quibusdam tempora. Aspernatur esse explicabo\n    reiciendis sapiente. Cum dignissimos illum ipsum officia omnis reiciendis similique ut? Culpa cupiditate illo sed!\nAccusantium at dicta dignissimos eius, laborum laudantium molestias nam officiis qui voluptates? Aliquam enim esse\n    iure necessitatibus optio, sapiente tenetur. Distinctio dolorum eaque error, fuga molestiae non officia optio ut!\nAnimi debitis ducimus earum facere incidunt maiores minus modi, molestiae, odit pariatur perspiciatis placeat quia\n    sit, soluta unde vero voluptatem. Asperiores blanditiis itaque officiis quidem voluptates. Debitis et rerum\n    voluptatibus.\nAt debitis dignissimos ipsa perspiciatis? Atque commodi, dolore eaque est porro quae ut veritatis! Ad adipisci,\n    aliquam architecto, asperiores consequuntur id ipsam laboriosam magni, perferendis placeat possimus rem saepe totam.\nAlias aperiam at, atque consequatur corporis deleniti doloremque ducimus ea est fugiat impedit inventore ipsum\n    itaque libero minima necessitatibus nemo neque non nulla numquam, provident quaerat rem, saepe ullam unde? \nAd, asperiores assumenda dignissimos distinctio dolore doloremque earum eligendi exercitationem fugiat impedit\n    ipsum laborum magni modi nam nihil nisi nostrum possimus praesentium quidem ratione, recusandae sed sequi tempora\n    veniam vitae.\nAb accusamus atque debitis ducimus eius eligendi esse est eveniet fugit harum incidunt iusto laborum molestiae\n    neque nisi non provident quas, quasi quibusdam reprehenderit, similique, soluta sunt tempore vel voluptate?\nAdipisci alias assumenda aut dicta est ipsum odit qui recusandae rerum soluta! Alias aspernatur dolore et, laborum\n    molestias nesciunt non officia praesentium quae quam, quia quis rem repellendus sed temporibus!\nAccusantium ipsa necessitatibus obcaecati rem voluptatem? Aliquid assumenda corporis dicta eos, illum, iste itaque\n    iure laboriosam magnam nihil officia, optio repellendus sequi temporibus unde voluptatem voluptates. Adipisci\n    delectus esse vitae!\nCulpa deserunt dolorum error, facilis id iste laudantium magnam, molestias nam neque nihil perspiciatis praesentium\n    quasi reiciendis repellendus similique vitae voluptas voluptatibus? Doloribus laudantium quia quibusdam ratione\n    velit, veniam vero?', '1715702400000', 1);
 
 -- ----------------------------
 -- Table structure for comments_admin
@@ -131,7 +138,7 @@ CREATE TABLE `comments_admin`  (
   `comment` varchar(1024) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `date` varchar(13) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 7 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 9 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of comments_admin
@@ -142,6 +149,25 @@ INSERT INTO `comments_admin` VALUES (3, 8, 201801, '不好', '1715529600000');
 INSERT INTO `comments_admin` VALUES (4, 7, 201801, '玩牛魔原神', '1715529600000');
 INSERT INTO `comments_admin` VALUES (5, 9, 202401, '你好', '1715529600000');
 INSERT INTO `comments_admin` VALUES (6, 9, 202401, '你好', '1715529600000');
+INSERT INTO `comments_admin` VALUES (7, 2, 201801, '是的', '1715702400000');
+INSERT INTO `comments_admin` VALUES (8, 5, 201801, 'Hello,can I help you?', '1715702400000');
+
+-- ----------------------------
+-- Table structure for comments_student
+-- ----------------------------
+DROP TABLE IF EXISTS `comments_student`;
+CREATE TABLE `comments_student`  (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `comment_id` int NOT NULL,
+  `student_id` int NOT NULL,
+  `comment` varchar(1024) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `date` varchar(13) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 9 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
+
+-- ----------------------------
+-- Records of comments_student
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for inventory
@@ -280,6 +306,7 @@ CREATE TABLE `student`  (
   `valid_date` varchar(13) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `loss` tinyint(1) NULL DEFAULT NULL,
   `debt` tinyint(1) NULL DEFAULT NULL,
+  `avatar` tinyint(1) NULL DEFAULT NULL COMMENT '头像',
   PRIMARY KEY (`card_id`) USING BTREE,
   INDEX `student_id`(`student_id` ASC) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
@@ -287,11 +314,11 @@ CREATE TABLE `student`  (
 -- ----------------------------
 -- Records of student
 -- ----------------------------
-INSERT INTO `student` VALUES ('16000001', '161001222', '123', '许致立', '女', '18921902722', '1693526400000', '1914422400000', 1, 0);
-INSERT INTO `student` VALUES ('16000002', '161001228', '123', '丹清', '女', '18367890001', '1693526400000', '1914422400000', 0, 0);
-INSERT INTO `student` VALUES ('16000003', '161001227', '123', '任雯', '女', '18890209433', '1693526400000', '1914422400000', 0, 0);
-INSERT INTO `student` VALUES ('2401', '82092401', '123456', '刻晴', '女', '18921902722', '1693526400000', '1914422400000', 0, 0);
-INSERT INTO `student` VALUES ('2402', '82092402', '123456', '牢大', '男', '18367890001', '1693526400000', '1914422400000', 0, 0);
-INSERT INTO `student` VALUES ('2403', '82092403', '123456', '刻晴', '女', '18890209433', '1693526400000', '1914422400000', 0, 0);
+INSERT INTO `student` VALUES ('16000001', '161001222', '123', '许致立', '女', '18921902722', '1693526400000', '1914422400000', 1, 0, NULL);
+INSERT INTO `student` VALUES ('16000002', '161001228', '123', '丹清', '女', '18367890001', '1693526400000', '1914422400000', 0, 0, NULL);
+INSERT INTO `student` VALUES ('16000003', '161001227', '123', '任雯', '女', '18890209433', '1693526400000', '1914422400000', 0, 0, NULL);
+INSERT INTO `student` VALUES ('2401', '82092401', '123456', '刻晴', '女', '18921902722', '1693526400000', '1914422400000', 0, 0, 1);
+INSERT INTO `student` VALUES ('2402', '82092402', '123456', '牢大', '男', '18367890001', '1693526400000', '1914422400000', 0, 0, 1);
+INSERT INTO `student` VALUES ('2403', '82092403', '123456', '可莉', '女', '18890209433', '1693526400000', '1914422400000', 0, 0, 1);
 
 SET FOREIGN_KEY_CHECKS = 1;

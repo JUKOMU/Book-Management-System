@@ -1,12 +1,88 @@
+import random
+
 from flask import Flask
 from flask_login import UserMixin
-from flask_sqlalchemy import SQLAlchemy
+from flask_sqlalchemy import SQLAlchemy, SignallingSession, get_state
+from sqlalchemy import orm
 
-from config import DevelopmentConfig
+from config import *
 
 app = Flask(__name__)
 app.config.from_object(DevelopmentConfig)
-db = SQLAlchemy(app)
+
+
+class RoutingSession(SignallingSession):
+    """The signalling session is the default session that Flask-SQLAlchemy
+    uses.  It extends the default session system with bind selection and
+    modification tracking.
+
+    If you want to use a different session you can override the
+    :meth:`SQLAlchemy.create_session` function.
+
+    . versionadded:: 2.0
+
+    . versionadded:: 2.1
+        The `binds` option was added, which allows a session to be joined
+        to an external transaction.
+
+    继承SignallingSession， 重写`get_bind` 使其支持读写分离
+    """
+
+    def __init__(self, *args, **kwargs):
+        super(RoutingSession, self).__init__(*args, **kwargs)
+
+    def get_bind(self, mapper=None, clause=None):
+        """Return the engine or connection for a given model or
+        table, using the ``__bind_key__`` if it is set.
+        """
+        # mapper is None if someone tries to just get a connection
+        state = get_state(self.app)
+        if mapper is not None:
+            try:
+                # SA >= 1.3
+                persist_selectable = mapper.persist_selectable
+            except AttributeError:
+                # SA < 1.3
+                persist_selectable = mapper.mapped_table
+
+            info = getattr(persist_selectable, 'info', {})
+            bind_key = info.get('bind_key')
+            if bind_key is not None:
+                return state.db.get_engine(self.app, bind=bind_key)
+
+        # 读写分离
+        from sqlalchemy.sql.dml import UpdateBase
+        if self._flushing or isinstance(clause, UpdateBase):
+            print("user master DB")
+            return state.db.get_engine(self.app, bind="master")
+        else:
+            print("user slave DB")
+            return state.db.get_engine(self.app, bind=random.choice(list(app.config["SQLALCHEMY_BINDS"].keys())))
+
+
+class RoutingSQLAlchemy(SQLAlchemy):
+    """
+    重写 `create_session` 使其使用`RoutingSession`
+    """
+
+    def create_session(self, options):
+        """Create the session factory used by :meth:`create_scoped_session`.
+
+        The factory **must** return an object that SQLAlchemy recognizes as a session,
+        or registering session events may raise an exception.
+
+        Valid factories include a :class:`~sqlalchemy.orm.session.Session`
+        class or a :class:`~sqlalchemy.orm.session.sessionmaker`.
+
+        The default implementation creates a ``sessionmaker`` for :class:`RoutingSession`.
+
+        :param options: dict of keyword arguments passed to session class
+        """
+
+        return orm.sessionmaker(class_=RoutingSession, db=self, **options)
+
+
+db = RoutingSQLAlchemy(app)
 
 
 class Admin(UserMixin, db.Model):
@@ -124,7 +200,7 @@ class Comments(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     student_id = db.Column(db.String(10))
     student_name = db.Column(db.String(32))
-    comment = db.Column(db.String(1024))
+    comment = db.Column(db.String(10240))
     date = db.Column(db.String(13))  # 日期
     status = db.Column(db.Integer)
 
