@@ -544,7 +544,7 @@
         <ul class="layui-nav layui-layout-right">
             <li class="layui-nav-item">
                 <a href="javascript:;">
-                    <img src="../../static/avatar/{{id}}.png" class="layui-nav-img">
+                    <img src="../../static/avatar/{{avatar}}.png" class="layui-nav-img">
                     <span id="name">{{ name }}</span>
                 </a>
                 <dl class="layui-nav-child">
@@ -842,19 +842,18 @@
                 console.log(comments);
                 let ul = document.createElement('ul');
                 for (const comment of comments) {
+                    console.log(comment);
                     let li = document.createElement('li');
                     let name = comment.name;
                     let comment_text = comment.comment;
                     let date = timestampToDate(comment.date);
                     let id;
-                    let isAdmin = false;
-                    try {
-                        id = comment.admin_id;
-                        isAdmin = true;
-                    } catch (error) {
+                    let isAdmin = true;
+                    id = comment.admin_id;
+                    if (id === undefined || id === null) {
                         id = comment.student_id;
+                        isAdmin = false;
                     }
-                    console.log(id)
                     // 头像
                     let a = document.createElement("a");
                     let span = document.createElement("span");
@@ -911,7 +910,7 @@
         let name = document.getElementById("name");
         let comment_content = $('#textInput2').val();
         console.log(comment_content);
-        fetch('http://localhost:5000/admin/reply/add', {
+        fetch('http://localhost:5000/student/reply/add', {
             method: 'post',
             headers: {'Content-Type': 'text/plain'},
             body: JSON.stringify({
@@ -999,6 +998,7 @@
             } else {
                 if (event.keyCode === 13) {
                     onReply(id);
+                    reply(element, null);
                 }
             }
         });
