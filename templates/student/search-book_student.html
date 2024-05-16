@@ -1,6 +1,16 @@
 {% extends "base-student.html" %}
 {% block title %}查询图书信息{% endblock %}
-
+{% block style_2 %}
+<style>
+    .layui-table-body.layui-table-main {
+        overflow-x: hidden;
+        width: 100%;
+    }
+    .layui-body {
+        width: auto;
+    }
+</style>
+{% endblock %}
 {% block card %}
 <div class="layui-card-header"><h2>查询图书信息</h2></div>{% endblock %}
 {% block body %}
@@ -80,7 +90,7 @@
                             elem: '#test'
                             , data: data
                             , cols: [[
-                                {field: 'isbn', title: 'ISBN', width: 140}
+                                {field: 'isbn', title: 'ISBN', width: 100}
                                 , {field: 'book_name', title: '书名', width: 200}
                                 , {field: 'press', title: '出版社', width: 180}
                                 , {field: 'author', title: '作者', width: 140}
@@ -89,7 +99,7 @@
                                 , {field: 'available', title: '可借数量'}
                             ]]
                             , page: true
-                            , height: 390
+                            , height: "auto"
                             , limit: 7
                             , response: {
                                 statusCode: 200 //重新规定成功的状态码为 200，table 组件默认为 0
@@ -104,20 +114,30 @@
                             }
                         });
                         $('.laytable-cell-2-0-0').each(function () {
-                            if (this.textContent !== "ISBN"){
-                                console.log(this.textContent);
-                                // 获取两次父节点
-                                let tr =  this.parentElement.parentElement;
-                                console.log(tr);
-                                // 获取tr的第一个子节点
-                                let first_child = tr.firstChild;
-                                console.log(first_child);
+                            // 获取两次父节点
+                            let tr = this.parentElement.parentElement;
+                            // 获取tr的第一个子节点
+                            let first_child = tr.firstChild;
+                            if (this.textContent !== "ISBN") {
                                 let img_td = document.createElement("td");
                                 let img = document.createElement("img");
                                 img_td.appendChild(img);
                                 img.src = "../../static/avatar/202402.png"
+                                img.style.width = "150px";
+                                img.style.height = "150px";
+                                img.style.maxWidth = "150px";
                                 // 插入图片节点
-                                tr.insertBefore(img, first_child);
+                                tr.insertBefore(img_td, first_child);
+                            } else {
+                                let th = document.createElement("th");
+                                let div = document.createElement("div");
+                                let span = document.createElement("span");
+                                span.textContent = " ";
+                                div.classList.add("layui-table-cell");
+                                div.style.width = "150px";
+                                div.appendChild(span);
+                                th.appendChild(div);
+                                tr.insertBefore(th, first_child);
                             }
                         });
                     } else {
@@ -144,7 +164,7 @@
                                 elem: '#test'
                                 , data: data
                                 , cols: [[
-                                    {field: 'isbn', title: 'ISBN', width: 140}
+                                    {field: 'isbn', title: 'ISBN', width: 100}
                                     , {field: 'book_name', title: '书名', width: 200}
                                     , {field: 'press', title: '出版社', width: 180}
                                     , {field: 'author', title: '作者', width: 140}
@@ -153,7 +173,7 @@
                                     , {field: 'available', title: '可借数量'}
                                 ]]
                                 , page: true
-                                , height: 390
+                                , height: "auto"
                                 , limit: 7
                                 , response: {
                                     statusCode: 200 //重新规定成功的状态码为 200，table 组件默认为 0
@@ -167,6 +187,37 @@
                                     };
                                 }
                             });
+                            $('td[data-field="isbn"]').each(function () {
+                                let 
+                            });
+
+                            $('.laytable-cell-2-0-0').each(function () {
+                            // 获取两次父节点
+                            let tr = this.parentElement.parentElement;
+                            // 获取tr的第一个子节点
+                            let first_child = tr.firstChild;
+                            if (this.textContent !== "ISBN") {
+                                let img_td = document.createElement("td");
+                                let img = document.createElement("img");
+                                img_td.appendChild(img);
+                                img.src = "../../static/avatar/202402.png"
+                                img.style.width = "150px";
+                                img.style.height = "150px";
+                                img.style.maxWidth = "150px";
+                                // 插入图片节点
+                                tr.insertBefore(img_td, first_child);
+                            } else {
+                                let th = document.createElement("th");
+                                let div = document.createElement("div");
+                                let span = document.createElement("span");
+                                span.textContent = " ";
+                                div.classList.add("layui-table-cell");
+                                div.style.width = "150px";
+                                div.appendChild(span);
+                                th.appendChild(div);
+                                tr.insertBefore(th, first_child);
+                            }
+                        });
                         } else {
                             layui.use('layer', function () {
                                 var layer = layui.layer;
