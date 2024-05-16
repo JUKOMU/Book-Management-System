@@ -163,6 +163,7 @@
                                     };
                                 }
                             });
+                            addImage();
                         } else {
                             layui.use('layer', function () {
                                 var layer = layui.layer;
@@ -170,7 +171,6 @@
                                 layer.msg('未找到任何结果', {time: 1000});
                             });
                         }
-                        addImage();
                     }
                 });
                 return false;
@@ -179,6 +179,7 @@
             document.addEventListener('click', function () {
                 addImage();
             });
+            addImage();
             return false;
         });
 

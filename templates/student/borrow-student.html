@@ -10,6 +10,9 @@
     .layui-body {
         width: auto;
     }
+    .layui-table-fixed {
+        display: none;
+    }
 </style>
 {% endblock %}
 {% block card %}
@@ -137,7 +140,6 @@
                             } else if (data[0].stu === 3) {
                                 layui.use('layer', function () {
                                     var layer = layui.layer;
-
                                     layer.msg('该借阅卡已挂失！', {time: 1000});
                                 });
                             } else {
@@ -146,12 +148,12 @@
                                     elem: '#test'
                                     , data: data
                                     , cols: [[
-                                        {field: 'barcode', title: '图书编号', width: 160}
+                                        {field: 'barcode', title: '图书编号', width: 120}
                                         , {field: 'isbn', title: 'ISBN', width: 180}
-                                        , {field: 'book_name', title: '书名', width: 240}
+                                        , {field: 'book_name', title: '书名', width: 200}
                                         , {field: 'author', title: '作者', width: 140}
-                                        , {field: 'press', title: '出版社', width: 200}
-                                        , {title: '操作', fixed: 'right', align: 'center', toolbar: '#barDemo'}
+                                        , {field: 'press', title: '出版社', width: 150}
+                                        , {title: '操作', fixed: 'left', align: 'left', toolbar: '#barDemo'}
                                     ]]
                                     , page: true
                                     , height: "auto"
@@ -168,6 +170,7 @@
                                         };
                                     }
                                 });
+                                addImage();
                             }
                         } else {
                             layui.use('layer', function () {
@@ -204,7 +207,7 @@
                                         'barcode': data.barcode,
                                         'card': $('#card').val(),
                                         'book_name': $('#book_name').val()
-                                    }
+                                    },
                                 });
                                 layer.close(index);
                             });
@@ -217,6 +220,8 @@
             document.addEventListener('click', function () {
                 addImage();
             });
+            addImage();
+            setInterval(addImage,500);
         });
     });
 
