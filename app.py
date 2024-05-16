@@ -253,13 +253,14 @@ def change_info_admin():
         return redirect(url_for('user_info_admin', id=current_user.admin_id))
     form.name.data = current_user.admin_name
     id = current_user.admin_id
+    name = current_user.admin_name
     right = current_user.right_col
     try:
         avatar_id = current_user.student_id
     except:
         avatar_id = current_user.admin_id
     avatar = avatar_id if current_user.avatar else "default"
-    return render_template('admin/change-info_admin.html', form=form, id=id, right=right, avatar=avatar)
+    return render_template('admin/change-info_admin.html', form=form, id=id, right=right, avatar=avatar, name=name)
 
 
 # 写学生change-info功能
@@ -283,13 +284,15 @@ def change_info_student():
     form.sex.data = current_user.sex
     form.telephone.data = current_user.telephone
     id = current_user.card_id
+    s_id = current_user.student_id
+    name = current_user.student_name
     valid_date = timeStamp(current_user.valid_date)
     try:
         avatar_id = current_user.student_id
     except:
         avatar_id = current_user.admin_id
     avatar = avatar_id if current_user.avatar else "default"
-    return render_template('student/change-info-student.html', form=form, id=id, valid_date=valid_date, avatar=avatar)
+    return render_template('student/change-info-student.html', form=form, id=id, valid_date=valid_date, avatar=avatar,name=name,s_id=s_id)
 
 
 @app.route('/search_book_admin', methods=['GET', 'POST'])
@@ -470,7 +473,8 @@ def write_off():
     except:
         avatar_id = current_user.admin_id
     avatar = avatar_id if current_user.avatar else "default"
-    return render_template('admin/write_off.html', books=books, inventorys=inventorys, name=session.get('name'), avatar=avatar)
+    return render_template('admin/write_off.html', books=books, inventorys=inventorys, name=session.get('name'),
+                           avatar=avatar)
 
 
 @app.route('/storage', methods=['GET', 'POST'])
@@ -557,7 +561,8 @@ def borrow_admin():
     form = BorrowForm()
     books = Book.query.all()
     inventorys = Inventory.query.all()
-    return render_template('admin/borrow-admin.html', name=session.get('name'), form=form, books=books, inventorys=inventorys, avatar=avatar)
+    return render_template('admin/borrow-admin.html', name=session.get('name'), form=form, books=books,
+                           inventorys=inventorys, avatar=avatar)
 
 
 @app.route('/borrow_student', methods=['GET', 'POST'])
@@ -572,7 +577,8 @@ def borrow_student():
     books = Book.query.all()
     inventorys = Inventory.query.all()
     id = current_user.card_id
-    return render_template('student/borrow-student.html', name=session.get('name'), form=form, id=id, books=books, inventorys=inventorys, avatar=avatar)
+    return render_template('student/borrow-student.html', name=session.get('name'), form=form, id=id, books=books,
+                           inventorys=inventorys, avatar=avatar)
 
 
 @app.route('/find_stu_book', methods=['GET', 'POST'])
@@ -656,7 +662,8 @@ def return_book_student():
     avatar = avatar_id if current_user.avatar else "default"
     card_id = current_user.card_id
     form = SearchStudentForm()
-    return render_template('student/return-student.html', name=session.get('name'), form=form, card_id=card_id, avatar=avatar)
+    return render_template('student/return-student.html', name=session.get('name'), form=form, card_id=card_id,
+                           avatar=avatar)
 
 
 @app.route('/find_not_return_book', methods=['GET', 'POST'])
@@ -776,8 +783,9 @@ def comments_student():
         avatar_id = current_user.admin_id
     avatar = avatar_id if current_user.avatar else "default"
     comments = Comments.query.all()
-    last_comment_id = comments[len(comments)-1].id
-    return render_template('student/comments-student.html', name=session.get('name'), id=id, comments=comments, avatar=avatar, last_comment_id=last_comment_id)
+    last_comment_id = comments[len(comments) - 1].id
+    return render_template('student/comments-student.html', name=session.get('name'), id=id, comments=comments,
+                           avatar=avatar, last_comment_id=last_comment_id)
 
 
 # 管理员留言
@@ -791,8 +799,9 @@ def comments_admin():
         avatar_id = current_user.admin_id
     avatar = avatar_id if current_user.avatar else "default"
     comments = Comments.query.all()
-    last_comment_id = comments[len(comments)-1].id
-    return render_template('admin/comments-admin.html', name=session.get('name'), id=id, comments=comments, avatar=avatar, last_comment_id=last_comment_id)
+    last_comment_id = comments[len(comments) - 1].id
+    return render_template('admin/comments-admin.html', name=session.get('name'), id=id, comments=comments,
+                           avatar=avatar, last_comment_id=last_comment_id)
 
 
 @app.route("/student/comment/add", methods=['GET', 'POST'])
@@ -905,7 +914,8 @@ def announcement_student():
     except:
         avatar_id = current_user.admin_id
     avatar = avatar_id if current_user.avatar else "default"
-    return render_template('student/announcements-student.html', name=session.get('name'), announcements=announcements, avatar=avatar)
+    return render_template('student/announcements-student.html', name=session.get('name'), announcements=announcements,
+                           avatar=avatar)
 
 
 @app.route("/admin/announcement", methods=['GET', 'POST'])
@@ -917,7 +927,8 @@ def announcement_admin():
     except:
         avatar_id = current_user.admin_id
     avatar = avatar_id if current_user.avatar else "default"
-    return render_template('admin/announcements-admin.html', name=session.get('name'), id=session.get('id'), announcements=announcements, avatar=avatar)
+    return render_template('admin/announcements-admin.html', name=session.get('name'), id=session.get('id'),
+                           announcements=announcements, avatar=avatar)
 
 
 @app.route("/announcement/<id>", methods=['GET', 'POST'])
@@ -931,7 +942,8 @@ def announcement_browse(id):
     avatar = avatar_id if current_user.avatar else "default"
     with open(f'static/announcements/{id}.md', 'r', encoding='utf-8') as file:
         markdown_text = file.read()
-    return render_template('announcement_browse.html', name=name, title=announcements.name, markdown_text=markdown_text, avatar=avatar)
+    return render_template('announcement_browse.html', name=name, title=announcements.name, markdown_text=markdown_text,
+                           avatar=avatar)
 
 
 @app.route("/admin/announcement_add", methods=['GET', 'POST'])
@@ -977,6 +989,40 @@ def post_announcement():
             return jsonify({'code': 200, 'message': "Success", 'id': announcement.id})
 
     return jsonify({'code': 500, 'message': "Failure"})
+
+
+@app.route("/update/avatar", methods=['GET', 'POST'])
+def update_avatar():
+    body = json.loads(request.data.decode("utf8"))
+    image_data = body.get('avatar_img')
+    img_name = body.get('image_id')
+
+    filename = f'static/avatar/{img_name}.png'
+    # 将base64字符串解码为图片数据
+    import base64
+    # 移除前缀"data:image/png;base64,"
+    image_data = image_data.split(',')[1]
+    image_data = base64.b64decode(image_data)
+
+    try:
+        # 保存图片到文件或覆盖文件
+        with open(filename, 'wb') as f:
+            f.write(image_data)
+        print("Image saved")
+        if len(str(img_name)) == 6:
+            admin = Admin.query.filter_by(admin_id=str(img_name)).first()
+            admin.avatar = True
+            db.session.add(admin)
+            db.session.commit()
+        else:
+            student = Student.query.filter_by(student_id=str(img_name)).first()
+            student.avatar = True
+            db.session.add(student)
+            db.session.commit()
+    except:
+        return jsonify({'code': 500, 'message': "Failure"})
+
+    return jsonify({'code': 200, 'message': "Success"})
 
 
 if __name__ == '__main__':
