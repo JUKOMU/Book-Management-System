@@ -11,7 +11,7 @@
  Target Server Version : 80200 (8.2.0)
  File Encoding         : 65001
 
- Date: 16/05/2024 12:32:54
+ Date: 16/05/2024 14:42:12
 */
 
 SET NAMES utf8mb4;
@@ -143,7 +143,7 @@ CREATE TABLE `comments_admin`  (
   `comment` varchar(1024) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `date` varchar(13) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 13 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 14 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of comments_admin
@@ -158,6 +158,7 @@ INSERT INTO `comments_admin` VALUES (7, 2, 201801, '中南', '是的', '17157024
 INSERT INTO `comments_admin` VALUES (8, 5, 201801, '中南', 'Hello,can I help you?', '1715702400000');
 INSERT INTO `comments_admin` VALUES (9, 20, 201801, '中南', '你好', '1715788800000');
 INSERT INTO `comments_admin` VALUES (10, 20, 201801, '中南', '你好', '1715788800000');
+INSERT INTO `comments_admin` VALUES (13, 22, 201801, '中南', '哈哈', '1715788800000');
 
 -- ----------------------------
 -- Table structure for comments_student
@@ -274,7 +275,7 @@ CREATE TABLE `readbook`  (
   INDEX `return_admin`(`return_admin` ASC) USING BTREE,
   CONSTRAINT `readbook_ibfk_1` FOREIGN KEY (`barcode`) REFERENCES `inventory` (`barcode`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `readbook_ibfk_2` FOREIGN KEY (`card_id`) REFERENCES `student` (`card_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 28 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 29 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of readbook
@@ -300,6 +301,7 @@ INSERT INTO `readbook` VALUES (24, '111111', '2401', '1715529600000', '82092401'
 INSERT INTO `readbook` VALUES (25, '113456', '2401', '1715529600000', '82092401', NULL, NULL, '1718985600000');
 INSERT INTO `readbook` VALUES (26, '123555', '2401', '1715529600000', '82092401', NULL, NULL, '1718985600000');
 INSERT INTO `readbook` VALUES (27, '205162', '2401', '1715529600000', '82092401', NULL, NULL, '1718985600000');
+INSERT INTO `readbook` VALUES (28, '111111', '16000002', '1715788800000', '161001228', '1715788800000', '161001228', '1719244800000');
 
 -- ----------------------------
 -- Table structure for student
