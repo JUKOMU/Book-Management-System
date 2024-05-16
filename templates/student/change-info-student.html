@@ -7,6 +7,37 @@
         height: 150px;
         margin: 0 20px;
         cursor: pointer;
+        padding: 1px;
+        border-radius: 5px;
+        border: 4px solid #f1f1f1;
+    }
+
+    #upload-form {
+        position: fixed;
+        top: 150px;
+        left: 30%;
+        width: 800px;
+        height: 700px;
+        display: flex;
+        flex-direction: column;
+        border: 3px solid rgba(0, 0, 0, 0.2);
+    }
+
+    #upload-form.hide-form {
+        display: none;
+    }
+
+    img[src] {
+        opacity: 1;
+    }
+
+    img[src="1"] {
+        opacity: 0;
+        transition: opacity 0.5s;
+    }
+
+    .operator button:hover {
+        filter: brightness(0.8);
     }
 </style>
 {% endblock %}
@@ -58,16 +89,286 @@
                 </div>
             </div>
         </form>
-        <div style="display: flex;flex-direction: column;margin-left: 200px">
-            <label>头像</label>
-            <img class="avatar" src="../../static/avatar/{{avatar}}.png">
+        <div style="display: flex;flex-direction: column;margin-left: 200px;padding: 10px 0">
+            <label style="margin-bottom: 20px;text-align: left;font-size: 16px;line-height: 40px">头像</label>
+            <img class="avatar" src="../../static/avatar/{{avatar}}.png" onclick="showUploadImage()">
         </div>
     </div>
 </fieldset>
+
+<div id="upload-form" class="hide-form">
+    <div style="margin: 0;padding: 0;display: flex;flex-direction: row">
+        <div style="margin: 0;padding: 0;width: 600px;height: 600px;background-color: #e1e1e1">
+            <div style="margin: 0;padding: 0;width: 100px;height: 100px;background-color: rgba(0,0,0,0);border: 3px solid #00bbff;display: flow;position: absolute"
+                 id="resize-box" onmousedown="moveResize(event)">
+                <div style="margin: 0;padding: 0;width: 5px;height: 5px;background-color: rgba(255,255,255,0);position: absolute;right: -3px;bottom: -3px;cursor:nw-resize;"
+                     onmousedown="startResize(event)"></div>
+            </div>
+            <img style="margin: 0;padding: 0;background-color: #ffffff;" id="original" src="1"/>
+        </div>
+        <div style="margin: 0;padding: 0;width: 200px;height: 600px;background-color: #ffffff">
+            <img style="margin: 0;padding: 30px;width: 140px;height: 140px;background-color: #ffffff" id="cropped"
+                 src="1"/>
+        </div>
+    </div>
+    <div style="margin: 0;padding: 0;width: 800px;height: 100px;background-color: #ffffff;border-top: 2px solid rgba(0,0,0,0.3);"
+         class="operator">
+        <input type="file" id="upload" hidden="hidden"/>
+        <button onclick="document.getElementById('upload').click()"
+                style="width: 80px;height: 40px;border: 0;border-radius: 10px;background-color: #14ad96;color: #ffffff;font-weight: bold;margin: 30px 20px 0 80px;cursor: pointer">
+            上传图片
+        </button>
+        <button onclick="saveImage()"
+                style="width: 80px;height: 40px;border: 0;border-radius: 10px;background-color: #14ad96;color: #ffffff;font-weight: bold;margin: 30px 20px 0 350px;cursor: pointer">
+            保存
+        </button>
+        <button onclick="cancelImage()"
+                style="width: 80px;height: 40px;border: 0;border-radius: 10px;background-color: #14ad96;color: #ffffff;font-weight: bold;margin: 30px 20px 0 20px;cursor: pointer">
+            取消
+        </button>
+    </div>
+</div>
+<h2 class="hide-form" id="title" style="position: fixed;top: 110px;left:30%">上传头像</h2>
+{% endblock %}
+{% block script %}
 <script>
+    /*图片参数*/
+    var x = 0;
+    var y = 0;
+    var width = 100;
+    var height = 100;
+    /*改变大小参数*/
+    var startX, startY, endX, endY;
+    /*拖拽参数*/
+    var moveStartX, moveStartY;
+
+    var naturalWidth;
+    var naturalHeight;
+    var scale = 1;
+
+    var max_X = 600;
+    var max_Y = 600;
+
     $(document).ready(function () {
         $("#li_5").addClass("height-light");
-        console.log("1333")
+
+        document.getElementById('upload').addEventListener('change', function (e) {
+            x = 0;
+            y = 0;
+            width = 100;
+            height = 100;
+            var file = e.target.files[0];
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                var img = new Image();
+                img.onload = function () {
+                    // 获取图片的原始宽度和高度
+                    naturalWidth = img.naturalWidth;
+                    naturalHeight = img.naturalHeight;
+                    /*设置图片最大显示长宽*/
+                    if (naturalWidth > naturalHeight) {
+                        max_X = 600;
+                        max_Y = naturalHeight / naturalWidth * max_X;
+                    } else {
+                        max_Y = 600;
+                        max_X = naturalWidth / naturalHeight * max_Y;
+                    }
+                    scale = naturalWidth / max_X;
+                    // 显示原始图片
+                    let original_img = document.getElementById('original');
+                    original_img.style.width = max_X + 'px';
+                    original_img.style.height = max_Y + 'px';
+                    original_img.src = e.target.result;
+
+                    // 创建一个画布用于剪裁
+                    var canvas = document.createElement('canvas');
+                    var ctx = canvas.getContext('2d');
+                    canvas.width = width; // 剪裁的宽度
+                    canvas.height = height; // 剪裁的高度
+                    // 根据图片的原始尺寸和剪裁尺寸计算剪裁坐标
+                    var actualCropX = x * scale;
+                    var actualCropY = y * scale;
+                    var actualCropWidth = width * scale;
+                    var actualCropHeight = height * scale;
+
+                    // 绘制剪裁后的图片
+                    ctx.drawImage(img, actualCropX, actualCropY, actualCropWidth, actualCropHeight, 0, 0, width, height);
+
+                    // 显示剪裁后的图片
+                    document.getElementById('cropped').src = canvas.toDataURL();
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        });
+
+        document.addEventListener('mouseup', (event) => {
+            try {
+                document.removeEventListener('mousemove', resizeImage);
+                endX = event.clientX;
+                endY = event.clientY;
+                console.log(endX, endY);
+            } catch (e) {
+            }
+            try {
+                document.removeEventListener('mousemove', moveBox);
+            } catch (e) {
+            }
+        })
     });
+
+
+    function startResize(event) {
+        startX = event.clientX;
+        startY = event.clientY;
+        document.addEventListener('mousemove', resizeImage);
+        event.stopPropagation();
+    }
+
+    function resizeImage() {
+        let temp_X = event.clientX;
+        let temp_Y = event.clientY;
+        let box = document.getElementById('resize-box');
+        /*调整大小*/
+        width += temp_X - startX;
+        height += temp_Y - startY;
+        if (width > height) {
+            // 水平方向增量大
+            height = width;
+        } else {
+            // 垂直方向增量大
+            width = height;
+        }
+
+        if (max_X > max_Y) {
+            if (y + height > max_Y) {
+                height = max_Y - y - 2;
+                width = height
+            }
+        } else {
+            if (x + width > max_X) {
+                width = max_X - x - 2;
+                height = width;
+            }
+        }
+
+        if (width < 50) {
+            width = 50;
+            height = 50;
+        }
+        console.log(width, height);
+        box.style.width = width + 'px';
+        box.style.height = height + 'px';
+        handleCropChange();
+
+        /*重置开始位置*/
+        startX = temp_X;
+        startY = temp_Y;
+    }
+
+    function moveResize(event) {
+        moveStartX = event.clientX;
+        moveStartY = event.clientY;
+        document.addEventListener('mousemove', moveBox);
+    }
+
+    function moveBox() {
+        let temp_X = event.clientX;
+        let temp_Y = event.clientY;
+        let box = document.getElementById('resize-box');
+        x += temp_X - moveStartX;
+        y += temp_Y - moveStartY;
+        /*移动约束*/
+        if (x + width > max_X) {
+            x = max_X - width - 1;
+        }
+        if (y + height > max_Y) {
+            y = max_Y - height - 1;
+        }
+        if (x < 0) {
+            x = 0;
+        }
+        if (y < 0) {
+            y = 0;
+        }
+        console.log(x, y);
+        box.style.top = y + 'px';
+        box.style.left = x + 'px';
+        handleCropChange();
+
+        /*重置开始位置*/
+        moveStartX = temp_X;
+        moveStartY = temp_Y;
+    }
+
+    async function handleCropChange() {
+        // 获取原始图片的Image对象
+        var originalImg = document.getElementById('original');
+        var canvas = document.createElement('canvas');
+        var ctx = canvas.getContext('2d');
+
+        // 设置画布的尺寸为剪裁尺寸
+        canvas.width = width;
+        canvas.height = height;
+
+        // 根据图片的原始尺寸和剪裁尺寸计算剪裁坐标
+        var actualCropX = x * scale;
+        var actualCropY = y * scale;
+        var actualCropWidth = width * scale;
+        var actualCropHeight = height * scale;
+
+        // 绘制剪裁后的图片
+        ctx.drawImage(originalImg, actualCropX, actualCropY, actualCropWidth, actualCropHeight, 0, 0, width, height);
+
+        // 将剪裁后的图片显示在页面上
+        var croppedImg = document.getElementById('cropped');
+        croppedImg.src = canvas.toDataURL();
+    }
+
+    /*打开头像上传窗口*/
+    function showUploadImage() {
+        document.getElementById('upload-form').classList.remove('hide-form');
+        document.getElementById('title').classList.remove('hide-form');
+    }
+
+    function saveImage() {
+        var img = document.getElementById('cropped');
+        var src = img.src;
+
+        // 发送POST请求到Flask后端
+        fetch('http://localhost:5000/update/avatar', {
+            method: 'post',
+            headers: {'Content-Type': 'text/plain'},
+            body: JSON.stringify({
+                "avatar_img": src,
+                "image_id": {{s_id}}
+            })
+        }).then(response => {
+            console.log(response);
+            return response.body;
+        }).then(body => {
+            const reader = body.getReader();
+            const decoder = new TextDecoder();
+            reader.read().then(({done, value}) => {
+                if (done) { // 读取完成
+                    return;
+                }
+                let data = decoder.decode(value, {stream: true});
+                console.log(data);
+                if (JSON.parse(data).code === 200) {
+                    // 上传成功
+                    window.location.reload();
+                }
+            });
+        }).catch(error => {
+            console.error('发生错误:', error);
+        });
+    }
+
+    function cancelImage() {
+        document.getElementById('upload-form').classList.add('hide-form');
+        document.getElementById('title').classList.add('hide-form');
+    }
 </script>
 {% endblock %}

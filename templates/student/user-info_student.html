@@ -1,28 +1,54 @@
 {% extends 'base-student.html' %}
 {% block title %}个人信息{% endblock %}
-
+{% block style_2 %}
+<style>
+    .avatar {
+        width: 150px;
+        height: 150px;
+        margin: 0 20px;
+        cursor: pointer;
+        padding: 1px;
+        border-radius: 5px;
+        border: 4px solid #f1f1f1;
+    }
+</style>
+{% endblock %}
 {% block body %}
 <fieldset class="layui-elem-field layui-field-title">
-  <legend>个人信息</legend>
-  <div class="layui-field-box" style="font-size: large;line-height: 40px;">
-      <div class="layui-row">
-          &nbsp;&nbsp;<i class="layui-icon">&#xe857;</i>&nbsp;&nbsp;&nbsp;账&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;号：&nbsp;&nbsp;&nbsp;{{ user.card_id }}
-      </div>
-      <div class="layui-row">
-          &nbsp;&nbsp;<i class="layui-icon">&#xe66f;</i>&nbsp;&nbsp;&nbsp;用&nbsp;户&nbsp;&nbsp;名：&nbsp;&nbsp;{{ user.student_name }}
-      </div>
-      <div class="layui-row">
-          &nbsp;<i class="layui-icon">&#xe612;&nbsp;</i>&nbsp;&nbsp;&nbsp;性&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;别：&nbsp;&nbsp;{{ user.sex }}
-      </div>
-       <div class="layui-row">
-          &nbsp;<i class="layui-icon">&#xe63b;&nbsp;</i>&nbsp;&nbsp;&nbsp;电话号码：&nbsp;&nbsp;{{ user.telephone }}
-      </div>
-      <div class="layui-row">
-          &nbsp;<i class="layui-icon">&#xe63c;&nbsp;</i>&nbsp;&nbsp;&nbsp;注册日期：&nbsp;&nbsp;{{ enroll_date }}
-      </div>
-       <div class="layui-row">
-          &nbsp;<i class="layui-icon">&#xe63c;&nbsp;</i>&nbsp;&nbsp;&nbsp;失效日期：&nbsp;&nbsp;{{ valid_date }}
-      </div>
-  </div>
+    <legend>个人信息</legend>
+    <div style="display: flex;flex-direction: row">
+        <div>
+            <div class="layui-field-box" style="font-size: large;line-height: 40px;">
+                <div class="layui-row">
+                    &nbsp;&nbsp;<i class="layui-icon">&#xe857;</i>&nbsp;&nbsp;&nbsp;账&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;号：&nbsp;&nbsp;&nbsp;{{
+                    user.card_id }}
+                </div>
+                <div class="layui-row">
+                    &nbsp;&nbsp;<i class="layui-icon">&#xe66f;</i>&nbsp;&nbsp;&nbsp;用&nbsp;户&nbsp;&nbsp;名：&nbsp;&nbsp;{{
+                    user.student_name }}
+                </div>
+                <div class="layui-row">
+                    &nbsp;<i class="layui-icon">&#xe612;&nbsp;</i>&nbsp;&nbsp;&nbsp;性&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;别：&nbsp;&nbsp;{{
+                    user.sex }}
+                </div>
+                <div class="layui-row">
+                    &nbsp;<i class="layui-icon">&#xe63b;&nbsp;</i>&nbsp;&nbsp;&nbsp;电话号码：&nbsp;&nbsp;{{
+                    user.telephone }}
+                </div>
+                <div class="layui-row">
+                    &nbsp;<i class="layui-icon">&#xe63c;&nbsp;</i>&nbsp;&nbsp;&nbsp;注册日期：&nbsp;&nbsp;{{ enroll_date
+                    }}
+                </div>
+                <div class="layui-row">
+                    &nbsp;<i class="layui-icon">&#xe63c;&nbsp;</i>&nbsp;&nbsp;&nbsp;失效日期：&nbsp;&nbsp;{{ valid_date
+                    }}
+                </div>
+            </div>
+        </div>
+        <div style="display: flex;flex-direction: column;margin-left: 200px;padding: 10px 0">
+            <label style="margin-bottom: 20px;text-align: left;font-size: 16px;line-height: 40px">头像</label>
+            <img class="avatar" src="../../static/avatar/{{avatar}}.png">
+        </div>
+    </div>
 </fieldset>
 {% endblock %}
