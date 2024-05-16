@@ -6,6 +6,7 @@
         overflow-x: hidden;
         width: 100%;
     }
+
     .layui-body {
         width: auto;
     }
@@ -74,6 +75,7 @@
             , page: true
         });
 
+
         $(document).ready(function () {
             $("#li_3").addClass("height-light");
             var form = new FormData(document.getElementById("searchForm"));
@@ -90,8 +92,8 @@
                             elem: '#test'
                             , data: data
                             , cols: [[
-                                {field: 'isbn', title: 'ISBN', width: 100}
-                                , {field: 'book_name', title: '书名', width: 200}
+                                {field: 'isbn', title: 'ISBN', width: 140}
+                                , {field: 'book_name', title: '书名', width: 180}
                                 , {field: 'press', title: '出版社', width: 180}
                                 , {field: 'author', title: '作者', width: 140}
                                 , {field: 'class_name', title: '类别', width: 200}
@@ -113,32 +115,12 @@
                                 };
                             }
                         });
-                        $('.laytable-cell-2-0-0').each(function () {
-                            // 获取两次父节点
-                            let tr = this.parentElement.parentElement;
-                            // 获取tr的第一个子节点
-                            let first_child = tr.firstChild;
-                            if (this.textContent !== "ISBN") {
-                                let img_td = document.createElement("td");
-                                let img = document.createElement("img");
-                                img_td.appendChild(img);
-                                img.src = "../../static/avatar/202402.png"
-                                img.style.width = "150px";
-                                img.style.height = "150px";
-                                img.style.maxWidth = "150px";
-                                // 插入图片节点
-                                tr.insertBefore(img_td, first_child);
-                            } else {
-                                let th = document.createElement("th");
-                                let div = document.createElement("div");
-                                let span = document.createElement("span");
-                                span.textContent = " ";
-                                div.classList.add("layui-table-cell");
-                                div.style.width = "150px";
-                                div.appendChild(span);
-                                th.appendChild(div);
-                                tr.insertBefore(th, first_child);
-                            }
+                        addImage();
+                        $('.layui-laypage-prev').on('click', function () {
+                            addImage();
+                        });
+                        $('.layui-laypage-next').on('click', function () {
+                            addImage();
                         });
                     } else {
                         layui.use('layer', function () {
@@ -164,8 +146,8 @@
                                 elem: '#test'
                                 , data: data
                                 , cols: [[
-                                    {field: 'isbn', title: 'ISBN', width: 100}
-                                    , {field: 'book_name', title: '书名', width: 200}
+                                    {field: 'isbn', title: 'ISBN', width: 140}
+                                    , {field: 'book_name', title: '书名', width: 180}
                                     , {field: 'press', title: '出版社', width: 180}
                                     , {field: 'author', title: '作者', width: 140}
                                     , {field: 'class_name', title: '类别', width: 200}
@@ -187,37 +169,13 @@
                                     };
                                 }
                             });
-                            $('td[data-field="isbn"]').each(function () {
-                                let 
+                            addImage();
+                            $('.layui-laypage-prev').on('click', function () {
+                                addImage();
                             });
-
-                            $('.laytable-cell-2-0-0').each(function () {
-                            // 获取两次父节点
-                            let tr = this.parentElement.parentElement;
-                            // 获取tr的第一个子节点
-                            let first_child = tr.firstChild;
-                            if (this.textContent !== "ISBN") {
-                                let img_td = document.createElement("td");
-                                let img = document.createElement("img");
-                                img_td.appendChild(img);
-                                img.src = "../../static/avatar/202402.png"
-                                img.style.width = "150px";
-                                img.style.height = "150px";
-                                img.style.maxWidth = "150px";
-                                // 插入图片节点
-                                tr.insertBefore(img_td, first_child);
-                            } else {
-                                let th = document.createElement("th");
-                                let div = document.createElement("div");
-                                let span = document.createElement("span");
-                                span.textContent = " ";
-                                div.classList.add("layui-table-cell");
-                                div.style.width = "150px";
-                                div.appendChild(span);
-                                th.appendChild(div);
-                                tr.insertBefore(th, first_child);
-                            }
-                        });
+                            $('.layui-laypage-next').on('click', function () {
+                                addImage();
+                            });
                         } else {
                             layui.use('layer', function () {
                                 var layer = layui.layer;
@@ -228,11 +186,61 @@
                     }
                 });
                 return false;
-            })
+            });
+
+            document.addEventListener('click', function () {
+                addImage();
+            });
             return false;
         });
 
     });
+
+    function addImage() {
+        $('td[data-field="isbn"]').each(function () {
+            // 获取一次父节点
+            let tr = this.parentElement;
+            // 获取子节点
+            let child = this.firstChild;
+
+            if (document.getElementById(child.textContent) !== null && document.getElementById(child.textContent) !== undefined) {
+                addImage2();
+                return;
+            }
+
+            let img_td = document.createElement("td");
+            let img = document.createElement("img");
+            img_td.appendChild(img);
+            img.src = "../../static/book_cover/" + child.textContent + ".jpg";
+            img.style.width = "150px";
+            img.style.height = "150px";
+            img.style.maxWidth = "150px";
+            img.id = child.textContent;
+            // 插入图片节点
+            tr.insertBefore(img_td, this);
+        });
+    }
+
+    function addImage2() {
+        $('th[data-field="isbn"]').each(function () {
+            if (document.getElementById("new_span_in_th") !== null && document.getElementById("new_span_in_th") !== undefined) {
+                return;
+            }
+            // 获取一次父节点
+            let tr = this.parentElement;
+
+            let th = document.createElement("th");
+            let div = document.createElement("div");
+            let span = document.createElement("span");
+            span.textContent = " ";
+            span.id = "new_span_in_th";
+            div.classList.add("layui-table-cell");
+            div.style.width = "150px";
+            div.appendChild(span);
+            th.appendChild(div);
+            tr.insertBefore(th, this);
+        });
+    }
 </script>
 {% endblock %}
 
