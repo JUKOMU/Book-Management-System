@@ -844,14 +844,12 @@
                     let comment_text = comment.comment;
                     let date = timestampToDate(comment.date);
                     let id;
-                    let isAdmin = false;
-                    try {
-                        id = comment.admin_id;
-                        isAdmin = true;
-                    } catch (error) {
+                    let isAdmin = true;
+                    id = comment.admin_id;
+                    if (id === undefined || id === null) {
                         id = comment.student_id;
+                        isAdmin = false;
                     }
-                    console.log(id)
                     // 头像
                     let a = document.createElement("a");
                     let span = document.createElement("span");
@@ -896,6 +894,7 @@
                     ul.appendChild(li);
                 }
                 element.appendChild(ul);
+                document.getElementById("container").scrollTop = document.getElementById("container").scrollHeight;
             });
         }).catch(error => {
             console.error('发生错误:', error);

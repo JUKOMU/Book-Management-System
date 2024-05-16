@@ -898,6 +898,7 @@
                     ul.appendChild(li);
                 }
                 element.appendChild(ul);
+                document.getElementById("container").scrollTop = document.getElementById("container").scrollHeight;
             });
         }).catch(error => {
             console.error('发生错误:', error);
@@ -906,7 +907,7 @@
     
     function onReply(id) {
         let comment_id = id;
-        let admin_id = $("#id").val();
+        let student_id = $("#id").val();
         let name = document.getElementById("name");
         let comment_content = $('#textInput2').val();
         console.log(comment_content);
@@ -915,7 +916,7 @@
             headers: {'Content-Type': 'text/plain'},
             body: JSON.stringify({
                 "comment_id": comment_id,
-                "admin_id": admin_id,
+                "student_id": student_id,
                 'name': name.textContent,
                 "comment": comment_content
             })

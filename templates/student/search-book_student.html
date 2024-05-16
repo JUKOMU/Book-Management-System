@@ -31,6 +31,8 @@
     <table lay-even id="result" lay-filter="re">
         <thead>
         <tr>
+            <!--图书图片-->
+            <th lay-data="{field:'img', width:200}"></th>
             <th lay-data="{field:'isbn', width:140}">ISBN</th>
             <th lay-data="{field:'book_name', width:200}">书名</th>
             <th lay-data="{field:'press', width:180}">出版社</th>
@@ -101,15 +103,32 @@
                                 };
                             }
                         });
+                        $('.laytable-cell-2-0-0').each(function () {
+                            if (this.textContent !== "ISBN"){
+                                console.log(this.textContent);
+                                // 获取两次父节点
+                                let tr =  this.parentElement.parentElement;
+                                console.log(tr);
+                                // 获取tr的第一个子节点
+                                let first_child = tr.firstChild;
+                                console.log(first_child);
+                                let img_td = document.createElement("td");
+                                let img = document.createElement("img");
+                                img_td.appendChild(img);
+                                img.src = "../../static/avatar/202402.png"
+                                // 插入图片节点
+                                tr.insertBefore(img, first_child);
+                            }
+                        });
                     } else {
                         layui.use('layer', function () {
                             var layer = layui.layer;
-
                             layer.msg('未找到任何结果', {time: 1000});
                         });
                     }
                 }
             });
+
             $('#search').on('click', function () {
                 var form = new FormData(document.getElementById("searchForm"));
                 $.ajax({

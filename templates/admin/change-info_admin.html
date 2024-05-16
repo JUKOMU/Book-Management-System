@@ -1,10 +1,19 @@
 {% extends "base-admin.html" %}
 {% block title %}管理员信息设置{% endblock %}
-
+{% block style_2 %}
+<style>
+    .avatar {
+        width: 150px;
+        height: 150px;
+        margin: 0 20px;
+    }
+</style>
+{% endblock %}
 {% block body %}
 <fieldset class="layui-elem-field layui-field-title">
     <legend>修改个人信息</legend>
-    <div class="layui-field-box" style="font-size: medium;line-height: 30px;">
+    <div class="layui-field-box"
+         style="font-size: medium;line-height: 30px;display: flex;flex-direction: row;justify-content: left;">
         <br/>
         <form class="layui-form" method="post">
             {{ form.csrf_token }}
@@ -35,6 +44,10 @@
                 </div>
             </div>
         </form>
+        <div style="display: flex;flex-direction: column;margin-left: 200px">
+            <label>头像</label>
+            <img class="avatar" src="../../static/avatar/{{avatar}}.png">
+        </div>
     </div>
 </fieldset>
 {% endblock %}
