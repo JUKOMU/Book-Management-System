@@ -1,6 +1,17 @@
 {% extends "base-student.html" %}
 {% block title %}学生借书{% endblock %}
+{% block style_2 %}
+<style>
+    .layui-table-body.layui-table-main {
+        overflow-x: hidden;
+        width: 100%;
+    }
 
+    .layui-body {
+        width: auto;
+    }
+</style>
+{% endblock %}
 {% block card %}
 <div class="layui-card-header"><h2>学生借书</h2></div>{% endblock %}
 {% block body %}
@@ -143,7 +154,7 @@
                                         , {title: '操作', fixed: 'right', align: 'center', toolbar: '#barDemo'}
                                     ]]
                                     , page: true
-                                    , height: 380
+                                    , height: "auto"
                                     , limit: 7
                                     , response: {
                                         statusCode: 200
@@ -161,10 +172,10 @@
                         } else {
                             layui.use('layer', function () {
                                 var layer = layui.layer;
-
                                 layer.msg('找不到该图书！', {time: 1000});
                             });
                         }
+                        addImage();
                     }
                 });
                 layui.use(['form', 'table', 'jquery'], function () {
@@ -173,7 +184,7 @@
                     var $ = layui.$;
 
                     table.init('re', {
-                        height: 390
+                        height: "auto"
                         , limit: 7
                         , page: true
                     });
@@ -203,8 +214,58 @@
                 return false;
             });
             document.getElementById("search").click();
+            document.addEventListener('click', function () {
+                addImage();
+            });
         });
     });
+
+    function addImage() {
+        $('td[data-field="isbn"]').each(function () {
+            // 获取一次父节点
+            let tr = this.parentElement;
+            // 获取子节点
+            let child = this.firstChild;
+            // 获取前节点的子节点
+            let prev_node_child = this.previousElementSibling.firstChild;
+            if (document.getElementById(prev_node_child.textContent) !== null && document.getElementById(prev_node_child.textContent) !== undefined) {
+                addImage2();
+                return;
+            }
+
+            let img_td = document.createElement("td");
+            let img = document.createElement("img");
+            img_td.appendChild(img);
+            img.src = "../../static/book_cover/" + child.textContent + ".jpg";
+            img.style.width = "150px";
+            img.style.height = "150px";
+            img.style.maxWidth = "150px";
+            img.id = prev_node_child.textContent;
+            // 插入图片节点
+            tr.insertBefore(img_td, tr.firstChild);
+        });
+    }
+
+    function addImage2() {
+        $('th[data-field="isbn"]').each(function () {
+            if (document.getElementById("new_span_in_th") !== null && document.getElementById("new_span_in_th") !== undefined) {
+                return;
+            }
+            // 获取一次父节点
+            let tr = this.parentElement;
+
+            let th = document.createElement("th");
+            let div = document.createElement("div");
+            let span = document.createElement("span");
+            span.textContent = " ";
+            span.id = "new_span_in_th";
+            div.classList.add("layui-table-cell");
+            div.style.width = "150px";
+            div.appendChild(span);
+            th.appendChild(div);
+            tr.insertBefore(th, tr.firstChild);
+        });
+    }
 </script>
 <script type="text/html" id="barDemo">
     <a class="layui-btn layui-btn-sm" lay-event="borr">借出</a>

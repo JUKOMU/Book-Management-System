@@ -116,12 +116,6 @@
                             }
                         });
                         addImage();
-                        $('.layui-laypage-prev').on('click', function () {
-                            addImage();
-                        });
-                        $('.layui-laypage-next').on('click', function () {
-                            addImage();
-                        });
                     } else {
                         layui.use('layer', function () {
                             var layer = layui.layer;
@@ -169,13 +163,6 @@
                                     };
                                 }
                             });
-                            addImage();
-                            $('.layui-laypage-prev').on('click', function () {
-                                addImage();
-                            });
-                            $('.layui-laypage-next').on('click', function () {
-                                addImage();
-                            });
                         } else {
                             layui.use('layer', function () {
                                 var layer = layui.layer;
@@ -183,6 +170,7 @@
                                 layer.msg('未找到任何结果', {time: 1000});
                             });
                         }
+                        addImage();
                     }
                 });
                 return false;
