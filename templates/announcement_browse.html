@@ -231,6 +231,26 @@
             list-style-type: circle;
         }
 
+        /* 自定义滚动条的整体样式 */
+        ::-webkit-scrollbar {
+            width: 6px; /* 设置滚动条的宽度 */
+        }
+
+        /* 自定义滚动轨迹的样式 */
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1; /* 设置滚动轨迹的背景颜色 */
+        }
+
+        /* 自定义滚动滑块的样式 */
+        ::-webkit-scrollbar-thumb {
+            background: #888; /* 设置滚动滑块的背景颜色 */
+            border-radius: 3px; /* 滚动条圆角 */
+        }
+
+        /* 当鼠标悬停在滚动滑块上时的样式 */
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555; /* 设置鼠标悬停时滚动滑块的背景颜色 */
+        }
     </style>
 </head>
 <body class="layui-layout-body">
