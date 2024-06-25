@@ -776,7 +776,8 @@
                 console.log(data);
                 if (JSON.parse(data).code === 200) {
                     //
-                    window.location.reload();
+                    document.getElementById(id).classList.remove("unsolved-comment");
+                    document.getElementById(id).classList.add("solved-comment");
                 }
             });
         }).catch(error => {

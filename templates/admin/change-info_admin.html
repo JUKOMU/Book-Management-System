@@ -14,13 +14,17 @@
 
     #upload-form {
         position: fixed;
-        top: 150px;
+        top: 90px;
         left: 30%;
         width: 800px;
         height: 700px;
         display: flex;
         flex-direction: column;
         border: 3px solid rgba(0, 0, 0, 0.2);
+    }
+
+    .hide-form {
+        display: none;
     }
 
     #upload-form.hide-form {
@@ -106,7 +110,7 @@
         <button onclick="cancelImage()" style="width: 80px;height: 40px;border: 0;border-radius: 10px;background-color: #14ad96;color: #ffffff;font-weight: bold;margin: 30px 20px 0 20px;cursor: pointer">取消</button>
     </div>
 </div>
-<h2 class="hide-form" id="title" style="position: fixed;top: 110px;left:30%">上传头像</h2>
+<h2 class="hide-form" id="title" style="position: fixed;top: 70px;left:30%">上传头像</h2>
 {% endblock %}
 
 {% block script %}

@@ -620,10 +620,10 @@ def out():
     readbook.card_id = card
     readbook.start_date = int(today_stamp) * 1000
     readbook.due_date = (int(today_stamp) + 40 * 86400) * 1000
-    if type(current_user) is Admin:
-        readbook.borrow_admin = current_user.admin_id
-    else:
+    try:
         readbook.borrow_admin = current_user.student_id
+    except:
+        readbook.borrow_admin = current_user.admin_id
     db.session.add(readbook)
     db.session.commit()
     book = Inventory.query.filter_by(barcode=barcode).first()
@@ -704,10 +704,10 @@ def bookin():
     today_str = today_date.strftime("%Y-%m-%d")
     today_stamp = time.mktime(time.strptime(today_str + ' 00:00:00', '%Y-%m-%d %H:%M:%S'))
     record.end_date = int(today_stamp) * 1000
-    if type(current_user) is Admin:
-        record.return_admin = current_user.admin_id
-    else:
+    try:
         record.return_admin = current_user.student_id
+    except:
+        record.return_admin = current_user.admin_id
     db.session.add(record)
     db.session.commit()
     book = Inventory.query.filter_by(barcode=barcode).first()

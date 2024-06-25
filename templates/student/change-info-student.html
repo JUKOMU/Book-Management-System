@@ -14,13 +14,17 @@
 
     #upload-form {
         position: fixed;
-        top: 150px;
+        top: 120px;
         left: 30%;
         width: 800px;
         height: 700px;
         display: flex;
         flex-direction: column;
         border: 3px solid rgba(0, 0, 0, 0.2);
+    }
+
+    .hide-form {
+        display: none;
     }
 
     #upload-form.hide-form {
@@ -128,7 +132,7 @@
         </button>
     </div>
 </div>
-<h2 class="hide-form" id="title" style="position: fixed;top: 110px;left:30%">上传头像</h2>
+<h2 class="hide-form" id="title" style="position: fixed;top: 100px;left:30%">上传头像</h2>
 {% endblock %}
 {% block script %}
 <script>
@@ -271,6 +275,7 @@
         moveStartX = event.clientX;
         moveStartY = event.clientY;
         document.addEventListener('mousemove', moveBox);
+        event.stopPropagation();
     }
 
     function moveBox() {
@@ -357,7 +362,6 @@
                 let data = decoder.decode(value, {stream: true});
                 console.log(data);
                 if (JSON.parse(data).code === 200) {
-                    // 上传成功
                     window.location.reload();
                 }
             });
