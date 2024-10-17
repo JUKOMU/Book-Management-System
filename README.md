@@ -1,58 +1,55 @@
 # SHUHAI-Book-Management-System
 
-#### 介绍
+#### Introduction
 
-这个智能图书借阅系统为学校的师生提供了便捷的图书查询、借阅和信息维护功能。通过该系统，用户可以方便地浏览图书馆的藏书情况，查询所需图书的相关信息，并进行线上借阅操作。同时，系统还具备信息维护功能，包括用户个人信息管理、图书馆藏书管理等，保障了图书馆资源的有效管理和利用。
+This intelligent book borrowing system provides convenient book search, borrowing, and information maintenance functions for teachers and students at the school. Through this system, users can easily browse the library's collection, search for information about the books they need, and perform online borrowing operations. At the same time, the system also features information maintenance functions, including user personal information management and library collection management, ensuring the effective management and utilization of library resources.
 
-一个基于Flask框架的智能图书借阅系统，以提高学校图书馆的服务效率，和为师生们提供更为便捷、高效的图书借阅体验，进一步促进学校教育教学事业的发展
+It is an intelligent book borrowing system based on the Flask framework, designed to improve the service efficiency of the school library and provide a more convenient and efficient borrowing experience for teachers and students, further promoting the development of the school’s educational and teaching undertakings.
 
+#### Software Architecture
+Flask + Layui frontend UI framework + MySQL
 
-#### 软件架构
-Flask+layui前端UI框架+Mysql
+[Layui Documentation](http://layui.xhcen.com/doc/doc.html)
 
-[layui使用文档地址](http://layui.xhcen.com/doc/doc.html)
+#### Installation Tutorial
 
+1.  Clone the project using git or download the zip file.
+2.  Use pip to install the required packages by following the requirements file in the terminal.
+3.  Install the MySQL database and related pymysql package.
+4.  Open the terminal, navigate to the project folder, and start the service by running `python app.py runserver`.
+5.  Open the browser and enter (http://127.0.0.1:5000) to view the system.
 
-#### 安装教程
+#### Overall Functional Requirements and Goals
 
-1.  git clone项目或者下载zip文件
-2.  按照requirements文件进入终端pip install 相关软件包
-3.  安装MySQL数据库以及pymysql相关包  
-4.  打开终端cd到项目所在文件夹，使用 `python app.py runserver` 启动服务
-5.  打开浏览器地址栏输入(http://127.0.0.1:5000) 进入查看
+![Intelligent Book Borrowing System Frontend Composition](static/%E6%99%BA%E8%83%BD%E5%9B%BE%E4%B9%A6%E5%80%9F%E9%98%85%E7%B3%BB%E7%BB%9F%E5%89%8D%E5%8F%B0%E7%BB%84%E6%88%90.png)
 
-#### 总体功能需求及目标
+##### System Frontend Composition
+1.  **User Login/Registration Module**: Allows users to create accounts and log in to the system.
+2.  **User Center Module**: Users can view their account details, such as borrowing history and personal information.
+3.  **Book Search Module**: Provides a search function that allows users to search for books by keywords, author, ISBN, etc., making it easier for readers to quickly and accurately find their borrowing targets.
+4.  **Book Display Module**: Displays detailed information about the library's collection on the main interface, including cover, synopsis, author, etc., allowing readers to get an overview of the collection.
+5.  **Book Borrowing Module**: The core function, allowing users to borrow books, check borrowing status, and view due dates.
+6.  **Book Return Module**: Users can return books in this module. Readers return books via a special window where administrators check the book. The administrator scans the book's QR code for archiving, and readers pay any penalty fees for overdue or damaged books.
+7.  **Book Recommendation Module**: Recommends related books based on users' borrowing and search history.
+8.  **News/Announcements Module**: Publishes news and announcements from the library, which may include reader feedback and inquiries.
+9.  **Help/FAQ Module**: Provides answers to frequently asked questions and user guides for the system.
 
-![智能图书借阅系统前台组成](static/%E6%99%BA%E8%83%BD%E5%9B%BE%E4%B9%A6%E5%80%9F%E9%98%85%E7%B3%BB%E7%BB%9F%E5%89%8D%E5%8F%B0%E7%BB%84%E6%88%90.png)
+##### System Backend Composition
+![Intelligent Book Borrowing System Backend Composition](static/%E6%99%BA%E8%83%BD%E5%9B%BE%E4%B9%A6%E5%80%9F%E9%98%85%E7%B3%BB%E7%BB%9F%E5%90%8E%E5%8F%B0%E7%BB%84%E6%88%90.png)
 
-##### 系统前台的组成
-1.  用户登录/注册模块：允许用户创建账户、登录系统。
-2.  用户中心模块：用户可以查看自己的账号情况，如借阅历史、个人资料。
-3.  图书搜索模块：提供搜索功能，允许用户根据关键词、作者、ISBN等信   息搜索图书，便于读者快速准确地找到借阅目标。
-4.  图书展示模块：在主界面展示馆藏图书的详细信息，包括封面、简介、作者等，便于让读者大概了解到馆藏情况。
-5.  图书借阅模块：核心功能，允许用户借阅图书，查看借阅状态和到期日期。
-6.  图书归还模块：用户可以在此模块归还图书。允许读者通过专用窗口由管理员检查图书，管理员扫描图书上的二维码归档图书，读者需缴纳可能因逾期或图书损坏产生的处罚费用。
-7.  图书推荐模块：根据用户的借阅和查询历史推荐相关图书。
-8.  新闻/公告模块：发布图书馆的新闻和公告。也可包括读者来信、读者咨询等等内容。
-9.  帮助/FAQ模块：提供常见问题解答和帮助信息。指引用户使用系统。
+1.  **Admin Login Module**: Administrators log in to the backend management system.
+2.  **Book Management Module**: Add, edit, and delete book information.
+3.  **User Management Module**: Manage user accounts, including permission assignments and user bans.
+4.  **Borrowing Management Module**: View and manage users' borrowing records and statuses.
+5.  **Data Statistics Module**: Generate reports on book borrowing and user activity.
+6.  **System Settings Module**: Configure system parameters such as book categories and library rules.
+7.  **News/Announcements Management Module**: Publish and manage system news and announcements.
+8.  **Help/FAQ Management Module**: Manage help documents and frequently asked questions.
+9.  **Security and Maintenance Module**: Includes database backups and viewing system logs.
 
-##### 系统后台的组成
-![智能图书借阅系统后台组成](static/%E6%99%BA%E8%83%BD%E5%9B%BE%E4%B9%A6%E5%80%9F%E9%98%85%E7%B3%BB%E7%BB%9F%E5%90%8E%E5%8F%B0%E7%BB%84%E6%88%90.png)
+#### Contributing
 
-1.  管理员登录模块：管理员登录后台管理系统。
-2.  图书管理模块：添加、编辑、删除图书信息。
-3.  用户管理模块：管理用户账户，包括权限分配、封禁用户等。
-4.  借阅管理模块：查看、管理用户的借阅记录和状态。
-5.  数据统计模块：生成图书借阅、用户活跃度等统计报表。
-6.  系统设置模块：配置系统参数，如图书分类、图书馆规则等。
-7.  新闻/公告管理模块：发布和管理系统新闻和公告。
-8.  帮助/FAQ管理模块：管理帮助文档和常见问题解答。
-9.  安全与维护模块：包括备份数据库、查看系统日志等。
-
-#### 参与贡献
-
-1.  Fork 本仓库
-2.  新建 Feat_xxx 分支
-3.  提交代码
-4.  新建 Pull Request
-
+1.  Fork this repository.
+2.  Create a new branch named Feat_xxx.
+3.  Commit your code.
+4.  Create a new Pull Request.
